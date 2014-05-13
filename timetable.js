@@ -1,5 +1,10 @@
 /*jshint curly: true, devel: true, indent: 4, latedef: true, quotmark: single, undef: true, unused: true, strict: true, trailing: true */
 /*global require*/
+/* the gnustomp-forkbomb style guide:
+	Single tabs for indentation
+	Single quotes for strings
+*/
+
 var http = require('http'),
 	fs = require('fs');
 
