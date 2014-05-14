@@ -7,28 +7,38 @@
 */
 
 var http = require('http'),
-	fs = require('fs');
+	fs = require('fs'),
+	jade = require('jade'),
+	url = require('url')
+	DEBUG = true;
+
+var jade_opts = {
+	pretty: DEBUG,
+	compileDebug: DEBUG
+};
 
 function onRequest(req, res) {
 	/*jshint validthis: true*/
 	'use strict';
 	console.log('[' + this.name + ']', req.method, req.url);
-	
-	if (req.url === '/') {
+	var j, uri = url.parse(req.url, true);
+	if (uri.pathname === '/') {
 		res.writeHead(200, {
 			'Content-Type': 'text/html'
 		});
-		fs.createReadStream('static/construction.html').pipe(res);
-	} else if (req.url === '/script/belltimes.js') {
+		j = jade.compile(fs.readFileSync('dynamic/index.jade', {encoding: "utf8"}), jade_opts);
+		res.end(j({'something': (uri.query.something ? true : false)}));
+//		fs.createReadStream('static/construction.html').pipe(res);
+	} else if (uri.pathname === '/script/belltimes.js') {
 		res.writeHead(200, {
 			'Content-Type': 'application/javascript'
 		});
 		fs.createReadStream('script/belltimes.js').pipe(res);
-	} else if (req.url.match('/style/.*[.]css$') && fs.existsSync(req.url.slice(1))){
+	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))){
 		res.writeHead(200, {
 			'Content-Type': 'text/css'
 		});
-		fs.createReadStream(req.url.slice(1)).pipe(res);
+		fs.createReadStream(uri.pathname.slice(1)).pipe(res);
 	} else {
 		res.writeHead(404, {
 			'Content-Type': 'text/html'
