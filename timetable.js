@@ -19,11 +19,11 @@ function onRequest(req, res) {
 			'Content-Type': 'text/html'
 		});
 		fs.createReadStream('construction.html').pipe(res);
-	} else if (req.url === '/belltimes.js') {
+	} else if (req.url === '/script/belltimes.js') {
 		res.writeHead(200, {
 			'Content-Type': 'application/javascript'
 		});
-		fs.createReadStream('belltimes.js').pipe(res);
+		fs.createReadStream('/script/belltimes.js').pipe(res);
 	} else if (req.url.match('/.*[.]css$') && fs.existsSync(req.url.slice(1))){
 		res.writeHead(200, {
 			'Content-Type': 'text/css'
