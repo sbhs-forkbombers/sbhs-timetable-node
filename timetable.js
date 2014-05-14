@@ -60,6 +60,7 @@ function compile_jade(path) {
 }
 
 function onRequest(req, res) {
+	/*jshint validthis: true*/
 	'use strict';
 	console.log('[' + this.name + ']', req.method, req.url);
 	var j, uri = url.parse(req.url, true);
@@ -80,6 +81,7 @@ function onRequest(req, res) {
 }
 
 function onListening() {
+	/*jshint validthis: true*/
 	'use strict';
 	console.log('[' + this.name + '] Listening at http://' + this.address().address + ':' + this.address().port + '/');
 }
