@@ -10,12 +10,35 @@ var http = require('http'),
 	fs = require('fs'),
 	jade = require('jade'),
 	url = require('url');
-DEBUG = true;
+DEBUG = false;
 
 var jade_opts = {
 	pretty: DEBUG,
 	compileDebug: DEBUG
 };
+
+function headers(res, code, contentType, dynamic, otherHeaders) {
+	var date;
+	otherHeaders = otherHeaders || {};
+	if (dynamic || DEBUG) { // disable caching
+		otherHeaders['Cache-Control'] = 'no-cache';
+	}
+	else if (!dynamic) {
+		date = new Date();
+		date.setYear(date.getFullYear() + 1);
+		otherHeaders['Expires'] = date.toGMTString();
+	}
+	otherHeaders['Content-Type'] = contentType + '; charset=UTF-8';
+	res.writeHead(200, otherHeaders);
+	return res;
+}
+
+function compile_jade(path) {
+	var mopts = jade_opts;
+	mopts.filename = path;
+	var fn = jade.compile(fs.readFileSync(path), mopts);
+	return fn;
+}
 
 function onRequest(req, res) {
 	/*jshint validthis: true*/
@@ -23,26 +46,17 @@ function onRequest(req, res) {
 	console.log('[' + this.name + ']', req.method, req.url);
 	var j, uri = url.parse(req.url, true);
 	if (uri.pathname === '/') {
-		res.writeHead(200, {
-			'Content-Type': 'text/html'
-		});
-		j = jade.compile(fs.readFileSync('dynamic/index.jade', {encoding: 'utf8'}), jade_opts);
-		res.end(j({'something': (uri.query.something ? true : false)}));
-//		fs.createReadStream('static/construction.html').pipe(res);
+		headers(res, 200, 'text/html', true);
+		j = compile_jade('dynamic/index.jade');
+		res.end(j({'something': (uri.query.something ? true : false), 'page': ''}));
 	} else if (uri.pathname === '/script/belltimes.js') {
-		res.writeHead(200, {
-			'Content-Type': 'application/javascript'
-		});
+		headers(res, 200, 'application/javascript', false);	
 		fs.createReadStream('script/belltimes.js').pipe(res);
 	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))){
-		res.writeHead(200, {
-			'Content-Type': 'text/css'
-		});
+		headers(res, 200, 'text/css', false);
 		fs.createReadStream(uri.pathname.slice(1)).pipe(res);
 	} else {
-		res.writeHead(404, {
-			'Content-Type': 'text/html'
-		});
+		headers(res, 404, 'text/html', false);
 		fs.createReadStream('static/404.html').pipe(res);
 	}
 }
