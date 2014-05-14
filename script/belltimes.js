@@ -1,30 +1,31 @@
 /*jshint latedef: nofunc */
 /*
-   Copyright (C) 2014  James Ye  Simon Shields
+Copyright (C) 2014  James Ye  Simon Shields
 
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU Affero General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU Affero General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
 
-   You should have received a copy of the GNU Affero General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-   */
-// TODO clean up quotes.
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+// TODO: clean up quotes.
 window.timetable = null;
 window.defaultBells = [];
-window.defaultBells[0] = {'status':'OK','bellsAltered':false,'bellsAlteredReason':'','bells':[{'bell':'Roll Call','time':'09:00'},{'bell':'1','time':'09:05'},{'bell':'Transition','time':'10:05'},{'bell':'2','time':'10:10'},{'bell':'Lunch 1','time':'11:10'},{'bell':'Lunch 2','time':'11:30'},{'bell':'3','time':'11:50'},{'bell':'Transition','time':'12:50'},{'bell':'4','time':'12:55'},{'bell':'Recess','time':'13:55'},{'bell':'5','time':'14:15'},{'bell':'End of Day','time':'15:15'}],'day':'','term':'Unknown','week':'Unknown','weekType':'fill me in'}; // sun
-window.defaultBells[1] = window.defaultBells[0]; // mon
-window.defaultBells[2] = window.defaultBells[0]; // tue
-window.defaultBells[3] = {'status':'OK','bellsAltered':false,'bellsAlteredReason':'','bells':[{'bell':'Roll Call','time':'09:00'},{'bell':'1','time':'09:05'},{'bell':'Transition','time':'10:05'},{'bell':'2','time':'10:10'},{'bell':'Recess','time':'11:10'},{'bell':'3','time':'11:30'},{'bell':'Lunch 1','time':'12:30'},{'bell':'Lunch 2','time':'12:50'},{'bell':'4','time':'13:10'},{'bell':'Transition','time':'14:10'},{'bell':'5','time':'14:15'},{'bell':'End of Day','time':'15:15'}],'day':'','term':'Unknown','week':'Unknown','weekType':'fill me in'}; // wed
-window.defaultBells[4] = window.defaultBells[3]; // thu
-window.defaultBells[5] = {'status':'OK','bellsAltered':false,'bellsAlteredReason':'','bells':[{'bell':'Roll Call','time':'09:25'},{'bell':'1','time':'09:30'},{'bell':'Transition','time':'10:25'},{'bell':'2','time':'10:30'},{'bell':'Lunch 1','time':'11:25'},{'bell':'Lunch 2','time':'11:45'},{'bell':'3','time':'12:05'},{'bell':'Transition','time':'13:00'},{'bell':'4','time':'13:05'},{'bell':'Recess','time':'14:00'},{'bell':'5','time':'14:20'},{'bell':'End of Day','time':'15:15'}],'day':'','term':'Unkown','week':'Unknown','weekType':'fill me in'}; // fri
-window.defaultBells[6] = window.defaultBells[0]; // sat
+/* Saturday and Sunday display the times shared for Monday and Tuesday, Wednesday and Thursday share times. */
+window.defaultBells[0] = {'status':'OK','bellsAltered':false,'bellsAlteredReason':'','bells':[{'bell':'Roll Call','time':'09:00'},{'bell':'1','time':'09:05'},{'bell':'Transition','time':'10:05'},{'bell':'2','time':'10:10'},{'bell':'Lunch 1','time':'11:10'},{'bell':'Lunch 2','time':'11:30'},{'bell':'3','time':'11:50'},{'bell':'Transition','time':'12:50'},{'bell':'4','time':'12:55'},{'bell':'Recess','time':'13:55'},{'bell':'5','time':'14:15'},{'bell':'End of Day','time':'15:15'}],'day':'','term':'Unknown','week':'Unknown','weekType':'fill me in'}; // Sunday
+window.defaultBells[1] = window.defaultBells[0]; // Monday
+window.defaultBells[2] = window.defaultBells[0]; // Tuesday
+window.defaultBells[3] = {'status':'OK','bellsAltered':false,'bellsAlteredReason':'','bells':[{'bell':'Roll Call','time':'09:00'},{'bell':'1','time':'09:05'},{'bell':'Transition','time':'10:05'},{'bell':'2','time':'10:10'},{'bell':'Recess','time':'11:10'},{'bell':'3','time':'11:30'},{'bell':'Lunch 1','time':'12:30'},{'bell':'Lunch 2','time':'12:50'},{'bell':'4','time':'13:10'},{'bell':'Transition','time':'14:10'},{'bell':'5','time':'14:15'},{'bell':'End of Day','time':'15:15'}],'day':'','term':'Unknown','week':'Unknown','weekType':'fill me in'}; // Wednesday
+window.defaultBells[4] = window.defaultBells[3]; // Thursday
+window.defaultBells[5] = {'status':'OK','bellsAltered':false,'bellsAlteredReason':'','bells':[{'bell':'Roll Call','time':'09:25'},{'bell':'1','time':'09:30'},{'bell':'Transition','time':'10:25'},{'bell':'2','time':'10:30'},{'bell':'Lunch 1','time':'11:25'},{'bell':'Lunch 2','time':'11:45'},{'bell':'3','time':'12:05'},{'bell':'Transition','time':'13:00'},{'bell':'4','time':'13:05'},{'bell':'Recess','time':'14:00'},{'bell':'5','time':'14:20'},{'bell':'End of Day','time':'15:15'}],'day':'','term':'Unkown','week':'Unknown','weekType':'fill me in'}; // Friday
+window.defaultBells[6] = window.defaultBells[0]; // Saturday
 
 function is_after_school(hour,min) {
 	'use strict';
@@ -50,8 +51,8 @@ function redoDate() {
 	window.afterSchool = false;
 	window.day_offset = 0;
 	if (is_after_school(hour,min) && wday >= 1 && wday <= 5) { // after school on a weekday
-		dateOffset+=1;
-		wday = wday%7;
+		dateOffset += 1;
+		wday = wday % 7;
 		if (wday == 5) { // it's friday
 			dateOffset += 2;
 			window.day_offset += 2;
@@ -65,7 +66,7 @@ function redoDate() {
 	if (wday === 0 || wday === 6) { // it's a weekend
 		window.weekend = true;
 		rWday = wday;
-		if (wday==6) { // sat
+		if (wday == 6) { // sat
 			dateOffset += 2;
 		}
 		else { // sun
@@ -79,12 +80,12 @@ function redoDate() {
 	else {
 		window.weekend = false;
 	}
-	now += (24*60*60)*(dateOffset-1);
+	now += (24 * 60 * 60) * (dateOffset - 1);
 	if (afterSchool) {
-		now -= 24*60*60;
+		now -= 24 * 60 * 60;
 	}
 	window.now = now;
-	window.NOW = new Date(now*1000);
+	window.NOW = new Date(now * 1000);
 }
 
 redoDate();
@@ -117,7 +118,7 @@ $.getJSON('/api/v1/timetable/get', '', function(data) {
 
 Date.prototype.getYearDay = function() {
 	'use strict';
-	var onejan = new Date(this.getFullYear(),0,1);
+	var onejan = new Date(this.getFullYear(), 0, 1);
 	return Math.ceil((this - onejan) / 86400000);
 };
 
@@ -132,7 +133,7 @@ Date.lastWeekday = function() {
 		return new Date.last().friday();
 	}
 };
-week = null; 
+week = null;
 dow = null;
 recalculating = false;
 nextBell = null;
@@ -162,7 +163,7 @@ function recalculateNextBell() {
 		// it's now after school.
 		afterSchool = true;
 		// should get the next set of bells here
-		NOW.setDate(NOW.getDate()+1);
+		NOW.setDate(NOW.getDate() + 1);
 		if (NOW.getDay() == 6) {
 			NOW.setDate(now.getDate() + 2);
 		}
@@ -222,7 +223,7 @@ function recalculateNextBell() {
 				nearestBellIdx = i;
 			}
 		}
-		if (nearestBell !== null && ((nearestBell[0] == start[0] && nearestBell[1] < start[1]) || nearestBell[0] < start[0]) && ((nearestBell[0] == hour && nearestBell[1] > min) || nearestBell[0] > hour)) { 
+		if (nearestBell !== null && ((nearestBell[0] == start[0] && nearestBell[1] < start[1]) || nearestBell[0] < start[0]) && ((nearestBell[0] == hour && nearestBell[1] > min) || nearestBell[0] > hour)) {
 			// we're done!
 			break;
 		}
@@ -256,9 +257,9 @@ function recalculateNextBell() {
 	nextBell.internal = nearestBell;
 	if (/^\d/.test(nextBell.bell) ) { // work out what the next period is
 		nextPeriod = nextBell;
-	} 
+	}
 	else if (nextBell.bell == 'End of Day') {
-		nextPeriod = null; // period one tomorrow. 
+		nextPeriod = null; // period one tomorrow.
 	}
 	else {
 		j = '';
@@ -286,7 +287,7 @@ function recalculateNextBell() {
 		}
 	}
 	recalculating = false;
-	doReposition();	
+	doReposition();
 }
 /**
  * format what next period is actually going to be
@@ -318,10 +319,11 @@ function doNextPeriod(nextP) {
 /**
  * format a given number of seconds into a countdown format
  */
-function format(seconds) { 
+function format(seconds) {
 	'use strict';
-	var sec = (seconds % 60) + ''; seconds = Math.floor(seconds/60);
-	var min = (seconds % 60); 
+	var sec = (seconds % 60) + '';
+	seconds = Math.floor(seconds/60);
+	var min = (seconds % 60);
 	var hrs;
 	if (min + (seconds-min) < 100) {
 		min += (seconds-min);
@@ -376,18 +378,18 @@ function updateTimeLeft() {
 	// how long?
 	var hour = now.getHours();
 	var min = now.getMinutes() + hour*60;
-	var startMin = start[0]*60 + start[1];
+	var startMin = start[0] * 60 + start[1];
 	min = startMin - min;
 	var sec = min * 60;
 	if (weekend || afterSchool) {
-		sec += Math.floor((now.valueOf() - Date.now())/1000); // work out how long there is until midnight
+		sec += Math.floor((now.valueOf() - Date.now()) / 1000); // work out how long there is until midnight
 	}
 	sec += (60 - now.getSeconds());
 	if (sec < 60 || n.getDateStr() != startDate.getDateStr()) {
 		recalculateNextBell();
 		updateTimeLeft();
 		return;
-	}	
+	}
 	el.innerHTML = format(sec-60);
 }
 
@@ -449,8 +451,8 @@ function slideOutBottom(reload) {
 	if (!loggedIn) {
 		if (!diaryLoaded) {
 			var res = '<div style="text-align:center"><h1>My homework</h1>';
-			res += 'Record your homework with the click of a button. Sign in with your Google account.<br />';
-			res += 'You can also sign in using your school email address:<br />';
+			res += 'Record your homework with the click of a button.<br />';
+			res += 'Sign in with your Google account or school email address:<br />';
 			res += '<strong>&lt;YourStudentID&gt;@student.sbhs.nsw.edu.au</strong><br /><br />';
 			res += '<a href="/login.php?urlback=/timetable.php&new-timetable" class="fake-button">Sign In</a></div>';
 			$('#slideout-bottom').html(res);
@@ -560,7 +562,7 @@ function updateLeftSlideout() {// timetable here
 			text = '<div style="text-align: center;"><h1>Your timetable, here.</h1>';
 			text += 'You can see your timetable here. Sign in with your Google account.<br />';
 			text += 'You can also sign in using your school email account:<br />';
-			text += '<span style="word-wrap: break-word">&lt;YourStudentID&gt;@student.sbhs.nsw.edu.au</span><br /><br /><br /><br />'; 
+			text += '<span style="word-wrap: break-word">&lt;YourStudentID&gt;@student.sbhs.nsw.edu.au</span><br /><br /><br /><br />';
 			text += '<a href="/login.php?urlback=/timetable.php&new-timetable" class="fake-button">Sign In</a></div>';
 		}
 	}
@@ -598,10 +600,10 @@ function loadTimetable(obj) {
 	}
 }
 
-$(document).ready(function() { 
+$(document).ready(function() {
 	'use strict';
 	$('#old-ie-warn').css({'opacity': 0, 'font-size': 0}); // we got this far... (older IEs will fail because jQuery 2.x doesn't support them)
-	DOCUMENT_READY = true;  
+	DOCUMENT_READY = true;
 	$('#slideout-top-arrow').click(slideOutTop);
 	if (BELLTIMES_DONE) { begin(); }
 	if (window.actualMobile) { return; } // this stuff is unnecessary for mobile
@@ -623,20 +625,20 @@ function isSchoolHolidays() {
 	'use strict';
 	return false; // nope
 	/*var holS = new Date('2014-04-11');
-	  var holE = new Date('2014-04-28');
-	  if (window.hasOwnProperty('devMode') && window.devMode == true) {
-	  return false;
-	  }	
+	var holE = new Date('2014-04-28');
+	if (window.hasOwnProperty('devMode') && window.devMode == true) {
+		return false;
+	}
 
-	  if (NOW.isAfter(holS) && NOW.isBefore(holE)) {
-	  return true;
-	  }
-	  return false;*/
+	if (NOW.isAfter(holS) && NOW.isBefore(holE)) {
+		return true;
+	}
+	return false;*/
 }
 
 function getRandColor() {
 	'use strict';
-	return Math.round(Math.random()*255);//% 255;
+	return Math.round(Math.random() * 255);//% 255;
 }
 
 function snazzify() {
@@ -662,7 +664,7 @@ function begin() {
 		var types = ['B','C','A'];
 		$('#bells-changed').text('These are the default belltimes for today. They might be wrong if an assembly or other event is happening today.');
 		window.console.log(NOW.getWeek());
-		belltimes.weekType = types[(NOW.getWeek()+1)%3];
+		belltimes.weekType = types[(NOW.getWeek() + 1) % 3];
 		week = belltimes.weekType;
 		dow = 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday'.split(',')[NOW.getDay()];
 	}
@@ -738,9 +740,9 @@ function processNotices(data) {
 	res = '<h1 style="text-align: center">Notices for ' + dow + ' ' + week + '</h1><a href="javascript:void(0)" id="reload-notices" onclick="reloadNotices()">reload</a>';
 	res += 'Pick a year: <select id="notice-filter"><option value=".notice-row">All years</option>';
 	year = (Number(studentYear) == Number.NaN ? studentYear : Number(studentYear));
-	for (i=7; i <= 12; i++) {
+	for (i = 7; i <= 12; i++) {
 
-		res += '<option value=".notice-'+i+'"' + (year == i ? 'selected' : '') + '>Year ' + i + '</option>';
+		res += '<option value=".notice-' + i + '"' + (year == i ? 'selected' : '') + '>Year ' + i + '</option>';
 	}
 	res += '<option value=".notice-Staff"' + (year == 'Staff' ? 'selected' : '') + '>Staff</option></select>';
 	res += '<span class="rightside"><a href="/notices/dailynotices.php?date='+NOW.getDateStr()+'">Full notices</a></span>';
@@ -754,9 +756,9 @@ function processNotices(data) {
 		for (j in ylist) {
 			classes += ' notice-'+ylist[j];
 		}
-		res += '<tr id="notice-'+i+'" class="'+classes+'"><td class="for">'+n.applicability+'</td><td class="info"><span class="notice-title">'+n.title+'</span><span class="content">'+n.content+'<span class="author">'+n.author+'</span></span></td></tr>';
+		res += '<tr id="notice-' + i + '" class="' + classes + '"><td class="for">' + n.applicability+'</td><td class="info"><span class="notice-title">' + n.title + '</span><span class="content">' + n.content + '<span class="author">' + n.author + '</span></span></td></tr>';
 	}
-	res+='</tbody></table>';
+	res += '</tbody></table>';
 	if (i === 0) {
 		res += '<h1>There are no notices!</h1>';
 	}
@@ -773,32 +775,33 @@ function doneNoticeLoad() {
 	$('.content').slideToggle();
 	$('#notice-filter').change(function() {
 		$('.notice-row:not('+$(this).val()+')').fadeOut();
-			$($(this).val()).fadeIn();
-			});
-		$('#notice-filter').change();
-		$('#notice-toggle').click(function() {
-			$('.content').slideToggle();
-		});
-		}
-		/** format a date */
-		function formatDate(d,js) {
-			'use strict';
-			var dom = d.getDate().toString();
-			var mon = (d.getMonth()+1).toString();
-			var yrs = d.getFullYear().toString();
-			if (dom.length < 2) {
-				dom = '0' + dom;
-			}
-			if (mon.length < 2) {
-				mon = '0' + mon;
-			}
-			if (!js) {
-				return dom +'/'+ mon +'/'+ yrs;
-			}
-			else {
-				return yrs+'-'+mon+'-'+dom;
-			}
-		}
+		$($(this).val()).fadeIn();
+	});
+	$('#notice-filter').change();
+	$('#notice-toggle').click(function() {
+		$('.content').slideToggle();
+	});
+}
+
+/** format a date */
+function formatDate(d,js) {
+	'use strict';
+	var dom = d.getDate().toString();
+	var mon = (d.getMonth()+1).toString();
+	var yrs = d.getFullYear().toString();
+	if (dom.length < 2) {
+		dom = '0' + dom;
+	}
+	if (mon.length < 2) {
+		mon = '0' + mon;
+	}
+	if (!js) {
+		return dom + '/' + mon + '/' + yrs;
+	}
+	else {
+		return yrs + '-' + mon + '-' + dom;
+	}
+}
 
 function getDiary() {
 	'use strict';
@@ -827,10 +830,10 @@ function genDiaryRow(el) {
 	}
 	var text;
 	if (window.actualMobile) {
-		text = '<tr id="diary-'+window.newEntryID+'" onclick="mobileExpandDiary(event)"><td class="diary-name">'+el.name+'&nbsp;&nbsp;&#9660;<div class="hidden due-date">'+due+' '+dStr+'</div></td><td class="diary-subject">'+el.subject+'&nbsp;&nbsp;&#9660;<div class="diary-notes hidden">'+el.notes+'</div></td><td><input type="checkbox" onchange="diaryEntryDone(event)" '+(el.done ? 'checked' : '')+' />&nbsp;<a href="javascript:void(0)" onclick="editDiary(event)">edit</a>&nbsp;<a href="javascript:void(0)" onclick="deleteDiaryEntry(event)">delete</a></td></tr>';
+		text = '<tr id="diary-' + window.newEntryID + '" onclick="mobileExpandDiary(event)"><td class="diary-name">' + el.name + '&nbsp;&nbsp;&#9660;<div class="hidden due-date">' + due + ' ' + dStr + '</div></td><td class="diary-subject">' + el.subject + '&nbsp;&nbsp;&#9660;<div class="diary-notes hidden">' + el.notes + '</div></td><td><input type="checkbox" onchange="diaryEntryDone(event)" ' + (el.done ? 'checked' : '') + ' />&nbsp;<a href="javascript:void(0)" onclick="editDiary(event)">edit</a>&nbsp;<a href="javascript:void(0)" onclick="deleteDiaryEntry(event)">delete</a></td></tr>';
 	}
 	else {
-		text = '<tr id="diary-'+window.newEntryID+'"><td class="diary-name">'+el.name+'</td><td class="due-date">' + due + ' ' + dStr + '</td><td class="diary-subject">'+ el.subject+'</td><td class="diary-notes">'+el.notes+'</td><td class="edit-wrapper"><input type="checkbox" onchange="diaryEntryDone(event)" '+ (el.done ? 'checked' : '')+ ' />&nbsp;<a href="javascript:void(0)" onclick="editDiary(event)">edit</a>&nbsp;<a href="javascript:void(0)" onclick="deleteDiaryEntry(event)">delete</a></td></tr>';
+		text = '<tr id="diary-' + window.newEntryID + '"><td class="diary-name">' + el.name + '</td><td class="due-date">' + due + ' ' + dStr + '</td><td class="diary-subject">' + el.subject + '</td><td class="diary-notes">' + el.notes + '</td><td class="edit-wrapper"><input type="checkbox" onchange="diaryEntryDone(event)" ' + (el.done ? 'checked' : '') + ' />&nbsp;<a href="javascript:void(0)" onclick="editDiary(event)">edit</a>&nbsp;<a href="javascript:void(0)" onclick="deleteDiaryEntry(event)">delete</a></td></tr>';
 	}
 	return text;
 }
@@ -902,7 +905,7 @@ function editDiary(e) {
 	'use strict';
 	var id = Number($(e.target).parent().parent().attr('id').split('-')[1]);
 	var el = diary[id];
-	$('#diary-table #diary-'+id).replaceWith(getNewRow());
+	$('#diary-table #diary-' + id).replaceWith(getNewRow());
 	var row = $('#newDRow *');
 	row.filter('.diary-name > input').val(el.name);
 	row.filter('.date-in').val(el.due);
@@ -942,7 +945,7 @@ function saveDiary() {
 		'url': 'diary.php',
 		'data': {
 			'json': JSON.stringify(tDiary),
-		'update': true
+			'update': true
 		}
 	});
 
@@ -957,7 +960,7 @@ function saveDiary() {
 			$('#newDRow a').text('failed to save!');
 			setTimeout(5000, function() { $('#newDRow a').text('save'); });
 		}
-	});		
+	});
 }
 
 function diaryEntryDone(e) {
@@ -969,7 +972,7 @@ function diaryEntryDone(e) {
 		'url': 'diary.php',
 		'data': {
 			'json': JSON.stringify(diary),
-		'update': true
+			'update': true
 		}
 	});
 
@@ -992,7 +995,7 @@ function deleteDiaryEntry(e) {
 		'url': 'diary.php',
 		'data': {
 			'json': JSON.stringify(tDiary),
-		'update': true
+			'update': true
 		}
 	});
 
@@ -1003,8 +1006,8 @@ function deleteDiaryEntry(e) {
 			diary.splice(id, 1);
 		}
 		else {
-			$('#diary-'+id+' .delete').text('failed to delete!');
-			setTimeout(5000, function() { $('#diary-'+id+' .delete').text('delete'); });
+			$('#diary-' + id + ' .delete').text('failed to delete!');
+			setTimeout(5000, function() { $('#diary-' + id + ' .delete').text('delete'); });
 		}
 	});
 }
@@ -1105,8 +1108,8 @@ function promptAddHomework() {
 	ln += '<div class="input-wrapper">';
 	ln += 'Name: <input class="diary-name" type="text" /><br />';
 	ln += 'Due: <input class="diary-due" type="text" value="+' + nextInstance.daysLeft + ' days" /><br />';
-	ln += 'Period <input class="diary-period" type="number" value="' + (''+nextInstance.period+1).replace(/^0+/, '') + '" /><br />';
-	ln += 'Subject: <input class="diary-subject" type="text" value="'+lessonData.lesson.name+'" /><br />';
+	ln += 'Period <input class="diary-period" type="number" value="' + ('' + nextInstance.period + 1).replace(/^0+/, '') + '" /><br />';
+	ln += 'Subject: <input class="diary-subject" type="text" value="'+ lessonData.lesson.name + '" /><br />';
 	ln += '<span id="additional-notes">Additional Notes:</span> <textarea class="diary-desc" /><br /></div></div>';
 	$(document.body).append(ln);
 }
@@ -1120,15 +1123,15 @@ function toggleExpando() {
 		$('#countdown').css({'top': '50%', 'margin-top': '-127px', 'font-size': '12em'});
 		$('.arrow').css({'opacity': 0});
 		// TODO do people actually want/care about this?
-		/*if (document.body.requestFullscreen) { 
-		  document.body.requestFullscreen();
-		  } else if (document.body.msRequestFullscreen) {
-		  document.body.msRequestFullscreen();
-		  } else if (document.body.mozRequestFullScreen) {
-		  document.body.mozRequestFullScreen();
-		  } else if (document.body.webkitRequestFullScreen) {
-		  document.body.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
-		  }*/
+		/*if (document.body.requestFullscreen) {
+			document.body.requestFullscreen();
+		} else if (document.body.msRequestFullscreen) {
+			document.body.msRequestFullscreen();
+		} else if (document.body.mozRequestFullScreen) {
+			document.body.mozRequestFullScreen();
+		} else if (document.body.webkitRequestFullScreen) {
+			document.body.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+		}*/
 	}
 	else {
 		$('#period-name,#in,#sidebar,#faq-link,#feedback,#debug').fadeIn();
@@ -1136,14 +1139,14 @@ function toggleExpando() {
 		$('#countdown').css({'top': '', 'margin-top': '', 'font-size': ''});
 		$(window).resize();
 		/*if (document.exitFullscreen) {
-		  document.exitFullscreen();
-		  } else if (document.msExitFullscreen) {
-		  document.msExitFullscreen();
-		  } else if (document.mozCancelFullScreen) {
-		  document.mozCancelFullScreen();
-		  } else if (document.webkitExitFullscreen) {
-		  document.webkitExitFullscreen();
-		  }*/
+			document.exitFullscreen();
+		} else if (document.msExitFullscreen) {
+			document.msExitFullscreen();
+		} else if (document.mozCancelFullScreen) {
+			document.mozCancelFullScreen();
+		} else if (document.webkitExitFullscreen) {
+			document.webkitExitFullscreen();
+		}*/
 	}
 }
 
@@ -1189,60 +1192,62 @@ function saveYear() {
 			$('#year > .fake-button').text('Try again...');
 		}
 	});
-}		
+}
+
 // load jquery mobile (+ the swipe up/down support) if it's a device that supports touch.
 yepnope([{
 	test: Modernizr.touch,
-yep : ['/script/jquery.mobile.custom.min.js'],
-complete: function() {
-	'use strict';
-	if ($.mobile) {
-		$(document).ready(function() { 
-			$(document).on('swipeleft', function(ev) { 
-				var start = ev.swipestart.coords[0];
-				var rightPanel = (start > (window.innerWidth/2));
-				if (leftEx && (window.oneSlider || !rightPanel)) {
-					slideOutLeft();
-				}
-				else if ((rightPanel || window.oneSlider) && !rightEx) {
-					slideOutRight();
-				}
-
+	yep : ['/script/jquery.mobile.custom.min.js'],
+	complete: function() {
+		'use strict';
+		if ($.mobile) {
+			$(document).ready(function() {
+				$(document).on('swipeleft', function(ev) {
+					var start = ev.swipestart.coords[0];
+					var rightPanel = (start > (window.innerWidth/2));
+					if (leftEx && (window.oneSlider || !rightPanel)) {
+						slideOutLeft();
+					}
+					else if ((rightPanel || window.oneSlider) && !rightEx) {
+						slideOutRight();
+					}
+				});
+				
+				$(document).on('swiperight', function(ev) {
+					var start = ev.swipestart.coords[0];
+					var leftPanel = (start < (window.innerWidth/2));
+					if (rightEx && (window.oneSlider || !leftPanel)) {
+						slideOutRight();
+					}
+					else if ((leftPanel || window.oneSlider) && !leftEx) {
+						slideOutLeft();
+					}
+				});
+				
+				$(document).on('swipeup', function() {
+					if (topEx) {
+						slideOutTop();
+					}
+					else if (!botEx) {
+						slideOutBottom();
+					}
+				});
+				$(document).on('swipedown', function() {
+					if (!topEx) {
+						slideOutTop();
+					}
+					else if (botEx) {
+						slideOutBottom();
+					}
+				});
 			});
-			$(document).on('swiperight', function(ev) { 
-				var start = ev.swipestart.coords[0];
-				var leftPanel = (start < (window.innerWidth/2));
-				if (rightEx && (window.oneSlider || !leftPanel)) {
-					slideOutRight();
-				}
-				else if ((leftPanel || window.oneSlider) && !leftEx) {
-					slideOutLeft();
-				}
-			});
-			$(document).on('swipeup', function() {
-				if (topEx) {
-					slideOutTop();
-				}
-				else if (!botEx) {
-					slideOutBottom();
-				}
-			});
-			$(document).on('swipedown', function() {
-				if (!topEx) {
-					slideOutTop();
-				}
-				else if (botEx) {
-					slideOutBottom();
-				}
-			});
-		});
-		if (window.actualMobile || /ipad|android/i.test(navigator.userAgent)) { // show the swipe info!
-			$('#swipe-info').css({'opacity': 1});
-			setTimeout(function() { $('#swipe-info').css({'opacity': 0}); }, 5000);
+			if (window.actualMobile || /ipad|android/i.test(navigator.userAgent)) { // show the swipe info!
+				$('#swipe-info').css({'opacity': 1});
+				setTimeout(function() { $('#swipe-info').css({'opacity': 0}); }, 5000);
+			}
 		}
 	}
-}
 }]);
 
-
-(function(a){'use strict';if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))){window.MOBILE=true;}})(navigator.userAgent||navigator.vendor||window.opera);
+/*jshint strict:false*/
+(function(a){if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))){window.MOBILE=true;}})(navigator.userAgent||navigator.vendor||window.opera);

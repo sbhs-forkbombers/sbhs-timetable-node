@@ -1,16 +1,16 @@
-/*jshint curly: true, devel: true, indent: 4, latedef: true, quotmark: single, undef: true, unused: true, strict: true, trailing: true */
 /*global require*/
 /* the gnustomp-forkbomb style guide:
 	Single tabs for indentation
 	Single quotes for strings
-	Opening curly brackets on the same line as the statement
+	Opening braces on the same line as the statement
+	Spaces around operators
 */
 
 var http = require('http'),
 	fs = require('fs'),
 	jade = require('jade'),
-	url = require('url')
-	DEBUG = true;
+	url = require('url');
+DEBUG = true;
 
 var jade_opts = {
 	pretty: DEBUG,
@@ -26,7 +26,7 @@ function onRequest(req, res) {
 		res.writeHead(200, {
 			'Content-Type': 'text/html'
 		});
-		j = jade.compile(fs.readFileSync('dynamic/index.jade', {encoding: "utf8"}), jade_opts);
+		j = jade.compile(fs.readFileSync('dynamic/index.jade', {encoding: 'utf8'}), jade_opts);
 		res.end(j({'something': (uri.query.something ? true : false)}));
 //		fs.createReadStream('static/construction.html').pipe(res);
 	} else if (uri.pathname === '/script/belltimes.js') {

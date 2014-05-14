@@ -1,4 +1,5 @@
 {
+	"devel": true,
 	"strict": true,
 	"indent": 4,
 	"latedef": true,
