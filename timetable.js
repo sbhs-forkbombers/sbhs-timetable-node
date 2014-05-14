@@ -9,6 +9,7 @@ var http = require('http'),
 	fs = require('fs'),
 	jade = require('jade'),
 	url = require('url');
+
 DEBUG = false;
 
 var jade_opts = {
@@ -16,23 +17,26 @@ var jade_opts = {
 	compileDebug: DEBUG
 };
 
-function headers(res, code, contentType, dynamic, otherHeaders) {
+function httpHeaders(res, response, contentType, dynamic, headers) {
+	'use strict';
 	var date;
-	otherHeaders = otherHeaders || {};
+	dynamic = dynamic || false;
+	headers = headers || {};
 	if (dynamic || DEBUG) { // disable caching
-		otherHeaders['Cache-Control'] = 'no-cache';
+		headers.cacheControl = 'no-cache';
 	}
 	else if (!dynamic) {
 		date = new Date();
 		date.setYear(date.getFullYear() + 1);
-		otherHeaders['Expires'] = date.toGMTString();
+		headers.expires = date.toGMTString();
 	}
-	otherHeaders['Content-Type'] = contentType + '; charset=UTF-8';
-	res.writeHead(200, otherHeaders);
+	headers.contentType = contentType + '; charset=UTF-8';
+	res.writeHead(response, headers);
 	return res;
 }
 
 function compile_jade(path) {
+	'use strict';
 	var mopts = jade_opts;
 	mopts.filename = path;
 	var fn = jade.compile(fs.readFileSync(path), mopts);
@@ -45,17 +49,17 @@ function onRequest(req, res) {
 	console.log('[' + this.name + ']', req.method, req.url);
 	var j, uri = url.parse(req.url, true);
 	if (uri.pathname === '/') {
-		headers(res, 200, 'text/html', true);
+		httpHeaders(res, 200, 'text/html', true);
 		j = compile_jade('dynamic/index.jade');
 		res.end(j({'something': (uri.query.something ? true : false), 'page': ''}));
 	} else if (uri.pathname === '/script/belltimes.js') {
-		headers(res, 200, 'application/javascript', false);	
+		httpHeaders(res, 200, 'application/javascript');
 		fs.createReadStream('script/belltimes.js').pipe(res);
 	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))){
-		headers(res, 200, 'text/css', false);
+		httpHeaders(res, 200, 'text/css');
 		fs.createReadStream(uri.pathname.slice(1)).pipe(res);
 	} else {
-		headers(res, 404, 'text/html', false);
+		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
 	}
 }
