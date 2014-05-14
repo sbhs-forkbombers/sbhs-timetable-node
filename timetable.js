@@ -1,4 +1,3 @@
-/*global require*/
 /* the gnustomp-forkbomb style guide:
 	Single tabs for indentation
 	Single quotes for strings
