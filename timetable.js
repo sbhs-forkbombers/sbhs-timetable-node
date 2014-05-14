@@ -18,13 +18,13 @@ function onRequest(req, res) {
 		res.writeHead(200, {
 			'Content-Type': 'text/html'
 		});
-		fs.createReadStream('construction.html').pipe(res);
+		fs.createReadStream('static/construction.html').pipe(res);
 	} else if (req.url === '/script/belltimes.js') {
 		res.writeHead(200, {
 			'Content-Type': 'application/javascript'
 		});
-		fs.createReadStream('/script/belltimes.js').pipe(res);
-	} else if (req.url.match('/.*[.]css$') && fs.existsSync(req.url.slice(1))){
+		fs.createReadStream('script/belltimes.js').pipe(res);
+	} else if (req.url.match('/style/.*[.]css$') && fs.existsSync(req.url.slice(1))){
 		res.writeHead(200, {
 			'Content-Type': 'text/css'
 		});
@@ -33,7 +33,7 @@ function onRequest(req, res) {
 		res.writeHead(404, {
 			'Content-Type': 'text/html'
 		});
-		fs.createReadStream('404.html').pipe(res);
+		fs.createReadStream('static/404.html').pipe(res);
 	}
 }
 
