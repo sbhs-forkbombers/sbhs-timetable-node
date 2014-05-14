@@ -3,6 +3,7 @@
 /* the gnustomp-forkbomb style guide:
 	Single tabs for indentation
 	Single quotes for strings
+	Opening curly brackets on the same line as the statement
 */
 
 var http = require('http'),

@@ -1,3 +1,4 @@
+/*jshint latedef: nofunc */
 /*
    Copyright (C) 2014  James Ye  Simon Shields
 
@@ -17,16 +18,16 @@
 // TODO clean up quotes.
 window.timetable = null;
 window.defaultBells = [];
-window.defaultBells[0] = {"status":"OK","bellsAltered":false,"bellsAlteredReason":"","bells":[{"bell":"Roll Call","time":"09:00"},{"bell":"1","time":"09:05"},{"bell":"Transition","time":"10:05"},{"bell":"2","time":"10:10"},{"bell":"Lunch 1","time":"11:10"},{"bell":"Lunch 2","time":"11:30"},{"bell":"3","time":"11:50"},{"bell":"Transition","time":"12:50"},{"bell":"4","time":"12:55"},{"bell":"Recess","time":"13:55"},{"bell":"5","time":"14:15"},{"bell":"End of Day","time":"15:15"}],"day":"","term":"Unknown","week":"Unknown","weekType":"fill me in"}; // sun
+window.defaultBells[0] = {'status':'OK','bellsAltered':false,'bellsAlteredReason':'','bells':[{'bell':'Roll Call','time':'09:00'},{'bell':'1','time':'09:05'},{'bell':'Transition','time':'10:05'},{'bell':'2','time':'10:10'},{'bell':'Lunch 1','time':'11:10'},{'bell':'Lunch 2','time':'11:30'},{'bell':'3','time':'11:50'},{'bell':'Transition','time':'12:50'},{'bell':'4','time':'12:55'},{'bell':'Recess','time':'13:55'},{'bell':'5','time':'14:15'},{'bell':'End of Day','time':'15:15'}],'day':'','term':'Unknown','week':'Unknown','weekType':'fill me in'}; // sun
 window.defaultBells[1] = window.defaultBells[0]; // mon
 window.defaultBells[2] = window.defaultBells[0]; // tue
-window.defaultBells[3] = {"status":"OK","bellsAltered":false,"bellsAlteredReason":"","bells":[{"bell":"Roll Call","time":"09:00"},{"bell":"1","time":"09:05"},{"bell":"Transition","time":"10:05"},{"bell":"2","time":"10:10"},{"bell":"Recess","time":"11:10"},{"bell":"3","time":"11:30"},{"bell":"Lunch 1","time":"12:30"},{"bell":"Lunch 2","time":"12:50"},{"bell":"4","time":"13:10"},{"bell":"Transition","time":"14:10"},{"bell":"5","time":"14:15"},{"bell":"End of Day","time":"15:15"}],"day":"","term":"Unknown","week":"Unknown","weekType":"fill me in"}; // wed
+window.defaultBells[3] = {'status':'OK','bellsAltered':false,'bellsAlteredReason':'','bells':[{'bell':'Roll Call','time':'09:00'},{'bell':'1','time':'09:05'},{'bell':'Transition','time':'10:05'},{'bell':'2','time':'10:10'},{'bell':'Recess','time':'11:10'},{'bell':'3','time':'11:30'},{'bell':'Lunch 1','time':'12:30'},{'bell':'Lunch 2','time':'12:50'},{'bell':'4','time':'13:10'},{'bell':'Transition','time':'14:10'},{'bell':'5','time':'14:15'},{'bell':'End of Day','time':'15:15'}],'day':'','term':'Unknown','week':'Unknown','weekType':'fill me in'}; // wed
 window.defaultBells[4] = window.defaultBells[3]; // thu
-window.defaultBells[5] = {"status":"OK","bellsAltered":false,"bellsAlteredReason":"","bells":[{"bell":"Roll Call","time":"09:25"},{"bell":"1","time":"09:30"},{"bell":"Transition","time":"10:25"},{"bell":"2","time":"10:30"},{"bell":"Lunch 1","time":"11:25"},{"bell":"Lunch 2","time":"11:45"},{"bell":"3","time":"12:05"},{"bell":"Transition","time":"13:00"},{"bell":"4","time":"13:05"},{"bell":"Recess","time":"14:00"},{"bell":"5","time":"14:20"},{"bell":"End of Day","time":"15:15"}],"day":"","term":"Unkown","week":"Unknown","weekType":"fill me in"}; // fri
+window.defaultBells[5] = {'status':'OK','bellsAltered':false,'bellsAlteredReason':'','bells':[{'bell':'Roll Call','time':'09:25'},{'bell':'1','time':'09:30'},{'bell':'Transition','time':'10:25'},{'bell':'2','time':'10:30'},{'bell':'Lunch 1','time':'11:25'},{'bell':'Lunch 2','time':'11:45'},{'bell':'3','time':'12:05'},{'bell':'Transition','time':'13:00'},{'bell':'4','time':'13:05'},{'bell':'Recess','time':'14:00'},{'bell':'5','time':'14:20'},{'bell':'End of Day','time':'15:15'}],'day':'','term':'Unkown','week':'Unknown','weekType':'fill me in'}; // fri
 window.defaultBells[6] = window.defaultBells[0]; // sat
 
 function is_after_school(hour,min) {
-	"use strict";
+	'use strict';
 	if (hour == 15 && min >= 15) {
 		return true;
 	}
@@ -39,13 +40,13 @@ function is_after_school(hour,min) {
 }
 
 function redoDate() {
-	"use strict";
+	'use strict';
 	dateOffset = 0;
 	localtime = new Date();
 	now = Math.floor(localtime.getTime() / 1000);
-	hour = localtime.getHours(); //$localtime["tm_hour"];
+	hour = localtime.getHours(); //$localtime['tm_hour'];
 	min  = localtime.getMinutes();
-	wday = localtime.getDay();//$localtime["tm_wday"];
+	wday = localtime.getDay();//$localtime['tm_wday'];
 	window.afterSchool = false;
 	window.day_offset = 0;
 	if (is_after_school(hour,min) && wday >= 1 && wday <= 5) { // after school on a weekday
@@ -87,21 +88,23 @@ function redoDate() {
 }
 
 redoDate();
-belltimes = {"status": "error"};
+belltimes = {'status': 'error'};
 if (window.localStorage.timetable) {
 	window.timetable = JSON.parse(window.localStorage.timetable);
 	window.loggedIn = true;
 	window.studentYear = window.localStorage.year;
 }
 
-$.getJSON("/api/v1/timetable/get", "", function(data, textStatus, jqXHR) {
-	"use strict";
+$.getJSON('/api/v1/timetable/get', '', function(data) {
+	'use strict';
 	window.tData = data;
-	if (data.hasOwnProperty("error")) {
-		if (window.localStorage.timetable) return;
+	if (data.hasOwnProperty('error')) {
+		if (window.localStorage.timetable) {
+			return;
+		}
 		window.timetable = null;
 		window.loggedIn = false;
-		window.studentYear = "";
+		window.studentYear = '';
 	}
 	if (window.timetable != data.timetable) {
 		window.localStorage.timetable = JSON.stringify(data.timetable);
@@ -113,14 +116,14 @@ $.getJSON("/api/v1/timetable/get", "", function(data, textStatus, jqXHR) {
 });
 
 Date.prototype.getYearDay = function() {
-	"use strict";
+	'use strict';
 	var onejan = new Date(this.getFullYear(),0,1);
 	return Math.ceil((this - onejan) / 86400000);
 };
 
-Date.prototype.getDateStr = function() {"use strict";  return this.getFullYear() + "-" + (this.getMonth()+1) + "-" + this.getDate(); };
+Date.prototype.getDateStr = function() {'use strict';  return this.getFullYear() + '-' + (this.getMonth()+1) + '-' + this.getDate(); };
 Date.lastWeekday = function() {
-	"use strict";
+	'use strict';
 	var t = new Date();
 	if (!t.is().sun() && !t.is().sat()) {
 		return new Date();
@@ -141,7 +144,7 @@ afterSchool = false;
  * calculate the next bell
  **/
 function recalculateNextBell() {
-	"use strict";
+	'use strict';
 	recalculating = true;
 	var now = new Date();
 	var pName, j;
@@ -155,7 +158,7 @@ function recalculateNextBell() {
 	now.setMinutes(now.getMinutes() + 1);
 	var hour = now.getHours();
 	var min  = now.getMinutes();
-	if ((nextBell !== null && nextBell.bell == "End of Day") || (new Date()).isAfter((new Date()).set({hours: 15, minutes: 15}))) {
+	if ((nextBell !== null && nextBell.bell == 'End of Day') || (new Date()).isAfter((new Date()).set({hours: 15, minutes: 15}))) {
 		// it's now after school.
 		afterSchool = true;
 		// should get the next set of bells here
@@ -170,11 +173,11 @@ function recalculateNextBell() {
 			// weekend!
 			weekend = true;
 		}
-		dow = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"][NOW.getDay()];
-		$('#period-name').text("Updating bells...");
+		dow = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'][NOW.getDay()];
+		$('#period-name').text('Updating bells...');
 		$('#countdown').text('');
 		// this will call all the initialise stuff again!
-		$.getScript("http://student.sbhs.net.au/api/timetable/bells.json?date=" + NOW.getDateStr() + "&callback=loadTimetable");
+		$.getScript('http://student.sbhs.net.au/api/timetable/bells.json?date=' + NOW.getDateStr() + '&callback=loadTimetable');
 	}
 
 	if (afterSchool || weekend) { // the next bell is going to be start of school tomorrow.
@@ -182,8 +185,8 @@ function recalculateNextBell() {
 		nextBell.internal = [9,0];
 		nextPeriod = belltimes.bells[1];
 		nextPeriod.internal = [9,5];
-		pName = nextBell.bell.replace("Roll Call", "School starts").replace("End of Day", "School ends");
-		document.getElementById("period-name").innerHTML = pName;
+		pName = nextBell.bell.replace('Roll Call', 'School starts').replace('End of Day', 'School ends');
+		document.getElementById('period-name').innerHTML = pName;
 		recalculating = false;
 		day_offset = 0;
 		var d = new Date();
@@ -204,7 +207,7 @@ function recalculateNextBell() {
 	var nearestBell = null;
 
 	for (var i = 0; i < belltimes.bells.length; i++) {
-		var start = belltimes.bells[i].time.split(":");
+		var start = belltimes.bells[i].time.split(':');
 		start[0] = Number(start[0]);
 		start[1] = Number(start[1]);
 		if (start[0] == hour && start[1] >= min) { // after now?
@@ -226,60 +229,60 @@ function recalculateNextBell() {
 	}
 	nextBell = belltimes.bells[nearestBellIdx];
 	nextBellIdx = nearestBellIdx;
-	pName = nextBell.bell.replace("Roll Call", "School starts").replace("End of Day", "School ends");
+	pName = nextBell.bell.replace('Roll Call', 'School starts').replace('End of Day', 'School ends');
 	if (/Transition|Lunch 1|Recess/i.test(pName)) { // count down until the end of this period rather than the start of whatever's next
 		var last = belltimes.bells[nearestBellIdx-1].bell;
 		if (window.timetable !== null) {
 			//var lesson = last; XXX: maybe unused
 			var details = timetable[week.toLowerCase()][dow.substr(0,3).toLowerCase()][Number(last)-1];
 			var name = details.name;
-			if (name === "") {
-				pName = "Free Period";
+			if (name === '') {
+				pName = 'Free Period';
 			}
 			else {
-				pName = name + " ends";
+				pName = name + ' ends';
 			}
 		}
 		else {
-			pName = last + " ends";
+			pName = last + ' ends';
 		}
 	}
 	if (!/ (starts)| (ends)$/.test(pName)) {
-		pName += " starts";
+		pName += ' starts';
 	}
-	if (/^\d/.test(pName)) { // make periods look better - "1 ends in" vs "Period 1 ends in"
-		pName = "Period " + pName;
+	if (/^\d/.test(pName)) { // make periods look better - '1 ends in' vs 'Period 1 ends in'
+		pName = 'Period ' + pName;
 	}
 	nextBell.internal = nearestBell;
 	if (/^\d/.test(nextBell.bell) ) { // work out what the next period is
 		nextPeriod = nextBell;
 	} 
-	else if (nextBell.bell == "End of Day") {
+	else if (nextBell.bell == 'End of Day') {
 		nextPeriod = null; // period one tomorrow. 
 	}
 	else {
-		j = "";
+		j = '';
 		var idx = nearestBellIdx;
 		while (!/^\d/.test(j)) {
 			idx++;
 			j = belltimes.bells[idx].bell;
 		}
 		nextPeriod = belltimes.bells[idx];
-		var times = nextPeriod.time.split(":");
+		var times = nextPeriod.time.split(':');
 		times[0] = Number(times[0]);
 		times[1] = Number(times[1]);
 		nextPeriod.internal = times;
 
 	}
 
-	document.getElementById("period-name").innerHTML = pName;
+	document.getElementById('period-name').innerHTML = pName;
 	if (timetable !== null && nextPeriod !== null) {
 		doNextPeriod(nextPeriod);
 	}
 	else {
-		j = document.getElementById("next-info");
+		j = document.getElementById('next-info');
 		if (j !== null) {
-			j.innerHTML = "";
+			j.innerHTML = '';
 		}
 	}
 	recalculating = false;
@@ -289,35 +292,35 @@ function recalculateNextBell() {
  * format what next period is actually going to be
  */
 function doNextPeriod(nextP) {
-	"use strict";
-	var text = "";
+	'use strict';
+	var text = '';
 	var nextPeriod = timetable[week.toLowerCase()][dow.substr(0,3).toLowerCase()][Number(nextP.bell-1)];
 	if (nextPeriod === null) {
-		text = "No more periods today!";
+		text = 'No more periods today!';
 	}
 	else {
-		text = "<strong>Next Period:</strong>";
-		if (nextPeriod.name === "") {
-			text += " <span class='next-period'>Free Period!";
+		text = '<strong>Next Period:</strong>';
+		if (nextPeriod.name === '') {
+			text += ' <span class="next-period">Free Period!';
 		}
 		else {
-			if (nextPeriod.room === "") {
-				text += " <span class='next-period'>" + nextPeriod.name + "</span>";
+			if (nextPeriod.room === '') {
+				text += ' <span class="next-period">' + nextPeriod.name + '</span>';
 			}
 			else {
-				text += " <span class='next-period'>" + nextPeriod.name + " in " + nextPeriod.room + "</span>";
+				text += ' <span class="next-period">' + nextPeriod.name + ' in ' + nextPeriod.room + '</span>';
 			}
 		}
 	}
-	document.getElementById("next-info").innerHTML = text;
+	document.getElementById('next-info').innerHTML = text;
 }
 
 /**
  * format a given number of seconds into a countdown format
  */
 function format(seconds) { 
-	"use strict";
-	var sec = (seconds % 60) + ""; seconds = Math.floor(seconds/60);
+	'use strict';
+	var sec = (seconds % 60) + ''; seconds = Math.floor(seconds/60);
 	var min = (seconds % 60); 
 	var hrs;
 	if (min + (seconds-min) < 100) {
@@ -326,23 +329,23 @@ function format(seconds) {
 	}
 	else {
 		seconds = Math.floor(seconds/60);
-		min += "";
+		min += '';
 		if (min.length < 2) {
-			min = "0" + min;
+			min = '0' + min;
 		}
 		hrs = seconds;
 	}
 
 	if (sec.length < 2) {
-		sec = "0" + sec;
+		sec = '0' + sec;
 	}
-	return (hrs > 0 ? (hrs + "h ") : "") + min + "m " + sec + "s";
+	return (hrs > 0 ? (hrs + 'h ') : '') + min + 'm ' + sec + 's';
 }
 /**
  * is it hour, min after school?
  */
 function isAfterSchool(hour, min) {
-	"use strict";
+	'use strict';
 	if (hour == 15 && min >= 15) {
 		return true;
 	}
@@ -353,13 +356,13 @@ function isAfterSchool(hour, min) {
 }
 /** update the countdown */
 function updateTimeLeft() {
-	"use strict";
+	'use strict';
 	if (recalculating) { // if we're working out the next bell, stop now (otherwise max stack size exceeded errors happen)
 		return;
 	}
 	var n = new Date();
 	//var teststr = n.getDateStr(); XXX: maybe unused
-	var el = document.getElementById("countdown");
+	var el = document.getElementById('countdown');
 	var start = nextBell.internal;
 	var now;
 	if (weekend || afterSchool) { // we need to countdown from midnight on the day in question.
@@ -396,16 +399,16 @@ var botEx = false;
 var diaryLoaded = false;
 var noticesLoaded = false;
 function reloadNotices() {
-	"use strict";
+	'use strict';
 	noticesLoaded = false;
 	slideOutTop(true);
 }
 /** slides out/in the top (notices) pane */
 function slideOutTop(reload) {
-	"use strict";
-	if (rightEx) slideOutRight();
-	if (leftEx) slideOutLeft();
-	if (botEx) slideOutBottom();
+	'use strict';
+	if (rightEx) { slideOutRight(); }
+	if (leftEx) { slideOutLeft(); }
+	if (botEx) { slideOutBottom(); }
 	var opts = { // spinner settings
 		lines: 10,
 		length: 40,
@@ -419,12 +422,12 @@ function slideOutTop(reload) {
 		shadow: true,
 	};
 	if (!noticesLoaded) {
-		var target = document.getElementById("slideout-top");
+		var target = document.getElementById('slideout-top');
 		window.currentNoticesSpinner = new Spinner(opts).spin(target);
 	}
 	if (reload !== true) {
-		$('#slideout-bottom-arrow').toggleClass("mini");
-		$('#slideout-top,#slideout-top-arrow').toggleClass("expanded");
+		$('#slideout-bottom-arrow').toggleClass('mini');
+		$('#slideout-top,#slideout-top-arrow').toggleClass('expanded');
 		topEx = !topEx;
 	}
 	if (!noticesLoaded) {
@@ -433,26 +436,26 @@ function slideOutTop(reload) {
 	noticesLoaded = true;
 }
 function reloadDiary() {
-	"use strict";
+	'use strict';
 	diaryLoaded = false;
 	slideOutBottom(true);
 }
 /** slide out the bottom (diary) pane */
 function slideOutBottom(reload) {
-	"use strict";
-	if (rightEx) slideOutRight();
-	if (leftEx) slideOutLeft();
-	if (topEx) slideOutTop();
+	'use strict';
+	if (rightEx) { slideOutRight(); }
+	if (leftEx) { slideOutLeft(); }
+	if (topEx) { slideOutTop(); }
 	if (!loggedIn) {
 		if (!diaryLoaded) {
-			var res = "<div style='text-align:center'><h1>My homework</h1>";
-			res += "Record your homework with the click of a button. Sign in with your Google account.<br />";
-			res += "You can also sign in using your school email address:<br />";
-			res += "<strong>&lt;YourStudentID&gt;@student.sbhs.nsw.edu.au</strong><br /><br />";
+			var res = '<div style="text-align:center"><h1>My homework</h1>';
+			res += 'Record your homework with the click of a button. Sign in with your Google account.<br />';
+			res += 'You can also sign in using your school email address:<br />';
+			res += '<strong>&lt;YourStudentID&gt;@student.sbhs.nsw.edu.au</strong><br /><br />';
 			res += '<a href="/login.php?urlback=/timetable.php&new-timetable" class="fake-button">Sign In</a></div>';
 			$('#slideout-bottom').html(res);
 		}
-		$('#slideout-bottom,#slideout-bottom-arrow').toggleClass("expanded");
+		$('#slideout-bottom,#slideout-bottom-arrow').toggleClass('expanded');
 		botEx = !botEx;
 		return;
 	}
@@ -469,12 +472,12 @@ function slideOutBottom(reload) {
 		shadow: true,
 	};
 	if (!diaryLoaded) {
-		var target= document.getElementById("slideout-bottom");
+		var target= document.getElementById('slideout-bottom');
 		window.currentDiarySpinner = new Spinner(opts).spin(target);
 	}
 	if (reload !== true) {
-		$('#slideout-top-arrow').toggleClass("mini");
-		$('#slideout-bottom,#slideout-bottom-arrow').toggleClass("expanded");
+		$('#slideout-top-arrow').toggleClass('mini');
+		$('#slideout-bottom,#slideout-bottom-arrow').toggleClass('expanded');
 		botEx = !botEx;
 	}
 	if (!diaryLoaded) {
@@ -484,7 +487,7 @@ function slideOutBottom(reload) {
 }
 /** slide out the right (belltimes) pane */
 function slideOutRight() {
-	"use strict";
+	'use strict';
 	if (window.oneSlider && leftEx) {
 		slideOutLeft();
 	}
@@ -506,7 +509,7 @@ function slideOutRight() {
 }
 /** slide out the left (timetable) pane */
 function slideOutLeft() {
-	"use strict";
+	'use strict';
 	if (window.oneSlider && rightEx) {
 		slideOutRight();
 	}
@@ -530,64 +533,64 @@ function slideOutLeft() {
 
 /** update the belltimes pane */
 function updateRightSlideout() { // belltimes here
-	"use strict";
+	'use strict';
 	var text;
-	text = "<div style='text-align: center;'><span class='big'>" + dow + " " + week + "</span><br /><table class='right-table' style='margin-left: auto; margin-right:auto;'><tbody>";
-	var stupid = function(v) { return "Period " + v; };
+	text = '<div style="text-align: center;"><span class="big">' + dow + ' ' + week + '</span><br /><table class="right-table" style="margin-left: auto; margin-right:auto;"><tbody>';
+	var stupid = function(v) { return 'Period ' + v; };
 	for (var i in belltimes.bells) {
 		var part = belltimes.bells[i];
-		text +="<tr><td class='bell-desc'>" + part.bell.replace(/^(\d)/, stupid) + "</td><td class='bell-time'>" + part.time + "</td></tr>";
+		text +='<tr><td class="bell-desc">' + part.bell.replace(/^(\d)/, stupid) + '</td><td class="bell-time">' + part.time + '</td></tr>';
 	}
-	text += "</tbody></table></div>";
-	document.getElementById("slideout-right").innerHTML = text;
+	text += '</tbody></table></div>';
+	document.getElementById('slideout-right').innerHTML = text;
 }
 /** update the timetable pane - either show a prompt to log in/enter your timetable *or* show the timetable for today */
 function updateLeftSlideout() {// timetable here
-	"use strict";
+	'use strict';
 	var text;
 	if (timetable === null) {
 		// prompt them to log in and create a timetable
 		if (loggedIn) {
-			text = "<div style='text-align: center;'><h1>Your timetable, here.</h1>";
-			text += "You can see your timetable here.<br />";
-			text += "It'll take about five minutes. You'll need a copy of your timetable.<br /><br /><br /><br />";
-			text += "<a href='/timetable.php' class='fake-button'>Get Started</a></div>";
+			text = '<div style="text-align: center;"><h1>Your timetable, here.</h1>';
+			text += 'You can see your timetable here.<br />';
+			text += 'It\'ll take about five minutes. You\'ll need a copy of your timetable.<br /><br /><br /><br />';
+			text += '<a href="/timetable.php" class="fake-button">Get Started</a></div>';
 		}
 		else {
-			text = "<div style='text-align: center;'><h1>Your timetable, here.</h1>";
-			text += "You can see your timetable here. Sign in with your Google account.<br />";
-			text += "You can also sign in using your school email account:<br />";
-			text += "<span style='word-wrap: break-word'>&lt;YourStudentID&gt;@student.sbhs.nsw.edu.au</span><br /><br /><br /><br />"; 
-			text += "<a href='/login.php?urlback=/timetable.php&new-timetable' class='fake-button'>Sign In</a></div>";
+			text = '<div style="text-align: center;"><h1>Your timetable, here.</h1>';
+			text += 'You can see your timetable here. Sign in with your Google account.<br />';
+			text += 'You can also sign in using your school email account:<br />';
+			text += '<span style="word-wrap: break-word">&lt;YourStudentID&gt;@student.sbhs.nsw.edu.au</span><br /><br /><br /><br />'; 
+			text += '<a href="/login.php?urlback=/timetable.php&new-timetable" class="fake-button">Sign In</a></div>';
 		}
 	}
 	else {
-		text = "<div style='text-align: center;' ><span class='big-title'>" + dow + " " + week + "</span><br /><table class='left-table' style='margin-left: auto; margin-right: auto;'><tbody>";
+		text = '<div style="text-align: center;" ><span class="big-title">' + dow + ' ' + week + '</span><br /><table class="left-table" style="margin-left: auto; margin-right: auto;"><tbody>';
 		var day = dow.substr(0,3).toLowerCase();
 		var wk  = week.toLowerCase();
 		var today = timetable[wk][day];
 		for (var i in today) {
 			var name = today[i].name;
-			if (name === "") {
-				name = "Free Period";
+			if (name === '') {
+				name = 'Free Period';
 			}
-			text += "<tr><td class='big'>" + (Number(i)+1) + "</td><td class='sidebar-name'>" + name + "</td><td class='sidebar-room'>" + today[i].room + "</td></tr>";
+			text += '<tr><td class="big">' + (Number(i)+1) + '</td><td class="sidebar-name">' + name + '</td><td class="sidebar-room">' + today[i].room + '</td></tr>';
 		}
-		text += "</tbody></table></div>";
+		text += '</tbody></table></div>';
 	}
-	document.getElementById("slideout-left").innerHTML = text;
+	document.getElementById('slideout-left').innerHTML = text;
 }
 
 var d = NOW;
 d.addSeconds(afterSchool ? 24*60*60 : 0);
-$.getScript("http://student.sbhs.net.au/api/timetable/bells.json?date=" + (d.getFullYear() + (d.getMonth()+1) + d.getDate()) + "&callback=loadTimetable");
+$.getScript('http://student.sbhs.net.au/api/timetable/bells.json?date=' + (d.getFullYear() + (d.getMonth()+1) + d.getDate()) + '&callback=loadTimetable');
 
 var DOCUMENT_READY = false;
 var BELLTIMES_DONE = false;
 
 /** store the timetable, if the document's ready, do all the setup. */
 function loadTimetable(obj) {
-	"use strict";
+	'use strict';
 	window.belltimes = obj;
 	BELLTIMES_DONE = true;
 	if (DOCUMENT_READY) {
@@ -596,32 +599,32 @@ function loadTimetable(obj) {
 }
 
 $(document).ready(function() { 
-	"use strict";
-	$('#old-ie-warn').css({"opacity": 0, "font-size": 0}); // we got this far... (older IEs will fail because jQuery 2.x doesn't support them)
+	'use strict';
+	$('#old-ie-warn').css({'opacity': 0, 'font-size': 0}); // we got this far... (older IEs will fail because jQuery 2.x doesn't support them)
 	DOCUMENT_READY = true;  
 	$('#slideout-top-arrow').click(slideOutTop);
-	if (BELLTIMES_DONE) begin();
-	if (window.actualMobile) return; // this stuff is unnecessary for mobile
+	if (BELLTIMES_DONE) { begin(); }
+	if (window.actualMobile) { return; } // this stuff is unnecessary for mobile
 	if (/compatible; MSIE 9.0;/.test(window.navigator.userAgent) && !window.localStorage.noIE9annoy && false ) { // TODO enable this. It might scare people off, though.
-		$('#ie9-warn').css({"opacity": 1});
+		$('#ie9-warn').css({'opacity': 1});
 	}
 	if (window.chrome && !window.chrome.app.isInstalled && false) { // TODO enable this
-		$('#ohai-chrome').css({"opacity": 1});
+		$('#ohai-chrome').css({'opacity': 1});
 	}
-	setTimeout(function() { $('#ie9-warn').css({"opacity": 0}); }, 10000);
+	setTimeout(function() { $('#ie9-warn').css({'opacity': 0}); }, 10000);
 });
 
 function tryLoadBells() { // try and reload the bells
-	"use strict";
-	$.getScript("http://student.sbhs.net.au/api/belltimes/bells.json?date=" + NOW.getDateStr() + "&callback=loadTimetable");
+	'use strict';
+	$.getScript('http://student.sbhs.net.au/api/belltimes/bells.json?date=' + NOW.getDateStr() + '&callback=loadTimetable');
 }
 
 function isSchoolHolidays() {
-	"use strict";
+	'use strict';
 	return false; // nope
-	/*var holS = new Date("2014-04-11");
-	  var holE = new Date("2014-04-28");
-	  if (window.hasOwnProperty("devMode") && window.devMode == true) {
+	/*var holS = new Date('2014-04-11');
+	  var holE = new Date('2014-04-28');
+	  if (window.hasOwnProperty('devMode') && window.devMode == true) {
 	  return false;
 	  }	
 
@@ -632,36 +635,36 @@ function isSchoolHolidays() {
 }
 
 function getRandColor() {
-	"use strict";
+	'use strict';
 	return Math.round(Math.random()*255);//% 255;
 }
 
 function snazzify() {
-	"use strict";
-	var s = "#in";
-	$(s).fadeIn().css({"color": "rgb("+getRandColor()+","+getRandColor()+","+getRandColor()+")"});
+	'use strict';
+	var s = '#in';
+	$(s).fadeIn().css({'color': 'rgb('+getRandColor()+','+getRandColor()+','+getRandColor()+')'});
 	setTimeout(snazzify, 500);
 }
 
 function begin() {
-	"use strict";
+	'use strict';
 	if (isSchoolHolidays()) {
 		toggleExpando();
-		$('body').css({"background-image": "url(/GOT.jpg) !important", "color": "black"});
-		$('body').css({"background-image": "url(/GOT.jpg)"});
-		$('#in').fadeIn().text('studystudystudystudystudystudystudy').css({"transition": "500ms ease"});
+		$('body').css({'background-image': 'url(/GOT.jpg) !important', 'color': 'black'});
+		$('body').css({'background-image': 'url(/GOT.jpg)'});
+		$('#in').fadeIn().text('studystudystudystudystudystudystudy').css({'transition': '500ms ease'});
 		snazzify();
 		setTimeout(function() { $('#doge-notify').fadeOut(); }, 5000);
 		return;
 	}
-	if (belltimes.status == "Error") { // well dang. TODO add default bells + display a warning when the bells failed to load.
+	if (belltimes.status == 'Error') { // well dang. TODO add default bells + display a warning when the bells failed to load.
 		belltimes = window.defaultBells[NOW.getDay()];
-		var types = ["B","C","A"];
+		var types = ['B','C','A'];
 		$('#bells-changed').text('These are the default belltimes for today. They might be wrong if an assembly or other event is happening today.');
 		window.console.log(NOW.getWeek());
 		belltimes.weekType = types[(NOW.getWeek()+1)%3];
 		week = belltimes.weekType;
-		dow = "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday".split(",")[NOW.getDay()];
+		dow = 'Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday'.split(',')[NOW.getDay()];
 	}
 	else { // show stuff.
 		week = belltimes.weekType;
@@ -681,24 +684,24 @@ function begin() {
 	$('#bells-changed').fadeIn();
 	$(window).on('resize', doReposition);
 	if (window.studentYear) {
-		$('#year').html(window.studentYear + " &nbsp;&nbsp;<small><a href='javascript:void(0)' onclick='promptSetYear()'>Change</a></small>");
+		$('#year').html(window.studentYear + ' &nbsp;&nbsp;<small><a href="javascript:void(0)" onclick="promptSetYear()">Change</a></small>');
 	}
 	else {
-		$('#year').html("(not set) <a href='javascript:void(0)' onclick='promptSetYear()'>Set</a>");
+		$('#year').html('(not set) <a href="javascript:void(0)" onclick="promptSetYear()">Set</a>');
 	}
 }
 function doReposition() { // reposition/resize things to fit.
-	"use strict";
+	'use strict';
 	if (window.innerWidth <= 510 || window.MOBILE) {
-		$('.slideout').css({"width": "100%", "padding": "0"});
+		$('.slideout').css({'width': '100%', 'padding': '0'});
 		window.oneSlider = true;
 	}
 	else if (window.innerWidth <= 625 && window.falseMobile) {
-		$('.slideout').css({"width": "50%", "padding": "0"});
+		$('.slideout').css({'width': '50%', 'padding': '0'});
 		window.oneSlider = false;
 	}
 	else {
-		$('.slideout').css({"width": "40%", "padding": 0});
+		$('.slideout').css({'width': '40%', 'padding': 0});
 		window.oneSlider = false;
 	}
 
@@ -711,51 +714,51 @@ function doReposition() { // reposition/resize things to fit.
 		window.MOBILE = false;
 	}
 	if (window.MOBILE) {
-		$('#period-name').css({"font-family": "Roboto", "font-size": "40px"});
-		$('#countdown').css({"font-family": "Roboto", "font-size": "50px"});
+		$('#period-name').css({'font-family': 'Roboto', 'font-size': '40px'});
+		$('#countdown').css({'font-family': 'Roboto', 'font-size': '50px'});
 	}
 	var top1 = $('#period-name').height() + 80;
-	$('#in').css({"top": top1});
+	$('#in').css({'top': top1});
 	var top2 = $('#in').height();
-	$('#countdown').css({"top": top1+top2});
+	$('#countdown').css({'top': top1+top2});
 
 
 }
 
 function getNotices() {
-	"use strict";
-	$.getJSON("notices/dailynotices.php?codify=yes&date="+NOW.getDateStr(), processNotices).fail(function() {
+	'use strict';
+	$.getJSON('notices/dailynotices.php?codify=yes&date='+NOW.getDateStr(), processNotices).fail(function() {
 		$('#slideout-top').html('<h1>Failed to load notices</h1><a href="javascript:void(0)" onclick="reloadNotices()">try again?</a>');
 	});
 }
 // put the notices in the notice pane
 function processNotices(data) {
-	"use strict";
-
-	var res = "<h1 style='text-align: center'>Notices for " + dow + " " + week + "</h1><a href='javascript:void(0)' id='reload-notices' onclick='reloadNotices()'>reload</a>";
-	res += "Pick a year: <select id='notice-filter'><option value='.notice-row'>All years</option>";
-	var year = (Number(studentYear) == Number.NaN ? studentYear : Number(studentYear));
+	'use strict';
+	var i,res,year,allNotices,n,classes,ylist,j;
+	res = '<h1 style="text-align: center">Notices for ' + dow + ' ' + week + '</h1><a href="javascript:void(0)" id="reload-notices" onclick="reloadNotices()">reload</a>';
+	res += 'Pick a year: <select id="notice-filter"><option value=".notice-row">All years</option>';
+	year = (Number(studentYear) == Number.NaN ? studentYear : Number(studentYear));
 	for (i=7; i <= 12; i++) {
 
-		res += "<option value='.notice-"+i+"'" + (year == i ? "selected" : "") + ">Year " + i + "</option>";
+		res += '<option value=".notice-'+i+'"' + (year == i ? 'selected' : '') + '>Year ' + i + '</option>';
 	}
-	res += "<option value='.notice-Staff'" + (year == "Staff" ? "selected" : "") + ">Staff</option></select>";
-	res += "<span class='rightside'><a href='/notices/dailynotices.php?date="+NOW.getDateStr()+"'>Full notices</a></span>";
-	res += "<table id='notices'><tbody>";
-	var allNotices = data[0];
-	var i = 0;
+	res += '<option value=".notice-Staff"' + (year == 'Staff' ? 'selected' : '') + '>Staff</option></select>';
+	res += '<span class="rightside"><a href="/notices/dailynotices.php?date='+NOW.getDateStr()+'">Full notices</a></span>';
+	res += '<table id="notices"><tbody>';
+	allNotices = data[0];
+	i = 0;
 	for (i in allNotices) {
-		var n = allNotices[i];
-		var classes = 'notice-row';
-		var ylist = n.years;
-		for (var j in ylist) {
-			classes += " notice-"+ylist[j];
+		n = allNotices[i];
+		classes = 'notice-row';
+		ylist = n.years;
+		for (j in ylist) {
+			classes += ' notice-'+ylist[j];
 		}
-		res += "<tr id='notice-"+i+"' class='"+classes+"'><td class='for'>"+n.applicability+"</td><td class='info'><span class='notice-title'>"+n.title+"</span><span class='content'>"+n.content+"<span class='author'>"+n.author+"</span></span></td></tr>";
+		res += '<tr id="notice-'+i+'" class="'+classes+'"><td class="for">'+n.applicability+'</td><td class="info"><span class="notice-title">'+n.title+'</span><span class="content">'+n.content+'<span class="author">'+n.author+'</span></span></td></tr>';
 	}
-	res+="</tbody></table>";
+	res+='</tbody></table>';
 	if (i === 0) {
-		res += "<h1>There are no notices!</h1>";
+		res += '<h1>There are no notices!</h1>';
 	}
 	window.currentNoticesSpinner.stop();
 	$('#slideout-top').html(res);
@@ -763,7 +766,7 @@ function processNotices(data) {
 }
 /** attaches onChange/whatever handlers to notices */
 function doneNoticeLoad() {
-	"use strict";
+	'use strict';
 	$('.info').click(function() {
 		$($(this).children('.content')[0]).slideToggle();
 	});
@@ -779,67 +782,67 @@ function doneNoticeLoad() {
 		}
 		/** format a date */
 		function formatDate(d,js) {
-			"use strict";
+			'use strict';
 			var dom = d.getDate().toString();
 			var mon = (d.getMonth()+1).toString();
 			var yrs = d.getFullYear().toString();
 			if (dom.length < 2) {
-				dom = "0" + dom;
+				dom = '0' + dom;
 			}
 			if (mon.length < 2) {
-				mon = "0" + mon;
+				mon = '0' + mon;
 			}
 			if (!js) {
-				return dom +"/"+ mon +"/"+ yrs;
+				return dom +'/'+ mon +'/'+ yrs;
 			}
 			else {
-				return yrs+"-"+mon+"-"+dom;
+				return yrs+'-'+mon+'-'+dom;
 			}
 		}
 
 function getDiary() {
-	"use strict";
-	$.getJSON("diary.php?raw-json", processDiary);
+	'use strict';
+	$.getJSON('diary.php?raw-json', processDiary);
 }
 /** generate a diary row for a JSON element */
 function genDiaryRow(el) {
-	"use strict";
+	'use strict';
 	var date = new Date(formatDate(new Date(), true));
 	var dueDate = new Date(el.due);
 	var dStr = formatDate(dueDate);
-	var due = "";
+	var due = '';
 	var p = el.duePeriod;
 	if (dueDate == date) {
-		dStr = "<strong>Today</strong> (period " + p + ")";
+		dStr = '<strong>Today</strong> (period ' + p + ')';
 	}
 	else if (dueDate == (date-24*60*60) && !el.done) {
-		dStr = "<strong class='diary-overdue'>Yesterday</strong> (period " + p + ")";
+		dStr = '<strong class="diary-overdue">Yesterday</strong> (period ' + p + ')';
 	}
 	else if (dueDate == (date+24*60*60) && !el.done) {
-		dStr = "<strong>Tomorrow</strong> (period " + p + ")";
+		dStr = '<strong>Tomorrow</strong> (period ' + p + ')';
 	}
 	else if (dueDate < date && !el.done) {
-		dStr = "<strong class='diary-overdue'>OVERDUE!</strong> (due " + dStr + " period " + p + ")";
-		due = "";
+		dStr = '<strong class="diary-overdue">OVERDUE!</strong> (due ' + dStr + ' period ' + p + ')';
+		due = '';
 	}
 	var text;
 	if (window.actualMobile) {
-		text = "<tr id='diary-"+window.newEntryID+"' onclick='mobileExpandDiary(event)'><td class='diary-name'>"+el.name+"&nbsp;&nbsp;&#9660;<div class='hidden due-date'>"+due+" "+dStr+"</div></td><td class='diary-subject'>"+el.subject+"&nbsp;&nbsp;&#9660;<div class='diary-notes hidden'>"+el.notes+"</div></td><td><input type='checkbox' onchange='diaryEntryDone(event)' "+(el.done ? "checked" : "")+" />&nbsp;<a href='javascript:void(0)' onclick='editDiary(event)'>edit</a>&nbsp;<a href='javascript:void(0)' onclick='deleteDiaryEntry(event)'>delete</a></td></tr>";
+		text = '<tr id="diary-'+window.newEntryID+'" onclick="mobileExpandDiary(event)"><td class="diary-name">'+el.name+'&nbsp;&nbsp;&#9660;<div class="hidden due-date">'+due+' '+dStr+'</div></td><td class="diary-subject">'+el.subject+'&nbsp;&nbsp;&#9660;<div class="diary-notes hidden">'+el.notes+'</div></td><td><input type="checkbox" onchange="diaryEntryDone(event)" '+(el.done ? 'checked' : '')+' />&nbsp;<a href="javascript:void(0)" onclick="editDiary(event)">edit</a>&nbsp;<a href="javascript:void(0)" onclick="deleteDiaryEntry(event)">delete</a></td></tr>';
 	}
 	else {
-		text = "<tr id='diary-"+window.newEntryID+"'><td class='diary-name'>"+el.name+"</td><td class='due-date'>" + due + " " + dStr + "</td><td class='diary-subject'>"+ el.subject+"</td><td class='diary-notes'>"+el.notes+"</td><td class='edit-wrapper'><input type='checkbox' onchange='diaryEntryDone(event)' "+ (el.done ? "checked" : "")+ " />&nbsp;<a href='javascript:void(0)' onclick='editDiary(event)'>edit</a>&nbsp;<a href='javascript:void(0)' onclick='deleteDiaryEntry(event)'>delete</a></td></tr>";
+		text = '<tr id="diary-'+window.newEntryID+'"><td class="diary-name">'+el.name+'</td><td class="due-date">' + due + ' ' + dStr + '</td><td class="diary-subject">'+ el.subject+'</td><td class="diary-notes">'+el.notes+'</td><td class="edit-wrapper"><input type="checkbox" onchange="diaryEntryDone(event)" '+ (el.done ? 'checked' : '')+ ' />&nbsp;<a href="javascript:void(0)" onclick="editDiary(event)">edit</a>&nbsp;<a href="javascript:void(0)" onclick="deleteDiaryEntry(event)">delete</a></td></tr>';
 	}
 	return text;
 }
 /** process the diary when it's been loaded */
 function processDiary(diary) {
-	"use strict";
+	'use strict';
 	var rows, i;
 	if (window.actualMobile) {
 		rows = [];
 	}
 	else {
-		rows = ["<tr><td style='border: 0px'>Name</td><td style='border: 0px'>Due</td><td style='border: 0px'>Subject</td><td style='border: 0px'>Notes</td><td style='border: 0px'>&nbsp;</td></tr>"];
+		rows = ['<tr><td style="border: 0px">Name</td><td style="border: 0px">Due</td><td style="border: 0px">Subject</td><td style="border: 0px">Notes</td><td style="border: 0px">&nbsp;</td></tr>'];
 	}
 	//var date = new Date(formatDate(new Date(), true)); XXX: maybe unused
 	window.diary = diary;
@@ -848,46 +851,47 @@ function processDiary(diary) {
 		window.newEntryID = i;
 		rows.push(genDiaryRow(el));
 	}
-	var res = "<span id='diary-add' onclick='addDiaryEvent()'>+</span><a href='javascript:void(0)' id='diary-reload' onclick='reloadDiary()'>reload</a><h1 id='diary-header'>My Homework <span class='beta-tag'>Beta!</span></h1><table id='diary-table'><tbody>";
+	var res = '<span id="diary-add" onclick="addDiaryEvent()">+</span><a href="javascript:void(0)" id="diary-reload" onclick="reloadDiary()">reload</a><h1 id="diary-header">My Homework <span class="beta-tag">Beta!</span></h1><table id="diary-table"><tbody>';
 	for (i in rows) {
 		res += rows[i];
 	}
-	res += "</tbody></table>";
-	res += "";
+	res += '</tbody></table>';
+	res += '';
 	$('#slideout-bottom').html(res);
 }
 
 function getNewRow() {
-	"use strict";
+	'use strict';
 	if (window.actualMobile) {
-		return "<tr id='newDRow'><td class='diary-name'><input placeholder='Name' type='text' /><br /><span class='diary-subject'><input placeholder='Subject' type='text' /></span></td><td><input placeholder='Date' type='text' class='date-in' /> Period <input style='width: 15px' type='text' class='period' /></td><td class='diary-desc'><textarea/><a href='javascript:void(0)' onclick='saveDiary()'>save</a></td></tr";
+		return '<tr id="newDRow"><td class="diary-name"><input placeholder="Name" type="text" /><br /><span class="diary-subject"><input placeholder="Subject" type="text" /></span></td><td><input placeholder="Date" type="text" class="date-in" /> Period <input style="width: 15px" type="text" class="period" /></td><td class="diary-desc"><textarea/><a href="javascript:void(0)" onclick="saveDiary()">save</a></td></tr';
 	}
 	else {
-		return "<tr id='newDRow'><td class='diary-name'><input placeholder='Name' type='text' /></td><td><input placeholder='Date' type='text' class='date-in' /> Period <input style='width: 15px' type='text' class='period'/></td><td class='diary-subject'><input placeholder='Subject' type='text' /></td><td class='diary-desc'><textarea/></td><td><a href='javascript:void(0)' onclick='saveDiary()'>save</a></td></tr>";
+		return '<tr id="newDRow"><td class="diary-name"><input placeholder="Name" type="text" /></td><td><input placeholder="Date" type="text" class="date-in" /> Period <input style="width: 15px" type="text" class="period"/></td><td class="diary-subject"><input placeholder="Subject" type="text" /></td><td class="diary-desc"><textarea/></td><td><a href="javascript:void(0)" onclick="saveDiary()">save</a></td></tr>';
 	}
 }
 
 function mobileExpandDiary(e) {
-	"use strict";
+	'use strict';
 	var td;
-	if (e.target.nodeName.toLowerCase() == "tr") {
+	if (e.target.nodeName.toLowerCase() == 'tr') {
 		td = $(e.target);
 	}
 	else {
-		td = $(e.target).parents("tr");
+		td = $(e.target).parents('tr');
 	}
-	$(td).find("*.hidden").slideToggle();
+	$(td).find('*.hidden').slideToggle();
 }
 
 /** add a new row to add an entry to the diary table */
 function addDiaryEvent() {
-	"use strict";
+	'use strict';
 	if (!window.diary) {
-		console.error("addDiaryEvent - called before diary loaded!");
+		console.error('addDiaryEvent - called before diary loaded!');
 		return; // oops...
 	}
-	else if (window.addingEntry)
+	else if (window.addingEntry) {
 		return;
+	}
 	var newRow = getNewRow();
 	$('#diary-table').append(newRow);
 	window.addingEntry = true;
@@ -895,8 +899,8 @@ function addDiaryEvent() {
 }
 /** edit a row */
 function editDiary(e) {
-	"use strict";
-	var id = Number($(e.target).parent().parent().attr("id").split("-")[1]);
+	'use strict';
+	var id = Number($(e.target).parent().parent().attr('id').split('-')[1]);
 	var el = diary[id];
 	$('#diary-table #diary-'+id).replaceWith(getNewRow());
 	var row = $('#newDRow *');
@@ -911,12 +915,12 @@ function editDiary(e) {
 
 /** save the content of the add to diary row */
 function saveDiary() {
-	"use strict";
+	'use strict';
 	var row = $('#newDRow *');
 	var name = row.filter('.diary-name input').val();
 	var date = Date.parse(row.filter('.date-in').val());
 	if (date === null) {
-		row.filter('.date-in').val("").attr("placeholder", "Try again.");
+		row.filter('.date-in').val('').attr('placeholder', 'Try again.');
 		return;
 	}
 	var period = row.filter('.period').val();
@@ -924,26 +928,26 @@ function saveDiary() {
 	var desc = row.filter('.diary-desc textarea').val();
 
 	var data = {
-		"name": name,
-		"notes": desc,
-		"subject": subj,
-		"due": formatDate(date, true),
-		"duePeriod": period,
-		"done": false,
+		'name': name,
+		'notes': desc,
+		'subject': subj,
+		'due': formatDate(date, true),
+		'duePeriod': period,
+		'done': false,
 	};
 	var tDiary = diary;
 	tDiary[window.newEntryID] = data;
 	var req = $.ajax({
-		"type": "POST",
-		"url": "diary.php",
-		"data": {
-			"json": JSON.stringify(tDiary),
-		"update": true
+		'type': 'POST',
+		'url': 'diary.php',
+		'data': {
+			'json': JSON.stringify(tDiary),
+		'update': true
 		}
 	});
 
 	req.done(function(msg) {
-		if (msg == "Ok") {
+		if (msg == 'Ok') {
 			window.addingEntry = false;
 			var dRow = genDiaryRow(data, window.newEntryID);
 			diary[window.newEntryID] = data;
@@ -957,21 +961,21 @@ function saveDiary() {
 }
 
 function diaryEntryDone(e) {
-	"use strict";
-	var id = Number($(e.target).parent().parent().attr("id").split("-")[1]);
-	diary[id].done = ($(e.target).find('input[type="checkbox"]').val() == "on" ? true : false);
+	'use strict';
+	var id = Number($(e.target).parent().parent().attr('id').split('-')[1]);
+	diary[id].done = ($(e.target).find('input[type="checkbox"]').val() == 'on' ? true : false);
 	var req = $.ajax({
-		"type": "POST",
-		"url": "diary.php",
-		"data": {
-			"json": JSON.stringify(diary),
-		"update": true
+		'type': 'POST',
+		'url': 'diary.php',
+		'data': {
+			'json': JSON.stringify(diary),
+		'update': true
 		}
 	});
 
 	req.done(function(msg) {
-		if (msg != "Ok") {
-			$(e.target).after("<span class='error'>failed to set done!</span>");
+		if (msg != 'Ok') {
+			$(e.target).after('<span class="error">failed to set done!</span>');
 			$(e.target).find('input[type="checkbox"]').click();
 			setTimeout(5000, function() { $('.error', e.target).remove(); });
 		}
@@ -979,23 +983,23 @@ function diaryEntryDone(e) {
 }
 
 function deleteDiaryEntry(e) {
-	"use strict";
-	var id = Number($(e.target).parent().parent().attr("id").split("-")[1]);
+	'use strict';
+	var id = Number($(e.target).parent().parent().attr('id').split('-')[1]);
 	var tDiary = diary;
 	tDiary.splice(id, 1);
 	var req = $.ajax({
-		"type": "POST",
-		"url": "diary.php",
-		"data": {
-			"json": JSON.stringify(tDiary),
-		"update": true
+		'type': 'POST',
+		'url': 'diary.php',
+		'data': {
+			'json': JSON.stringify(tDiary),
+		'update': true
 		}
 	});
 
 	req.done(function(msg) {
-		if (msg == "Ok") {
+		if (msg == 'Ok') {
 			$('#diary-'+id).fadeOut().remove();
-			window.console.log("delete id: " + id);
+			window.console.log('delete id: ' + id);
 			diary.splice(id, 1);
 		}
 		else {
@@ -1006,21 +1010,21 @@ function deleteDiaryEntry(e) {
 }
 
 function promptAddDiary() {
-	"use strict";
+	'use strict';
 	if (!loggedIn) {
 		slideOutBottom();
 		return;
 	}
 	var myNextBell = nextBell;
 	if (!/\d$/.test(myNextBell.bell)) { // we're probably in a period!
-		if (myNextBell.bell == "Roll Call") {
+		if (myNextBell.bell == 'Roll Call') {
 			// last period on the previous day
 			var today = dow.toLowerCase().substr(0,3);
 			var wk = week.toLowerCase();
-			var prevDay = {"sat": "fri","sun": "fri", "mon": "fri", "tue": "mon", "wed": "tue", "thu": "wed", "fri": "thu"};
-			var prevWeek = {"a": "c", "b": "a", "c": "b"};
+			var prevDay = {'sat': 'fri','sun': 'fri', 'mon': 'fri', 'tue': 'mon', 'wed': 'tue', 'thu': 'wed', 'fri': 'thu'};
+			var prevWeek = {'a': 'c', 'b': 'a', 'c': 'b'};
 			today = prevDay[today];
-			if (today == "fri") {
+			if (today == 'fri') {
 				// wrap around one week backwards!
 				wk = prevWeek[wk];
 			}
@@ -1030,13 +1034,13 @@ function promptAddDiary() {
 }
 /** return {'days': <numOfDays>, 'period': <period>, 'day': <day>, 'wk': <wk>} */
 function getNextInstanceOf(today, wk, period) {
-	"use strict";
-	var nextDay = {"sat": "mon", "sun": "mon", "fri": "mon", "mon": "tue", "tue": "wed", "wed": "thu", "thu": "fri"};
-	var nextWeek = {"a": "b", "b":"c", "c": "a"};
+	'use strict';
+	var nextDay = {'sat': 'mon', 'sun': 'mon', 'fri': 'mon', 'mon': 'tue', 'tue': 'wed', 'wed': 'thu', 'thu': 'fri'};
+	var nextWeek = {'a': 'b', 'b':'c', 'c': 'a'};
 	var lesson = timetable[wk][today][period];
 	var daysPast = 0;
 	var sDay = nextDay[today];
-	if (sDay == "mon") {
+	if (sDay == 'mon') {
 		sWk = nextWeek[wk];
 		daysPast = 3;
 	}
@@ -1058,20 +1062,20 @@ function getNextInstanceOf(today, wk, period) {
 					break;
 				}
 			}
-			if (done) break;
+			if (done) { break; }
 			daysPast++;
 			cDay = nextDay[cDay];
 		}
-		if (done) break;
+		if (done) { break; }
 		daysPast += 2; // sat, sun
 		cWk = nextWeek[cWk];
 	}
-	return {"daysLeft": daysPast, "wk": cWk, "day": cDay, "period": k};
+	return {'daysLeft': daysPast, 'wk': cWk, 'day': cDay, 'period': k};
 
 }
 
 function getLastLesson() {
-	"use strict";
+	'use strict';
 	var currently = nextBellIdx;
 	var lesson = null;
 	var period, day, wk;
@@ -1082,39 +1086,39 @@ function getLastLesson() {
 			wk = week.toLowerCase();
 			period = Number(belltimes.bells[currently].bell);
 			lesson = timetable[wk][day][period-1];
-			if (lesson.name === "") {
+			if (lesson.name === '') {
 				continue; // free period, skip it.
 			}
 			break;
 		}
 	}
-	return {"lesson": lesson, "bell": belltimes.bells[currently], "period": period-1};
+	return {'lesson': lesson, 'bell': belltimes.bells[currently], 'period': period-1};
 }
 
 function promptAddHomework() {
-	"use strict";
+	'use strict';
 	var lessonData = getLastLesson();
 	var day = dow.substr(0,3).toLowerCase();
 	var wk = week.toLowerCase();
 	var nextInstance = getNextInstanceOf(day, wk, lessonData.period);
-	var ln = "<div id='add-homework-popover'><h1 class='mini-header'>Homework for " + lessonData.lesson.name + "</h1>";
-	ln += "<div class='input-wrapper'>";
-	ln += "Name: <input class='diary-name' type='text' /><br />";
-	ln += "Due: <input class='diary-due' type='text' value='+" + nextInstance.daysLeft + " days' /><br />";
-	ln += "Period <input class='diary-period' type='number' value='" + (""+nextInstance.period+1).replace(/^0+/, "") + "' /><br />";
-	ln += "Subject: <input class='diary-subject' type='text' value='"+lessonData.lesson.name+"' /><br />";
-	ln += "<span id='additional-notes'>Additional Notes:</span> <textarea class='diary-desc' /><br /></div></div>";
+	var ln = '<div id="add-homework-popover"><h1 class="mini-header">Homework for ' + lessonData.lesson.name + '</h1>';
+	ln += '<div class="input-wrapper">';
+	ln += 'Name: <input class="diary-name" type="text" /><br />';
+	ln += 'Due: <input class="diary-due" type="text" value="+' + nextInstance.daysLeft + ' days" /><br />';
+	ln += 'Period <input class="diary-period" type="number" value="' + (''+nextInstance.period+1).replace(/^0+/, '') + '" /><br />';
+	ln += 'Subject: <input class="diary-subject" type="text" value="'+lessonData.lesson.name+'" /><br />';
+	ln += '<span id="additional-notes">Additional Notes:</span> <textarea class="diary-desc" /><br /></div></div>';
 	$(document.body).append(ln);
 }
 
 function toggleExpando() {
-	"use strict";
+	'use strict';
 	$('#expand-countdown,#collapse-countdown').toggleClass('hidden');
 	if ($('#expand-countdown').hasClass('hidden')) {
 		// expand countdown
 		$('#period-name,#in,#sidebar,#faq-link,#feedback,#debug').fadeOut();
-		$('#countdown').css({"top": "50%", "margin-top": "-127px", "font-size": "12em"});
-		$('.arrow').css({"opacity": 0});
+		$('#countdown').css({'top': '50%', 'margin-top': '-127px', 'font-size': '12em'});
+		$('.arrow').css({'opacity': 0});
 		// TODO do people actually want/care about this?
 		/*if (document.body.requestFullscreen) { 
 		  document.body.requestFullscreen();
@@ -1128,8 +1132,8 @@ function toggleExpando() {
 	}
 	else {
 		$('#period-name,#in,#sidebar,#faq-link,#feedback,#debug').fadeIn();
-		$('.arrow').css({"opacity": ""});
-		$('#countdown').css({"top": "", "margin-top": "", "font-size": ""});
+		$('.arrow').css({'opacity': ''});
+		$('#countdown').css({'top': '', 'margin-top': '', 'font-size': ''});
 		$(window).resize();
 		/*if (document.exitFullscreen) {
 		  document.exitFullscreen();
@@ -1144,37 +1148,37 @@ function toggleExpando() {
 }
 
 function dismissIE9() {
-	"use strict";
+	'use strict';
 	window.localStorage.noIE9annoy = true;
-	$('#ie9-warn').css({"opacity": 0});
+	$('#ie9-warn').css({'opacity': 0});
 }
 /** prompt to set a year */
 function promptSetYear() {
-	"use strict";
-	$('#year').html("<input type='text' id='new-year' /><br /><br /><a class='fake-button' href='javascript:void(0)' onclick='saveYear()'>Save Year!</a>");
+	'use strict';
+	$('#year').html('<input type="text" id="new-year" /><br /><br /><a class="fake-button" href="javascript:void(0)" onclick="saveYear()">Save Year!</a>');
 }
 /** update the year */
 function saveYear() {
-	"use strict";
+	'use strict';
 	var newYear = $('#new-year').val();
 	if (!/7|8|9|10|11|12|Staff/.test(newYear)) {
-		$('#year').append("<br /><br />Nope. Valid values are: 7, 8, 9, 10, 11, 12 or Staff");
+		$('#year').append('<br /><br />Nope. Valid values are: 7, 8, 9, 10, 11, 12 or Staff');
 		return;
 	}
 	var req = $.ajax({
-		"type": "POST",
-		"url":  "update_year.php",
-		"dataType": "text",
-		"data": {
-			"year": newYear
+		'type': 'POST',
+		'url':  'update_year.php',
+		'dataType': 'text',
+		'data': {
+			'year': newYear
 		}
 	});
-	$('#year > .fake-button').text("Saving...");
+	$('#year > .fake-button').text('Saving...');
 
 	req.done(function(msg) {
-		var years = ["", "7", "8", "9", "10", "11", "12", "Staff"];
-		if (msg == "Ok") {
-			$('#year').html(newYear + "&nbsp;&nbsp;<small><a href='javascript:void(0)' onclick='promptSetYear()'>Set</a></small>");
+		var years = ['', '7', '8', '9', '10', '11', '12', 'Staff'];
+		if (msg == 'Ok') {
+			$('#year').html(newYear + '&nbsp;&nbsp;<small><a href="javascript:void(0)" onclick="promptSetYear()">Set</a></small>');
 			studentYear = newYear;
 			if (noticesLoaded) {
 				$('#notice-filter')[0].selectedIndex = years.indexOf(studentYear);
@@ -1182,16 +1186,16 @@ function saveYear() {
 			}
 		}
 		else {
-			$('#year > .fake-button').text("Try again...");
+			$('#year > .fake-button').text('Try again...');
 		}
 	});
 }		
 // load jquery mobile (+ the swipe up/down support) if it's a device that supports touch.
 yepnope([{
 	test: Modernizr.touch,
-yep : ["/script/jquery.mobile.custom.min.js"],
+yep : ['/script/jquery.mobile.custom.min.js'],
 complete: function() {
-	"use strict";
+	'use strict';
 	if ($.mobile) {
 		$(document).ready(function() { 
 			$(document).on('swipeleft', function(ev) { 
@@ -1233,12 +1237,12 @@ complete: function() {
 			});
 		});
 		if (window.actualMobile || /ipad|android/i.test(navigator.userAgent)) { // show the swipe info!
-			$('#swipe-info').css({"opacity": 1});
-			setTimeout(function() { $('#swipe-info').css({"opacity": 0}); }, 5000);
+			$('#swipe-info').css({'opacity': 1});
+			setTimeout(function() { $('#swipe-info').css({'opacity': 0}); }, 5000);
 		}
 	}
 }
 }]);
 
 
-(function(a){"use strict";if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4)))window.MOBILE=true;})(navigator.userAgent||navigator.vendor||window.opera);
+(function(a){'use strict';if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))){window.MOBILE=true;}})(navigator.userAgent||navigator.vendor||window.opera);
