@@ -1,4 +1,3 @@
-/*jshint latedef: nofunc */
 /*
 Copyright (C) 2014  James Ye  Simon Shields
 
@@ -15,6 +14,7 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+/*jshint latedef: nofunc */
 // TODO: clean up quotes.
 window.timetable = null;
 window.defaultBells = [];
@@ -405,6 +405,7 @@ function reloadNotices() {
 	noticesLoaded = false;
 	slideOutTop(true);
 }
+
 /** slides out/in the top (notices) pane */
 function slideOutTop(reload) {
 	'use strict';
@@ -442,6 +443,7 @@ function reloadDiary() {
 	diaryLoaded = false;
 	slideOutBottom(true);
 }
+
 /** slide out the bottom (diary) pane */
 function slideOutBottom(reload) {
 	'use strict';
@@ -487,6 +489,7 @@ function slideOutBottom(reload) {
 	}
 	diaryLoaded = true;
 }
+
 /** slide out the right (belltimes) pane */
 function slideOutRight() {
 	'use strict';
@@ -509,6 +512,7 @@ function slideOutRight() {
 		$('#darkener').removeClass('visible');
 	}
 }
+
 /** slide out the left (timetable) pane */
 function slideOutLeft() {
 	'use strict';
@@ -532,7 +536,6 @@ function slideOutLeft() {
 	}
 }
 
-
 /** update the belltimes pane */
 function updateRightSlideout() { // belltimes here
 	'use strict';
@@ -546,7 +549,8 @@ function updateRightSlideout() { // belltimes here
 	text += '</tbody></table></div>';
 	document.getElementById('slideout-right').innerHTML = text;
 }
-/** update the timetable pane - either show a prompt to log in/enter your timetable *or* show the timetable for today */
+
+/** update the timetable pane - either show a prompt to log in, enter your timetable or show the timetable for today */
 function updateLeftSlideout() {// timetable here
 	'use strict';
 	var text;
@@ -623,7 +627,7 @@ function tryLoadBells() { // try and reload the bells
 
 function isSchoolHolidays() {
 	'use strict';
-	return false; // nope
+	return false; // not the holidays
 	/*var holS = new Date('2014-04-11');
 	var holE = new Date('2014-04-28');
 	if (window.hasOwnProperty('devMode') && window.devMode == true) {
@@ -659,7 +663,7 @@ function begin() {
 		setTimeout(function() { $('#doge-notify').fadeOut(); }, 5000);
 		return;
 	}
-	if (belltimes.status == 'Error') { // well dang. TODO add default bells + display a warning when the bells failed to load.
+	if (belltimes.status == 'Error') { // well dang. TODO: add default bells + display a warning when the bells failed to load.
 		belltimes = window.defaultBells[NOW.getDay()];
 		var types = ['B','C','A'];
 		$('#bells-changed').text('These are the default belltimes for today. They might be wrong if an assembly or other event is happening today.');
@@ -733,6 +737,7 @@ function getNotices() {
 		$('#slideout-top').html('<h1>Failed to load notices</h1><a href="javascript:void(0)" onclick="reloadNotices()">try again?</a>');
 	});
 }
+
 // put the notices in the notice pane
 function processNotices(data) {
 	'use strict';
@@ -766,6 +771,7 @@ function processNotices(data) {
 	$('#slideout-top').html(res);
 	doneNoticeLoad();
 }
+
 /** attaches onChange/whatever handlers to notices */
 function doneNoticeLoad() {
 	'use strict';
@@ -807,6 +813,7 @@ function getDiary() {
 	'use strict';
 	$.getJSON('diary.php?raw-json', processDiary);
 }
+
 /** generate a diary row for a JSON element */
 function genDiaryRow(el) {
 	'use strict';
@@ -900,6 +907,7 @@ function addDiaryEvent() {
 	window.addingEntry = true;
 	window.newEntryID = window.diary.length;
 }
+
 /** edit a row */
 function editDiary(e) {
 	'use strict';
@@ -1155,17 +1163,19 @@ function dismissIE9() {
 	window.localStorage.noIE9annoy = true;
 	$('#ie9-warn').css({'opacity': 0});
 }
+
 /** prompt to set a year */
 function promptSetYear() {
 	'use strict';
 	$('#year').html('<input type="text" id="new-year" /><br /><br /><a class="fake-button" href="javascript:void(0)" onclick="saveYear()">Save Year!</a>');
 }
+
 /** update the year */
 function saveYear() {
 	'use strict';
 	var newYear = $('#new-year').val();
 	if (!/7|8|9|10|11|12|Staff/.test(newYear)) {
-		$('#year').append('<br /><br />Nope. Valid values are: 7, 8, 9, 10, 11, 12 or Staff');
+		$('#year').append('<br /><br />Valid years are: 7, 8, 9, 10, 11, 12 or Staff');
 		return;
 	}
 	var req = $.ajax({

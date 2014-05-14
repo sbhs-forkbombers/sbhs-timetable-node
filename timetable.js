@@ -1,8 +1,25 @@
+/*
+Copyright (C) 2014  James Ye  Simon Shields
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
 /* the gnustomp-forkbomb style guide:
 	Single tabs for indentation
 	Single quotes for strings
 	Opening braces on the same line as the statement
 	Spaces around operators
+	Empty line after a function defenition
 */
 
 var http = require('http'),
@@ -39,8 +56,7 @@ function compile_jade(path) {
 	'use strict';
 	var mopts = jade_opts;
 	mopts.filename = path;
-	var fn = jade.compile(fs.readFileSync(path), mopts);
-	return fn;
+	return jade.compile(fs.readFileSync(path), mopts);
 }
 
 function onRequest(req, res) {
@@ -82,5 +98,5 @@ ipv6server.on('request', onRequest);
 ipv4server.on('listening', onListening);
 ipv6server.on('listening', onListening);
 
-ipv4server.listen(8080, '127.0.0.1');
-ipv6server.listen(8080, '::1');
+ipv4server.listen(8080, '0.0.0.0');
+ipv6server.listen(8080, '::');
