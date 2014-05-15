@@ -15,18 +15,10 @@ head
 		You should have received a copy of the GNU Affero General Public License
 		along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	title SBHS Timetable #{page}
-	link(rel="stylesheet",href="/style/base.css")
-	script(async).
-		WebFontConfig = {
-			google: { families: [ 'Roboto:400,100:latin', 'Roboto+Slab:400,700:latin' ] }
-		};
-		(function() {
-			var wf = document.createElement('script');
-			wf.src = ('https:' == document.location.protocol ? 'https' : 'http') + '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
-			wf.type = 'text/javascript';
-			wf.async = 'true';
-			var s = document.getElementsByTagName('script')[0];
-			s.parentNode.insertBefore(wf, s);
-		})();
+	style.
+		body{font-family:"Roboto","Segoe UI",sans-serif;background-color:black;color: white;}
+	link(href='//fonts.googleapis.com/css?family=Roboto:400,100&subset=latin',rel='stylesheet',type='text/css')
+	link(href='//fonts.googleapis.com/css?family=Roboto+Condensed&subset=latin',rel='stylesheet',type='text/css')
+	//link(rel="stylesheet",href="/style/common.css")
 	yield //- reset to 'head' level
 

@@ -1,0 +1,6 @@
+/* note: unused atm because it's all in the header */
+body {
+	font-family: "Roboto", "Segoe UI", sans-serif;
+	background-color: black;
+	color: white;
+}

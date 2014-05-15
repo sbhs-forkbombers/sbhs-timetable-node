@@ -5,12 +5,8 @@
 	width: 100%;
 }
 
-#period-name,#in,#countdown {
-	position: relative;
-	top: 0px;
+.countdown {
 	text-align: center;
-	font-weight: normal;
-	font-size: 15px;
 }
 
 #countdown {
@@ -18,8 +14,12 @@
 	font-weight: 100;
 }
 
+#in {
+	font-size: 16px;
+	font-weight: normal;
+}
+
 #period-name {
 	font-size: 50px;
 	font-weight: 100;
 }
-

@@ -68,12 +68,12 @@ function onRequest(req, res) {
 		httpHeaders(res, 200, 'text/html', true);
 		j = compile_jade('dynamic/index.jade');
 		res.end(j({'something': (uri.query.something ? true : false), 'page': ''}));
-	} else if (uri.pathname === '/script/belltimes.js') {
-		httpHeaders(res, 200, 'application/javascript');
-		fs.createReadStream('script/belltimes.js').pipe(res);
 	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))){
 		httpHeaders(res, 200, 'text/css');
 		fs.createReadStream(uri.pathname.slice(1)).pipe(res);
+	} else if (uri.pathname === '/script/belltimes.js') {
+		httpHeaders(res, 200, 'application/javascript');
+		fs.createReadStream('script/belltimes.js').pipe(res);
 	} else {
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
