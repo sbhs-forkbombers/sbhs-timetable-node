@@ -1,15 +1,13 @@
 doctype html
 html
-	//-
-		head
-		title= something ? "Something" : "Nothing"	
-		link(rel="stylesheet", href="/style/base.css")
 	include header.jade
 		style.
 			.countdown{text-align:center;}
 			#countdown{font-size:100px;font-weight:100;}
 			#period-name{font-size:50px;font-weight:100;}
 			#in{font-size:16px;}
+		script(async,defer,src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js")
+		script(async,defer,src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
 	body
 		div#content
 			div#period-name.countdown
