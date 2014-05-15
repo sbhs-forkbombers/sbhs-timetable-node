@@ -1,0 +1,25 @@
+#content {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+#period-name,#in,#countdown {
+	position: relative;
+	top: 0px;
+	text-align: center;
+	font-weight: normal;
+	font-size: 15px;
+}
+
+#countdown {
+	font-size: 100px;
+	font-weight: 100;
+}
+
+#period-name {
+	font-size: 50px;
+	font-weight: 100;
+}
+

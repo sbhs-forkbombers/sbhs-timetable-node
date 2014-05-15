@@ -27,7 +27,7 @@ var http = require('http'),
 	jade = require('jade'),
 	url = require('url');
 
-DEBUG = false;
+DEBUG = true;
 
 var jade_opts = {
 	pretty: DEBUG,

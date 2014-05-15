@@ -4,10 +4,14 @@ html
 		head
 		title= something ? "Something" : "Nothing"	
 		link(rel="stylesheet", href="/style/base.css")
-	include header.jade
+	include header.jade	
+		script(defer,src="//cdnjs.cloudflare.com/ajax/libs/prototype/1.7.1.0/prototype.js")
+		link(rel="stylesheet",href="/style/index.css")
 	body
-		h1 Hello there
-		p
-			| this is jade
-		marquee
-			| pretty cool, huh?
+		div#content
+			div#period-name 
+				span#period-label Unknown
+				div#in 
+					span#in-label ends in
+					div#countdown 
+						span#countdown-label NaN:NaN:NaN
