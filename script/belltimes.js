@@ -157,8 +157,8 @@ function recalculateNextBell() {
 		if (day_offset <= 0) { weekend = false; }
 	}
 	now.setMinutes(now.getMinutes() + 1);
-	var hour = now.getHours();
-	var min  = now.getMinutes();
+	var hour = now.getHours(),
+		min  = now.getMinutes();
 	if ((nextBell !== null && nextBell.bell == 'End of Day') || (new Date()).isAfter((new Date()).set({hours: 15, minutes: 15}))) {
 		// it's now after school.
 		afterSchool = true;
@@ -204,8 +204,8 @@ function recalculateNextBell() {
 		return;
 	}
 
-	var nearestBellIdx = null;
-	var nearestBell = null;
+	var nearestBellIdx = null,
+		nearestBell = null;
 
 	for (var i = 0; i < belltimes.bells.length; i++) {
 		var start = belltimes.bells[i].time.split(':');
@@ -393,13 +393,13 @@ function updateTimeLeft() {
 	el.innerHTML = format(sec-60);
 }
 
-var rightEx = false;
-var leftEx = false;
-var topEx = false;
-var botEx = false;
+var rightEx = false,
+	leftEx = false,
+	topEx = false,
+	botEx = false;
 
-var diaryLoaded = false;
-var noticesLoaded = false;
+var diaryLoaded = false,
+	noticesLoaded = false;
 function reloadNotices() {
 	'use strict';
 	noticesLoaded = false;
@@ -591,8 +591,8 @@ var d = NOW;
 d.addSeconds(afterSchool ? 24*60*60 : 0);
 $.getScript('http://student.sbhs.net.au/api/timetable/bells.json?date=' + (d.getFullYear() + (d.getMonth()+1) + d.getDate()) + '&callback=loadTimetable');
 
-var DOCUMENT_READY = false;
-var BELLTIMES_DONE = false;
+var DOCUMENT_READY = false,
+	BELLTIMES_DONE = false;
 
 /** store the timetable, if the document's ready, do all the setup. */
 function loadTimetable(obj) {

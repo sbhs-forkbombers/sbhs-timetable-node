@@ -83,7 +83,7 @@ function onRequest(req, res) {
 function onListening() {
 	/*jshint validthis: true*/
 	'use strict';
-	console.log('[' + this.name + '] Listening at http://' + this.address().address + ':' + this.address().port + '/');
+	console.log('[' + this.name + '] Listening on http://' + this.address().address + ':' + this.address().port + '/');
 }
 
 var ipv4server = http.createServer(),
