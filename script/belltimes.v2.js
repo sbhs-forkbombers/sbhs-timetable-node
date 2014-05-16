@@ -18,9 +18,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var timetable,
 	belltimes,
 	year,
-	dateOffset = 0,
+	dateOffset = -1,
 	needMidnightCountdown = false,
-	recalculating = false,
+	reloading = false,
 	currentBellIndex = -1, // next bell
 	nextStart;
 
@@ -42,18 +42,20 @@ function getDateOffsetDate() {
 	return (new Date()).add(dateOffset).day();
 }
 
-/** calculate the day that school will be starting on */
+/** calculate the day that school will be starting on - this may NOT use DateJS functions as it may be called before DateJS is loaded. */
 function calculateDay() {
 	'use strict';
 	var date = new Date(),
-		dayOffset = 0;
-	if (date.is().fri() && date.isAfter(Date.today().set({hour: 15, minute: 15}))) {
+		dayOffset = 0,
+		schoolEnd = new Date();
+	schoolEnd.setHours(15, 15);
+	if (date.getDay() == 5 /*friday*/ && date > schoolEnd) {
 		dayOffset += 2; // push to sunday at this time.
 		needMidnightCountdown = true;
-	} else if (date.is().sat()) {
+	} else if (date.getDay() == 6 /*saturday*/) {
 		dayOffset += 1;
 		needMidnightCountdown = true;
-	} else if (date.is().sun() || date.isAfter(Date.today().set({hour: 15, minute: 15}))) {
+	} else if (date.getDay() == 0 /*sunday*/ || date > schoolEnd) {
 		needMidnightCountdown = true;
 	}
 	date.add(dayOffset).day();
@@ -63,6 +65,7 @@ function calculateDay() {
 
 function reloadBelltimes() {
 	'use strict';
+	reloading = true;
 	$.getScript('http://student.sbhs.net.au/api/timetable/bells.json?callback=handleBells&date=' + getNextSchoolDay().toString('yyyy-MM-d'));	
 }
 
@@ -76,15 +79,22 @@ function handleBells(bells) {
 
 function domReady() {
 	'use strict';
-	if (belltimes !== null) {
+	if (document.readyState != 'complete') {
+		return;
+	}
+	if (belltimes !== null && belltimes !== undefined) {
 		loadComplete();
+	}
+	else {
+		reloadBelltimes();
 	}
 }
 
 function loadComplete() {
 	'use strict';
+	reloading = false;
 	calculateUpcomingLesson();
-	setInterval(null, 1000);
+	setInterval(updateCountdownLabel, 1000);
 }
 
 function prettifySecondsLeft(sec) {
@@ -115,10 +125,13 @@ function prettifySecondsLeft(sec) {
 
 function calculateUpcomingLesson() {
 	'use strict';
+	reloading = true;
 	var i, lastOK, bell, bdate,
 		nextBell, now;
 	if (belltimes == null) {
 		reloadBelltimes();
+		reloading = false;
+		return;
 	}
 	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15}))) {
 		now = getNextSchoolDay();
@@ -140,19 +153,48 @@ function calculateUpcomingLesson() {
 	}
 	currentBellIndex = Number(lastOK);
 	nextStart = nextBell;
+	reloading = false;
+	updatePeriodLabel();
 }
 
+function updatePeriodLabel() {
+	var name = belltimes.bells[currentBellIndex].bell,
+		inLabel = 'starts in';
+	name = name.replace('Roll Call', 'School Starts').replace('End of Day', 'School Ends');
+	if (/\d/.test(name)) { // number - should convert to 'Period x'
+		name = 'Period ' + name;
+	}
+	else if (name == 'Transition') {
+		name = 'Period ' + belltimes.bells[currentBellIndex - 1].bell;
+		inLabel = 'ends in';
+	}
+	else if (name == 'School Starts' || name == 'School Ends') {
+		inLabel = 'in';
+	}
+	console.log(name);
+	console.log(inLabel);
+	$('#period-label').text(name);
+	$('#in-label').text(inLabel);
+}
+	
+
 function updateCountdownLabel() {
+	if (reloading) {
+		return;
+	}
 	if (nextStart == null) {
 		calculateUpcomingLesson();
 		return;
 	}
 	var now = new Date(),
-		left = now - nextStart;
+		left = nextStart - now;
 	if (left < 0) {
 		calculateUpcomingLesson();
+		return;
 	}
-	left = now - nextStart;
+	left = nextStart - now;
 	$('#countdown-label').text(prettifySecondsLeft(Math.floor(left/1000)));
 }
 
+
+document.addEventListener('readystatechange', domReady);
