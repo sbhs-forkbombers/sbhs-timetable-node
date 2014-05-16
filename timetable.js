@@ -25,14 +25,26 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 var http = require('http'),
 	fs = require('fs'),
 	jade = require('jade'),
-	url = require('url');
+	url = require('url'),
+	forcedETagUpdateCounter = 0;
 
-DEBUG = true;
+GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
+
+DEBUG = true; // DISABLE IN PRODUCTION - this disables *all* caching.
 
 var jade_opts = {
 	pretty: DEBUG,
 	compileDebug: DEBUG
 };
+
+process.on('SIGHUP', function() {
+	forcedETagUpdateCounter++;
+	console.log('ETagUpdateCounts: ' + forcedETagUpdateCounter);
+});
+
+var watcher = fs.watch('.git/refs/heads/master', { persistent: false }, function() {
+	GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
+});
 
 function httpHeaders(res, response, contentType, dynamic, headers) {
 	'use strict';
@@ -46,6 +58,8 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 		date = new Date();
 		date.setYear(date.getFullYear() + 1);
 		headers.Expires = date.toGMTString();
+		headers.ETag = GIT_RV+'_'+forcedETagUpdateCounter; // TODO better ETags. This *will* work in production because new git revisions will be the only way updates occur. 
+														   // SIGHUP'ing the process will force every client to re-request resources.
 	}
 	headers['Content-Type'] = contentType + '; charset=UTF-8';
 	res.writeHead(response, headers);
@@ -63,6 +77,11 @@ function onRequest(req, res) {
 	/*jshint validthis: true*/
 	'use strict';
 	console.log('[' + this.name + ']', req.method, req.url);
+	if (req.headers['if-none-match'] == GIT_RV+'_'+forcedETagUpdateCounter && !DEBUG) {
+		res.writeHead(304);
+		res.end();
+		return;
+	}
 	var j, uri = url.parse(req.url, true);
 	if (uri.pathname === '/') {
 		httpHeaders(res, 200, 'text/html', true);
@@ -85,7 +104,7 @@ function onListening() {
 	'use strict';
 	console.log('[' + this.name + '] Listening on http://' + this.address().address + ':' + this.address().port + '/');
 }
-
+console.log('[master] SBHS-Timetable-Node revision ' + GIT_RV.substr(0, 6) + ' loading...');
 var ipv4server = http.createServer(),
 	ipv6server = http.createServer();
 
@@ -99,4 +118,4 @@ ipv4server.on('listening', onListening);
 ipv6server.on('listening', onListening);
 
 ipv4server.listen(8080, '0.0.0.0');
-ipv6server.listen(8080, '::');
+//ipv6server.listen(8080, '::');
