@@ -5,6 +5,12 @@ This is going to be a rewrite of [SBHS Timetable](https://github.com/sbhs-forkbo
 
 We hope.
 
+## Installation
 
-## Dependencies
-It requires [NodeJS](http://nodejs.org), and [jade](http://jade-lang.com), which can be installed using `npm install -g jade`
+_(this is a pre-alpha version. beware)_
+
+You'll need [NodeJS](http://nodejs.org), Git (obviously) and NPM.
+
+1. Clone the repository: `git clone https://github.com/sbhs-forkbombers/sbhs-timetable-node`
+2. Install the dependencies: `cd sbhs-timetable-node && npm install`
+3. Unleash the nodeiness: `grunt`
