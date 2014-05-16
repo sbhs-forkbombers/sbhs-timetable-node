@@ -40,14 +40,14 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 	dynamic = dynamic || false;
 	headers = headers || {};
 	if (dynamic || DEBUG) { // disable caching
-		headers.cacheControl = 'no-cache';
+		headers['Cache-Control'] = 'no-cache';
 	}
 	else if (!dynamic) {
 		date = new Date();
 		date.setYear(date.getFullYear() + 1);
-		headers.expires = date.toGMTString();
+		headers.Expires = date.toGMTString();
 	}
-	headers.contentType = contentType + '; charset=UTF-8';
+	headers['Content-Type'] = contentType + '; charset=UTF-8';
 	res.writeHead(response, headers);
 	return res;
 }
