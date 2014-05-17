@@ -69,6 +69,7 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 }
 
 function ISE() {
+	'use strict';
 	return '<!DOCTYPE html><html><head><link rel="stylesheet" href="/style/common.css" /><title>500 Internal Server Error</title></head><body><h1 style="position:fixed;width:100%;text-align:center">Oops :(</h1></body></html>';
 }
 
