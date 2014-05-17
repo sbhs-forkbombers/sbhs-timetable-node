@@ -120,4 +120,4 @@ ipv4server.on('listening', onListening);
 ipv6server.on('listening', onListening);
 
 ipv4server.listen(8080, '0.0.0.0');
-//ipv6server.listen(8080, '::');
+ipv6server.listen(8080, '::');
