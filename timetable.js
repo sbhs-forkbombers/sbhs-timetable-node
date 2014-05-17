@@ -26,7 +26,8 @@ var http = require('http'),
 	fs = require('fs'),
 	jade = require('jade'),
 	url = require('url'),
-	forcedETagUpdateCounter = 0;
+	forcedETagUpdateCounter = 0,
+	cachedBells = {};
 
 require('./variables.js'); // set globals appropriate to status - dev (DEBUG = true) or release (DEBUG = false)
 if (!RELEASE) {
@@ -88,6 +89,30 @@ function compile_jade(path) {
 	}
 }
 
+function getBelltimes(date, res) {
+	'use strict';
+	if (date === null || date === undefined || !/\d\d\d\d-\d?\d-\d?\d/.test(date)) {
+		res.end(JSON.stringify({error: 'Invalid Date!'}));
+	}
+	if (date in cachedBells) {
+		res.end(cachedBells[date]);
+	}
+	else {
+		http.request({
+			hostname: 'student.sbhs.net.au',
+			port: 80,
+			path: '/api/timetable/bells.json?date='+date,
+			method: 'GET'
+		}, function(rsp) {
+			rsp.setEncoding('utf8');
+			rsp.on('data', function(b) {
+				cachedBells[date] = b;
+				res.end(b);
+			});
+		}).end();
+	}
+}
+
 function onRequest(req, res) {
 	/*jshint validthis: true*/
 	'use strict';
@@ -113,6 +138,9 @@ function onRequest(req, res) {
 	} else if (uri.pathname === '/favicon.ico') {
 		httpHeaders(res, 200, 'image/x-icon');
 		fs.createReadStream('static/favicon.ico').pipe(res);
+	} else if (uri.pathname == '/api/belltimes') { // belltimes wrapper
+		httpHeaders(res, 200, 'application/json');
+		getBelltimes(uri.query.date, res);
 	} else {
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
