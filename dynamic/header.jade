@@ -18,11 +18,8 @@ head
 	link(href='//fonts.googleapis.com/css?family=Roboto:400,100&subset=latin',rel='stylesheet',type='text/css')
 	//-link(rel="stylesheet",href="/style/common.css")
 	style
-		if minified
-			include ../style/common.min.css 
-		else
-			include ../style/common.css
-		//- TODO minification
+		include ../style/common.css
+		//- TODO minification	
 	yield
 	meta(http-equiv="x-ua-compatible",content="IE=edge")
 	yield //- reset to 'head' level

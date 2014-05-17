@@ -10,7 +10,7 @@ module.exports = function(grunt) {
 				expand: true,
 				src: ['script/*.js'],
 				dest: 'build/',
-				ext: '.min.js',
+				ext: '.js',
 				extDot: 'last'
 			}		
 		},
@@ -36,7 +36,7 @@ module.exports = function(grunt) {
 				cwd: 'style',
 				src: ['**/*.css', '!**/*.min.css'],
 				dest: 'build/style/',
-				ext: '.min.css'
+				ext: '.css'
 			}/*, TODO this makes css files 2x bigger - do we really want it?
 			add_banner: {
 				options: {

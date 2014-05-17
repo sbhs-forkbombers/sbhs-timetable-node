@@ -88,9 +88,6 @@ function compile_jade(path) {
 	}
 }
 
-/***************************************************************************
- * FIXME: It's probably a good idea not to commit something that's broken. *
- ***************************************************************************/
 function onRequest(req, res) {
 	/*jshint validthis: true*/
 	'use strict';
@@ -103,22 +100,17 @@ function onRequest(req, res) {
 	var target, uri = url.parse(req.url, true);
 	if (uri.pathname === '/') {
 		target = compile_jade('dynamic/index.jade');
-		httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
-		res.end(target({'minified': MINIFY, 'page': ''}));
-	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1).slice(0,-4)+'.min.css')) {
+		httpHeaders(res, (target == ISE ? 500 : 200), 'text/html', true);
+		res.end(j({'minified': MINIFY, 'page': ''}));
+	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) {
 		httpHeaders(res, 200, 'text/css');
 		target = uri.pathname.slice(1);
-		if (MINIFY) {
-			target = target.slice(0,-4) + '.min.css';
-		}
-		fs.createReadStream(target).pipe(res);
-	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1).slice(0,-3)+'.min.js')) {
+		fs.createReadStream(j).pipe(res);
+	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) {
 		httpHeaders(res, 200, 'application/javascript');
 		target = uri.pathname.slice(1);
-		if (MINIFY) {
-			target = target.slice(0,-3) + '.min.js';
-		}
-		fs.createReadStream(target).pipe(res);
+		fs.createReadStream(j).pipe(res);
+>>>>>>> Remove unnecessary minification code.
 	} else {
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
