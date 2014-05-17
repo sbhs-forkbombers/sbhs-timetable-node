@@ -101,16 +101,15 @@ function onRequest(req, res) {
 	if (uri.pathname === '/') {
 		target = compile_jade('dynamic/index.jade');
 		httpHeaders(res, (target == ISE ? 500 : 200), 'text/html', true);
-		res.end(j({'minified': MINIFY, 'page': ''}));
+		res.end(target({'minified': MINIFY, 'page': ''}));
 	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) {
 		httpHeaders(res, 200, 'text/css');
 		target = uri.pathname.slice(1);
-		fs.createReadStream(j).pipe(res);
+		fs.createReadStream(target).pipe(res);
 	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) {
 		httpHeaders(res, 200, 'application/javascript');
 		target = uri.pathname.slice(1);
-		fs.createReadStream(j).pipe(res);
->>>>>>> Remove unnecessary minification code.
+		fs.createReadStream(target).pipe(res);
 	} else {
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
