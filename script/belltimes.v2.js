@@ -80,11 +80,9 @@ function domReady() {
 	'use strict';
 	if (document.readyState != 'complete') {
 		return;
-	}
-	if (belltimes !== null && belltimes !== undefined) {
+	} if (belltimes !== null && belltimes !== undefined) {
 		loadComplete();
-	}
-	else {
+	} else {
 		reloadBelltimes();
 	}
 }
@@ -114,8 +112,7 @@ function prettifySecondsLeft(sec) {
 	}
 	if (hrs == '0') {
 		hrs = '';
-	}
-	else if (hrs.length == 1) {
+	} else if (hrs.length == 1) {
 		hrs = '0' + hrs;
 	}
 	return (hrs !== '' ? hrs + 'h ' : '') + mins + 'm ' + secs + 's';
@@ -133,8 +130,7 @@ function calculateUpcomingLesson() {
 	}
 	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15})) ) { //|| (new Date()).getDay() > 5) { //FIXME: Uncomment previous code to count properly on weekend. Comment to test weekdays on weekends.
 		now = getNextSchoolDay();
-	}
-	else {
+	} else {
 		now = new Date();
 	}
 	for (i in belltimes.bells) {

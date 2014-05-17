@@ -35,8 +35,7 @@ if (!RELEASE) {
 		'use strict';
 		GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
 	});
-}
-else {
+} else {
 	GIT_RV = 'TODO'; // TODO
 }
 
@@ -59,8 +58,7 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 	headers = headers || {};
 	if (dynamic || DEBUG) { // disable caching
 		headers['Cache-Control'] = 'no-cache';
-	}
-	else if (!dynamic) {
+	} else if (!dynamic) {
 		date = new Date();
 		date.setYear(date.getFullYear() + 1);
 		headers.Expires = date.toGMTString();
@@ -83,14 +81,16 @@ function compile_jade(path) {
 		var mopts = jade_opts;
 		mopts.filename = path;
 		return jade.compile(fs.readFileSync(path), mopts);
-	}
-	catch (e) {
+	} catch (e) {
 		console.error('!!! Failed to compile jade "'+path+'"!!! Stack trace:');
 		console.error(e.stack);
 		return serverError;
 	}
 }
 
+/***************************************************************************
+ * FIXME: It's probably a good idea not to commit something that's broken. *
+ ***************************************************************************/
 function onRequest(req, res) {
 	/*jshint validthis: true*/
 	'use strict';
@@ -144,6 +144,6 @@ ipv4server.on('listening', onListening);
 ipv6server.on('listening', onListening);
 
 ipv4server.listen(8080, '0.0.0.0');
-if (IPV6) {
+if (IPV6) { //TODO: actually implement
 	ipv6server.listen(8080, '::');
 }
