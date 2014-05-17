@@ -22,12 +22,16 @@
    Empty line after a function defenition
 */
 
+all_start = Date.now();
+console.log('[master] loading...');
 var http = require('http'),
 	fs = require('fs'),
 	jade = require('jade'),
 	url = require('url'),
 	forcedETagUpdateCounter = 0,
-	cachedBells = {};
+	cachedBells = {},
+	indexCache = '';
+console.log('[master] finished initialisation in ' + (Date.now() - all_start) + 'ms');
 
 require('./variables.js'); // set globals appropriate to status - dev (DEBUG = true) or release (DEBUG = false and GIT_RV set)
 if (!RELEASE) {
@@ -46,8 +50,20 @@ var jade_opts = {
 process.on('SIGHUP', function() {
 	'use strict';
 	forcedETagUpdateCounter++;
+	cache_index();
 	console.log('ETagUpdateCounts: ' + forcedETagUpdateCounter);
 });
+
+function cache_index() {
+	console.log('[master] caching index page... [SIGHUP to reload]');
+	var jade_comp = Date.now();
+	var idx = compile_jade('dynamic/index.jade');
+	index_cache = idx({title: ''});
+	if (index_cache == serverError) {
+		console.warn('WARNING: Encountered an error while caching index page. Fix errors, and then killall -HUP node to reload.');
+	}
+	console.log('[master] done in ' + (Date.now() - jade_comp) + 'ms');
+}
 
 function httpHeaders(res, response, contentType, dynamic, headers) {
 	'use strict';
@@ -113,7 +129,7 @@ function getBelltimes(date, res) {
 function onRequest(req, res) {
 	/*jshint validthis: true*/
 	'use strict';
-	console.log('[' + this.name + ']', req.method, req.url);
+	var start = Date.now();
 	if (req.headers['if-none-match'] == GIT_RV+'_'+forcedETagUpdateCounter && !DEBUG) {
 		res.writeHead(304);
 		res.end();
@@ -121,9 +137,8 @@ function onRequest(req, res) {
 	}
 	var target, uri = url.parse(req.url, true);
 	if (uri.pathname === '/') {
-		target = compile_jade('dynamic/index.jade');
 		httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
-		res.end(target({'minified': MINIFY, 'page': ''}));
+		res.end(index_cache);
 	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) {
 		httpHeaders(res, 200, 'text/css');
 		target = uri.pathname.slice(1);
@@ -142,6 +157,7 @@ function onRequest(req, res) {
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
 	}
+	console.log('[' + this.name + ']', req.method, req.url, '- responded in', Date.now()-start + 'ms');
 }
 
 function onListening() {
@@ -149,7 +165,8 @@ function onListening() {
 	'use strict';
 	console.log('[' + this.name + '] Listening on http://' + this.address().address + ':' + this.address().port + '/');
 }
-console.log('[master] SBHS-Timetable-Node revision ' + GIT_RV.substr(0, 6) + ' loading...');
+console.log('[master] SBHS-Timetable-Node revision ' + GIT_RV.substr(0, 6) + ' starting server...');
+cache_index();
 var ipv4server = http.createServer(),
 	ipv6server = http.createServer();
 
@@ -163,6 +180,6 @@ ipv4server.on('listening', onListening);
 ipv6server.on('listening', onListening);
 
 ipv4server.listen(8080, '0.0.0.0');
-if (IPV6) { //TODO: actually implement
+if (IPV6) {
 	ipv6server.listen(8080, '::');
 }

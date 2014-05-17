@@ -65,7 +65,7 @@ function calculateDay() {
 function reloadBelltimes() {
 	'use strict';
 	reloading = true;
-	$.getScript('http://student.sbhs.net.au/api/timetable/bells.json?callback=handleBells&date=' + getNextSchoolDay().toString('yyyy-MM-d'));
+	$.getJSON('/api/belltimes?date=' + getNextSchoolDay().toString('yyyy-MM-d'), handleBells);
 }
 
 function handleBells(bells) {
