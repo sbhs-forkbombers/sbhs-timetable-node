@@ -72,7 +72,7 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 	return res;
 }
 
-function ISE() {
+function serverError() {
 	'use strict';
 	return '<!DOCTYPE html><html><head><link rel="stylesheet" href="/style/common.css" /><title>500 Internal Server Error</title></head><body><h1 style="position:fixed;width:100%;text-align:center">Oops :(</h1></body></html>';
 }
@@ -87,7 +87,7 @@ function compile_jade(path) {
 	catch (e) {
 		console.error('!!! Failed to compile jade "'+path+'"!!! Stack trace:');
 		console.error(e.stack);
-		return ISE;
+		return serverError;
 	}
 }
 
@@ -103,7 +103,7 @@ function onRequest(req, res) {
 	var target, uri = url.parse(req.url, true);
 	if (uri.pathname === '/') {
 		target = compile_jade('dynamic/index.jade');
-		httpHeaders(res, (target == ISE ? 500 : 200), 'text/html', true);
+		httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
 		res.end(target({'minified': MINIFY, 'page': ''}));
 	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1).slice(0,-4)+'.min.css')) {
 		httpHeaders(res, 200, 'text/css');
