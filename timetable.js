@@ -100,7 +100,7 @@ function onRequest(req, res) {
 	var target, uri = url.parse(req.url, true);
 	if (uri.pathname === '/') {
 		target = compile_jade('dynamic/index.jade');
-		httpHeaders(res, (target == ISE ? 500 : 200), 'text/html', true);
+		httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
 		res.end(target({'minified': MINIFY, 'page': ''}));
 	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) {
 		httpHeaders(res, 200, 'text/css');
