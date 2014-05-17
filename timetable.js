@@ -38,11 +38,13 @@ var jade_opts = {
 };
 
 process.on('SIGHUP', function() {
+	'use strict';
 	forcedETagUpdateCounter++;
 	console.log('ETagUpdateCounts: ' + forcedETagUpdateCounter);
 });
 
 var watcher = fs.watch('.git/refs/heads/master', { persistent: false }, function() {
+	'use strict';
 	GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
 });
 
@@ -58,8 +60,8 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 		date = new Date();
 		date.setYear(date.getFullYear() + 1);
 		headers.Expires = date.toGMTString();
-		headers.ETag = GIT_RV+'_'+forcedETagUpdateCounter; // TODO better ETags. This *will* work in production because new git revisions will be the only way updates occur. 
-														   // SIGHUP'ing the process will force every client to re-request resources.
+		headers.ETag = GIT_RV+'_'+forcedETagUpdateCounter;	// TODO better ETags. This *will* work in production because new git revisions will be the only way updates occur. 
+															// SIGHUP'ing the process will force every client to re-request resources.
 	}
 	headers['Content-Type'] = contentType + '; charset=UTF-8';
 	res.writeHead(response, headers);

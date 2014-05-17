@@ -49,24 +49,23 @@ function calculateDay() {
 		dayOffset = 0,
 		schoolEnd = new Date();
 	schoolEnd.setHours(15, 15);
-	if (date.getDay() == 5 /*friday*/ && date > schoolEnd) {
-		dayOffset += 2; // push to sunday at this time.
+	if (date.getDay() === 5 && date > schoolEnd) { // Friday
+		dayOffset += 2; // push to Sunday at this time.
 		needMidnightCountdown = true;
-	} else if (date.getDay() == 6 /*saturday*/) {
-		dayOffset += 1;
+	} else if (date.getDay() === 6 ) { // Saturday
+		dayOffset += 1; // same as above
 		needMidnightCountdown = true;
-	} else if (date.getDay() == 0 /*sunday*/ || date > schoolEnd) {
+	} else if (date.getDay() === 0 || date > schoolEnd) { // Sunday
 		needMidnightCountdown = true;
 	}
 	date.add(dayOffset).day();
 	dateOffset = dayOffset;
-
 }
 
 function reloadBelltimes() {
 	'use strict';
 	reloading = true;
-	$.getScript('http://student.sbhs.net.au/api/timetable/bells.json?callback=handleBells&date=' + getNextSchoolDay().toString('yyyy-MM-d'));	
+	$.getScript('http://student.sbhs.net.au/api/timetable/bells.json?callback=handleBells&date=' + getNextSchoolDay().toString('yyyy-MM-d'));
 }
 
 function handleBells(bells) {
@@ -121,19 +120,18 @@ function prettifySecondsLeft(sec) {
 	}
 	return (hrs !== '' ? hrs + 'h ' : '') + mins + 'm ' + secs + 's';
 }
-	
 
 function calculateUpcomingLesson() {
 	'use strict';
 	reloading = true;
 	var i, lastOK, bell, bdate,
 		nextBell, now;
-	if (belltimes == null) {
+	if (belltimes === null) {
 		reloadBelltimes();
 		reloading = false;
 		return;
 	}
-	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15}))) {
+	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15})) ) { //|| (new Date()).getDay() > 5) { //FIXME: Uncomment previous code to count properly on weekend. Comment to test weekdays on weekends.
 		now = getNextSchoolDay();
 	}
 	else {
@@ -141,7 +139,7 @@ function calculateUpcomingLesson() {
 	}
 	for (i in belltimes.bells) {
 		bell = belltimes.bells[i].time.split(':');
-		bdate = now.clone().set({hour: Number(bell[0]), minute: Number(bell[1])});
+		bdate = now.clone().set({hour: Number(bell[0]), minute: Number(bell[1]), second: 0});
 		if ((nextBell === undefined || nextBell.isAfter(bdate)) && bdate.isAfter(now)) {
 			nextBell = bdate;
 			lastOK = i;
@@ -158,17 +156,16 @@ function calculateUpcomingLesson() {
 }
 
 function updatePeriodLabel() {
+	'use strict';
 	var name = belltimes.bells[currentBellIndex].bell,
 		inLabel = 'starts in';
 	name = name.replace('Roll Call', 'School Starts').replace('End of Day', 'School Ends');
-	if (/\d/.test(name)) { // number - should convert to 'Period x'
+	if (/^\d$/.test(name)) { // 'Period x' instead of 'x'
 		name = 'Period ' + name;
-	}
-	else if (name == 'Transition') {
+	} else if (name == 'Transition') {
 		name = 'Period ' + belltimes.bells[currentBellIndex - 1].bell;
 		inLabel = 'ends in';
-	}
-	else if (name == 'School Starts' || name == 'School Ends') {
+	} else if (name == 'School Starts' || name == 'School Ends') {
 		inLabel = 'in';
 	}
 	console.log(name);
@@ -176,13 +173,13 @@ function updatePeriodLabel() {
 	$('#period-label').text(name);
 	$('#in-label').text(inLabel);
 }
-	
 
 function updateCountdownLabel() {
+	'use strict';
 	if (reloading) {
 		return;
 	}
-	if (nextStart == null) {
+	if (nextStart === null) {
 		calculateUpcomingLesson();
 		return;
 	}
@@ -195,6 +192,5 @@ function updateCountdownLabel() {
 	left = nextStart - now;
 	$('#countdown-label').text(prettifySecondsLeft(Math.floor(left/1000)));
 }
-
 
 document.addEventListener('readystatechange', domReady);
