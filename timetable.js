@@ -100,25 +100,25 @@ function onRequest(req, res) {
 		res.end();
 		return;
 	}
-	var j, uri = url.parse(req.url, true);
+	var target, uri = url.parse(req.url, true);
 	if (uri.pathname === '/') {
-		j = compile_jade('dynamic/index.jade');
-		httpHeaders(res, (j == ISE ? 500 : 200), 'text/html', true);
-		res.end(j({'minified': MINIFY, 'page': ''}));
+		target = compile_jade('dynamic/index.jade');
+		httpHeaders(res, (target == ISE ? 500 : 200), 'text/html', true);
+		res.end(target({'minified': MINIFY, 'page': ''}));
 	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1).slice(0,-4)+'.min.css')) {
 		httpHeaders(res, 200, 'text/css');
-		j = uri.pathname.slice(1);
+		target = uri.pathname.slice(1);
 		if (MINIFY) {
-			j = j.slice(0,-4) + '.min.css';
+			target = target.slice(0,-4) + '.min.css';
 		}
-		fs.createReadStream(j).pipe(res);
+		fs.createReadStream(target).pipe(res);
 	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1).slice(0,-3)+'.min.js')) {
 		httpHeaders(res, 200, 'application/javascript');
-		j = uri.pathname.slice(1);
+		target = uri.pathname.slice(1);
 		if (MINIFY) {
-			j = j.slice(0,-3) + '.min.js';
+			target = target.slice(0,-3) + '.min.js';
 		}
-		fs.createReadStream(j).pipe(res);
+		fs.createReadStream(target).pipe(res);
 	} else {
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
