@@ -1,25 +1,25 @@
 /*
-Copyright (C) 2014  James Ye  Simon Shields
+   Copyright (C) 2014  James Ye  Simon Shields
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Affero General Public License as published by
+   the Free Software Foundation, either version 3 of the License, or
+   (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU Affero General Public License for more details.
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Affero General Public License for more details.
 
-You should have received a copy of the GNU Affero General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+   You should have received a copy of the GNU Affero General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 /* the gnustomp-forkbomb style guide:
-	Single tabs for indentation
-	Single quotes for strings
-	Opening braces on the same line as the statement
-	Spaces around operators
-	Empty line after a function defenition
+   Single tabs for indentation
+   Single quotes for strings
+   Opening braces on the same line as the statement
+   Spaces around operators
+   Empty line after a function defenition
 */
 
 var http = require('http'),
@@ -28,9 +28,18 @@ var http = require('http'),
 	url = require('url'),
 	forcedETagUpdateCounter = 0;
 
-GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
+require('./variables.js'); // set globals appropriate to status - dev (DEBUG = true) or release (DEBUG = false)
+if (!RELEASE) {
+	GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
+	var watcher = fs.watch('.git/refs/heads/master', { persistent: false }, function() {
+		'use strict';
+		GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
+	});
+}
+else {
+	GIT_RV = 'TODO'; // TODO
+}
 
-DEBUG = true; // DISABLE IN PRODUCTION - this disables *all* caching.
 
 var jade_opts = {
 	pretty: DEBUG,
@@ -41,11 +50,6 @@ process.on('SIGHUP', function() {
 	'use strict';
 	forcedETagUpdateCounter++;
 	console.log('ETagUpdateCounts: ' + forcedETagUpdateCounter);
-});
-
-var watcher = fs.watch('.git/refs/heads/master', { persistent: false }, function() {
-	'use strict';
-	GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
 });
 
 function httpHeaders(res, response, contentType, dynamic, headers) {
@@ -60,8 +64,8 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 		date = new Date();
 		date.setYear(date.getFullYear() + 1);
 		headers.Expires = date.toGMTString();
-		headers.ETag = GIT_RV+'_'+forcedETagUpdateCounter;	// TODO better ETags. This *will* work in production because new git revisions will be the only way updates occur. 
-															// SIGHUP'ing the process will force every client to re-request resources.
+		//	headers.ETag = GIT_RV+'_'+forcedETagUpdateCounter;	// TODO better ETags. This *will* work in production because new git revisions will be the only way updates occur. 
+		// SIGHUP'ing the process will force every client to re-request resources.
 	}
 	headers['Content-Type'] = contentType + '; charset=UTF-8';
 	res.writeHead(response, headers);
@@ -100,13 +104,21 @@ function onRequest(req, res) {
 	if (uri.pathname === '/') {
 		j = compile_jade('dynamic/index.jade');
 		httpHeaders(res, (j == ISE ? 500 : 200), 'text/html', true);
-		res.end(j({'minified': false, 'page': ''}));
-	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) {
+		res.end(j({'minified': MINIFY, 'page': ''}));
+	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1).slice(0,-4)+'.min.css')) {
 		httpHeaders(res, 200, 'text/css');
-		fs.createReadStream(uri.pathname.slice(1)).pipe(res);
-	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) {
+		j = uri.pathname.slice(1);
+		if (MINIFY) {
+			j = j.slice(0,-4) + '.min.css';
+		}
+		fs.createReadStream(j).pipe(res);
+	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1).slice(0,-3)+'.min.js')) {
 		httpHeaders(res, 200, 'application/javascript');
-		fs.createReadStream(uri.pathname.slice(1)).pipe(res);
+		j = uri.pathname.slice(1);
+		if (MINIFY) {
+			j = j.slice(0,-3) + '.min.js';
+		}
+		fs.createReadStream(j).pipe(res);
 	} else {
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
@@ -132,4 +144,6 @@ ipv4server.on('listening', onListening);
 ipv6server.on('listening', onListening);
 
 ipv4server.listen(8080, '0.0.0.0');
-//ipv6server.listen(8080, '::');
+if (IPV6) {
+	ipv6server.listen(8080, '::');
+}

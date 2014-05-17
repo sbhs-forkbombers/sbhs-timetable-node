@@ -49,6 +49,17 @@ module.exports = function(grunt) {
 					flatten: true,
 				}]
 			},*/
+		},
+		copy: {
+			main: {
+				expand: true,
+				src: ['dynamic/**', 'static/**', 'timetable.js'],
+				dest: 'build/',
+			},
+			vars: {
+				src: 'variables_rel.js',
+				dest: 'build/variables.js'
+			}
 		}
 	});
 	
@@ -56,8 +67,10 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-run');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-copy');
 
 	grunt.registerTask('minify', ['uglify', 'cssmin']);
+	grunt.registerTask('release', ['jshint', 'minify', 'copy']);
 	grunt.registerTask('default', ['run']);
 
 		
