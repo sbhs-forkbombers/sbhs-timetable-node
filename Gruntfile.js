@@ -2,9 +2,11 @@ module.exports = function(grunt) {
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
+		GIT_RV: require('fs').readFileSync('.git/refs/heads/master').toString().trim(),
+		GIT_RV_SHORT: require('fs').readFileSync('.git/refs/heads/master').toString().trim().substr(0,6),
 		uglify: {
 			options: {
-				banner: '/*! <%= pkg.name %> License: https://www.gnu.org/licenses/agpl-3.0.html (C) 2014. Built: <%= grunt.template.today("yyyy-mm-dd H:MM Z") %> */\n'
+				banner: '/*! <%= pkg.name %> rev. <%= GIT_RV_SHORT %> License: https://www.gnu.org/licenses/agpl-3.0.html (C) 2014. Built: <%= grunt.template.today("yyyy-mm-dd H:MM Z") %> */\n'
 			},
 			dynamic_mappings: {
 				expand: true,
@@ -58,7 +60,12 @@ module.exports = function(grunt) {
 			},
 			vars: {
 				src: 'variables_rel.js',
-				dest: 'build/variables.js'
+				dest: 'build/variables.js',
+				options: {
+					process: function(content, srcpath) {
+						return content + '\nGIT_RV = \'' + grunt.config.get('GIT_RV') + '\';\n';
+					}
+				}
 			}
 		}
 	});

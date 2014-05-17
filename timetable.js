@@ -29,17 +29,14 @@ var http = require('http'),
 	forcedETagUpdateCounter = 0,
 	cachedBells = {};
 
-require('./variables.js'); // set globals appropriate to status - dev (DEBUG = true) or release (DEBUG = false)
+require('./variables.js'); // set globals appropriate to status - dev (DEBUG = true) or release (DEBUG = false and GIT_RV set)
 if (!RELEASE) {
 	GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
 	var watcher = fs.watch('.git/refs/heads/master', { persistent: false }, function() {
 		'use strict';
 		GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
 	});
-} else {
-	GIT_RV = 'TODO'; // TODO
-}
-
+} 
 
 var jade_opts = {
 	pretty: DEBUG,
