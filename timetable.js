@@ -110,6 +110,9 @@ function onRequest(req, res) {
 		httpHeaders(res, 200, 'application/javascript');
 		target = uri.pathname.slice(1);
 		fs.createReadStream(target).pipe(res);
+	} else if (uri.pathname === '/favicon.ico') {
+		httpHeaders(res, 200, 'image/x-icon');
+		fs.createReadStream('static/favicon.ico').pipe(res);
 	} else {
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
