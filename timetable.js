@@ -30,7 +30,9 @@ var http = require('http'),
 	url = require('url'),
 	forcedETagUpdateCounter = 0,
 	cachedBells = {},
-	indexCache = '';
+	indexCache = '',
+	db = {};
+
 console.log('[master] finished initialisation in ' + (Date.now() - all_start) + 'ms');
 
 require('./variables.js'); // set globals appropriate to status - dev (DEBUG = true) or release (DEBUG = false and GIT_RV set)
@@ -165,6 +167,20 @@ function onListening() {
 	'use strict';
 	console.log('[' + this.name + '] Listening on http://' + this.address().address + ':' + this.address().port + '/');
 }
+
+function writeDb() {
+	'use strict';
+	fs.writeFileSync('users.json', JSON.stringify(db));
+}
+
+var db_start = Date.now();
+console.log('[master] Loading DB...');
+if (fs.existsSync('users.json')) {
+	db = JSON.parse(fs.readFileSync('users.json'));
+}
+setInterval(writeDb, 3000000);
+console.log('[master] Done in', Date.now() - db_start,'ms');
+
 console.log('[master] SBHS-Timetable-Node revision ' + GIT_RV.substr(0, 6) + ' starting server...');
 cache_index();
 var ipv4server = http.createServer(),
