@@ -42,21 +42,33 @@ if (!RELEASE) {
 		'use strict';
 		GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
 	});
-} 
+}
 
 var jade_opts = {
 	pretty: DEBUG,
 	compileDebug: DEBUG
 };
 
-process.on('SIGHUP', function() {
+function serverError() {
 	'use strict';
-	forcedETagUpdateCounter++;
-	cache_index();
-	console.log('ETagUpdateCounts: ' + forcedETagUpdateCounter);
-});
+	return '<!DOCTYPE html><html><head><link rel="stylesheet" href="/style/common.css" /><title>500 Internal Server Error</title></head><body><h1 style="position:fixed;width:100%;text-align:center">Oops :(</h1></body></html>';
+}
+
+function compile_jade(path) {
+	'use strict';
+	try {
+		var mopts = jade_opts;
+		mopts.filename = path;
+		return jade.compile(fs.readFileSync(path), mopts);
+	} catch (e) {
+		console.error('!!! Failed to compile jade "'+path+'"!!! Stack trace:');
+		console.error(e.stack);
+		return serverError;
+	}
+}
 
 function cache_index() {
+	'use strict';
 	console.log('[master] caching index page... [SIGHUP to reload]');
 	var jade_comp = Date.now();
 	var idx = compile_jade('dynamic/index.jade');
@@ -66,6 +78,13 @@ function cache_index() {
 	}
 	console.log('[master] done in ' + (Date.now() - jade_comp) + 'ms');
 }
+
+process.on('SIGHUP', function() {
+	'use strict';
+	forcedETagUpdateCounter++;
+	cache_index();
+	console.log('ETagUpdateCounts: ' + forcedETagUpdateCounter);
+});
 
 function httpHeaders(res, response, contentType, dynamic, headers) {
 	'use strict';
@@ -84,24 +103,6 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 	headers['Content-Type'] = contentType + '; charset=UTF-8';
 	res.writeHead(response, headers);
 	return res;
-}
-
-function serverError() {
-	'use strict';
-	return '<!DOCTYPE html><html><head><link rel="stylesheet" href="/style/common.css" /><title>500 Internal Server Error</title></head><body><h1 style="position:fixed;width:100%;text-align:center">Oops :(</h1></body></html>';
-}
-
-function compile_jade(path) {
-	'use strict';
-	try {
-		var mopts = jade_opts;
-		mopts.filename = path;
-		return jade.compile(fs.readFileSync(path), mopts);
-	} catch (e) {
-		console.error('!!! Failed to compile jade "'+path+'"!!! Stack trace:');
-		console.error(e.stack);
-		return serverError;
-	}
 }
 
 function getBelltimes(date, res) {
@@ -179,9 +180,11 @@ if (fs.existsSync('users.json')) {
 	db = JSON.parse(fs.readFileSync('users.json'));
 }
 setInterval(writeDb, 3000000);
-console.log('[master] Done in', Date.now() - db_start,'ms');
 
+console.log('[master] Done in', Date.now() - db_start,'ms');
 console.log('[master] SBHS-Timetable-Node revision ' + GIT_RV.substr(0, 6) + ' starting server...');
+
+index_cache = serverError;
 cache_index();
 var ipv4server = http.createServer(),
 	ipv6server = http.createServer();

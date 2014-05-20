@@ -80,7 +80,8 @@ function domReady() {
 	'use strict';
 	if (document.readyState != 'complete') {
 		return;
-	} if (belltimes !== null && belltimes !== undefined) {
+	}
+	if (belltimes !== null && belltimes !== undefined) {
 		loadComplete();
 	} else {
 		reloadBelltimes();
