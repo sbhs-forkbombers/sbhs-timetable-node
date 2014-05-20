@@ -6,11 +6,20 @@ module.exports = function(grunt) {
 		GIT_RV_SHORT: require('fs').readFileSync('.git/refs/heads/master').toString().trim().substr(0,6),
 		uglify: {
 			options: {
-				banner: '/*! <%= pkg.name %> rev. <%= GIT_RV_SHORT %> License: https://www.gnu.org/licenses/agpl-3.0.html (C) 2014. Built: <%= grunt.template.today("yyyy-mm-dd H:MM Z") %> */\n'
+				banner: '/*! <%= pkg.name %> rev. <%= GIT_RV_SHORT %> License: https://www.gnu.org/licenses/agpl-3.0.html (C) 2014.' + 
+						   ' Built: <%= grunt.template.today("yyyy-mm-dd H:MM Z") %> */\n',
+				compress: {
+					drop_console: true,
+					global_defs: {
+						DEBUG: false,
+						RELEASE: false
+					},
+					dead_code: true
+				}
 			},
 			dynamic_mappings: {
 				expand: true,
-				src: ['script/*.js'],
+				src: ['script/belltimes.concat.js'],
 				dest: 'build/',
 				ext: '.js',
 				extDot: 'last'
@@ -67,6 +76,15 @@ module.exports = function(grunt) {
 					}
 				}
 			}
+		},
+		concat: {
+			options: {
+				separator: ';',
+			},
+			dist: {
+				src: ['script/*.js', '!script/belltimes.concat.js'],
+				dest: 'script/belltimes.concat.js'
+			}
 		}
 	});
 	
@@ -75,10 +93,11 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-copy');
+	grunt.loadNpmTasks('grunt-contrib-concat');
 
 	grunt.registerTask('minify', ['uglify', 'cssmin']);
-	grunt.registerTask('release', ['jshint', 'minify', 'copy']);
-	grunt.registerTask('default', ['run']);
+	grunt.registerTask('release', ['jshint', 'concat', 'minify', 'copy']);
+	grunt.registerTask('default', ['concat', 'run']);
 
 		
 };

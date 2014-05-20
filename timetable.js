@@ -146,6 +146,8 @@ function onRequest(req, res) {
 		httpHeaders(res, 200, 'text/css');
 		target = uri.pathname.slice(1);
 		fs.createReadStream(target).pipe(res);
+	} else if (uri.pathname == '/script/belltimes.js' && !RELEASE) {
+		fs.createReadStream('script/belltimes.concat.js').pipe(res);
 	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) {
 		httpHeaders(res, 200, 'application/javascript');
 		target = uri.pathname.slice(1);

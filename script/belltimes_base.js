@@ -30,7 +30,9 @@ function getNextSchoolDay() {
 	if (dateOffset == -1) {
 		calculateDay();
 	}
-	return Date.today().add(dateOffset + (needMidnightCountdown ? 1 : 0)).day();
+	var res = new Date;
+	res.setDate(res.getDate() + dateOffset + (needMidnightCountdown ? 1 : 0));
+	return res;
 }
 
 /** returns the CURRENT TIME in dateOffset days */
@@ -39,7 +41,9 @@ function getDateOffsetDate() {
 	if (dateOffset == -1) {
 		calculateDay();
 	}
-	return (new Date()).add(dateOffset).day();
+	var res = new Date;
+	res.setDate(res.getDate() + dateOffset);
+	return res;
 }
 
 /** calculate the day that school will be starting on - this may NOT use DateJS functions as it may be called before DateJS is loaded. */
@@ -58,23 +62,30 @@ function calculateDay() {
 	} else if (date.getDay() === 0 || date > schoolEnd) { // Sunday
 		needMidnightCountdown = true;
 	}
-	date.add(dayOffset).day();
+	date.setDate(date.getDate() + dayOffset);
 	dateOffset = dayOffset;
 }
 
 function reloadBelltimes() {
 	'use strict';
 	reloading = true;
-	$.getJSON('/api/belltimes?date=' + getNextSchoolDay().toString('yyyy-MM-d'), handleBells);
+	var myXHR = new XMLHttpRequest();
+	myXHR.onload = handleBells;
+	myXHR.open('get', '/api/belltimes?date=' + getNextSchoolDay().toString('yyyy-MM-d'), handleBells);
+	myXHR.send();
+	//$.getJSON('/api/belltimes?date=' + getNextSchoolDay().toString('yyyy-MM-d'), handleBells);
 }
 
 function handleBells(bells) {
+	/* jshint validthis: true */
 	'use strict';
-	belltimes = bells;
+	belltimes = JSON.parse(this.responseText);
 	if (document.readyState == 'complete') {
 		loadComplete();
 	}
 }
+
+reloadBelltimes(); // do it ASAP
 
 function domReady() {
 	'use strict';
@@ -189,5 +200,4 @@ function updateCountdownLabel() {
 	left = nextStart - now;
 	$('#countdown-label').text(prettifySecondsLeft(Math.floor(left/1000)));
 }
-
 document.addEventListener('readystatechange', domReady);
