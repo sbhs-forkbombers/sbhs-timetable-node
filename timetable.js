@@ -51,7 +51,7 @@ var jade_opts = {
 
 function serverError() {
 	'use strict';
-	return '<!DOCTYPE html><html><head><link rel="stylesheet" href="/style/common.css" /><title>500 Internal Server Error</title></head><body><h1 style="position:fixed;width:100%;text-align:center">Oops :(</h1></body></html>';
+	return fs.createReadStream('static/500.html');
 }
 
 function compile_jade(path) {
