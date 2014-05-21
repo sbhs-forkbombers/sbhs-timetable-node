@@ -5,9 +5,11 @@ This is going to be a rewrite of [SBHS Timetable](https://github.com/sbhs-forkbo
 
 We hope.
 
+_(Note that these instructions may not be up to date.)_
+
 ## Installation
 
-_(this is a pre-alpha version. beware)_
+_This is a pre-alpha version. Beware._
 
 You'll need [NodeJS](http://nodejs.org), Git (obviously) and NPM.
 
