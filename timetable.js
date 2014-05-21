@@ -76,7 +76,7 @@ function cache_index() {
 	if (index_cache == serverError) {
 		console.warn('WARNING: Encountered an error while caching index page. Fix errors, and then killall -HUP node to reload.');
 	}
-	console.log('[master] done in ' + (Date.now() - jade_comp) + 'ms');
+	console.log('[master] Done in ' + (Date.now() - jade_comp) + 'ms');
 }
 
 process.on('SIGHUP', function() {
@@ -212,5 +212,5 @@ if (IPV6) {
 	ipv6server.listen(8080, '::');
 }
 if (process.platform !== 'win32') {
-	unixserver.listen('/var/run/timetable.sock');
+	unixserver.listen('/tmp/timetable.sock');
 }
