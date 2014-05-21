@@ -142,13 +142,13 @@ function onRequest(req, res) {
 	if (uri.pathname === '/') {
 		httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
 		res.end(index_cache);
-	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) {
+	} else if (uri.pathname.match('/style/.*[.]css$') && fs.exists(uri.pathname.slice(1))) {
 		httpHeaders(res, 200, 'text/css');
 		target = uri.pathname.slice(1);
 		fs.createReadStream(target).pipe(res);
 	} else if (uri.pathname == '/script/belltimes.js' && !RELEASE) {
 		fs.createReadStream('script/belltimes.concat.js').pipe(res);
-	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) {
+	} else if (uri.pathname.match('/script/.*[.]js$') && fs.exists(uri.pathname.slice(1))) {
 		httpHeaders(res, 200, 'application/javascript');
 		target = uri.pathname.slice(1);
 		fs.createReadStream(target).pipe(res);
@@ -192,18 +192,25 @@ console.log('[master] SBHS-Timetable-Node revision ' + GIT_RV.substr(0, 6) + ' s
 index_cache = serverError;
 cache_index();
 var ipv4server = http.createServer(),
-	ipv6server = http.createServer();
+	ipv6server = http.createServer(),
+	unixserver = http.createServer();
 
 ipv4server.name = 'ipv4server';
 ipv6server.name = 'ipv6server';
+unixserver.name = 'unixserver';
 
 ipv4server.on('request', onRequest);
 ipv6server.on('request', onRequest);
+unixserver.on('request', onRequest);
 
 ipv4server.on('listening', onListening);
 ipv6server.on('listening', onListening);
+unixserver.on('listening', onListening);
 
 ipv4server.listen(8080, '0.0.0.0');
 if (IPV6) {
 	ipv6server.listen(8080, '::');
+}
+if (process.platform !== 'win32') {
+	unixserver.listen('/var/run/timetable.sock');
 }
