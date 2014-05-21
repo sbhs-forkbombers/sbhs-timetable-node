@@ -30,7 +30,7 @@ function getNextSchoolDay() {
 	if (dateOffset == -1) {
 		calculateDay();
 	}
-	var res = new Date;
+	var res = new Date();
 	res.setDate(res.getDate() + dateOffset + (needMidnightCountdown ? 1 : 0));
 	return res;
 }
@@ -41,7 +41,7 @@ function getDateOffsetDate() {
 	if (dateOffset == -1) {
 		calculateDay();
 	}
-	var res = new Date;
+	var res = new Date();
 	res.setDate(res.getDate() + dateOffset);
 	return res;
 }
@@ -133,14 +133,13 @@ function prettifySecondsLeft(sec) {
 function calculateUpcomingLesson() {
 	'use strict';
 	reloading = true;
-	var i, lastOK, bell, bdate,
-		nextBell, now;
+	var i, lastOK, bell, bdate, nextBell, now;
 	if (belltimes === null) {
 		reloadBelltimes();
 		reloading = false;
 		return;
 	}
-	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15})) ) { //|| (new Date()).getDay() > 5) { //FIXME: Uncomment previous code to count properly on weekend. Comment to test weekdays on weekends.
+	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15})) /*DEBUG: Uncomment next condition to count properly on weekend. Comment to test weekdays on weekends. >>>>>*/ || (new Date()).getDay() > 5 /*<<<<<*/) {
 		now = getNextSchoolDay();
 	} else {
 		now = new Date();
@@ -148,7 +147,7 @@ function calculateUpcomingLesson() {
 	for (i in belltimes.bells) {
 		bell = belltimes.bells[i].time.split(':');
 		bdate = now.clone().set({hour: Number(bell[0]), minute: Number(bell[1]), second: 0});
-		if ((nextBell === undefined || nextBell.isAfter(bdate)) && bdate.isAfter(now)) {
+		if ((nextBell === undefined || nextBell.isAfter(bdate)) && bdate.isAfter(new Date())) {
 			nextBell = bdate;
 			lastOK = i;
 		}

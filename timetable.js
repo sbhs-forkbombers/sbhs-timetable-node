@@ -158,6 +158,9 @@ function onRequest(req, res) {
 	} else if (uri.pathname == '/api/belltimes') { // belltimes wrapper
 		httpHeaders(res, 200, 'application/json');
 		getBelltimes(uri.query.date, res);
+	} else if (uri.pathname.match('[.]ht.*')) {
+		httpHeaders(res, 403, 'text/html');
+		fs.createReadStream('static/403.html').pipe(res);
 	} else {
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
