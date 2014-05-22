@@ -142,13 +142,13 @@ function onRequest(req, res) {
 	if (uri.pathname === '/') {
 		httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
 		res.end(index_cache);
-	} else if (uri.pathname.match('/style/.*[.]css$') && fs.exists(uri.pathname.slice(1))) {
+	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) {
 		httpHeaders(res, 200, 'text/css');
 		target = uri.pathname.slice(1);
 		fs.createReadStream(target).pipe(res);
 	} else if (uri.pathname == '/script/belltimes.js' && !RELEASE) {
 		fs.createReadStream('script/belltimes.concat.js').pipe(res);
-	} else if (uri.pathname.match('/script/.*[.]js$') && fs.exists(uri.pathname.slice(1))) {
+	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) {
 		httpHeaders(res, 200, 'application/javascript');
 		target = uri.pathname.slice(1);
 		fs.createReadStream(target).pipe(res);
