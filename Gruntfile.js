@@ -85,6 +85,9 @@ module.exports = function(grunt) {
 				src: ['script/*.js', '!script/belltimes.concat.js'],
 				dest: 'script/belltimes.concat.js'
 			}
+		},
+		'delete': {
+			run: 'true'
 		}
 	});
 	
@@ -94,10 +97,20 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	
+	grunt.registerMultiTask('delete', 'delete stuff', function() {
+		if (process.platform !== 'win32' && require('fs').existsSync('/tmp/timetable.sock')) {
+			require('fs').unlinkSync('/tmp/timetable.sock');
+			grunt.log.writeln(this.target + ': deleted /tmp/timetable.sock');
+		}
+		else {
+			grunt.log.writeln(this.target + ': nothing happened');
+		}
+	});
 
 	grunt.registerTask('minify', ['uglify', 'cssmin']);
 	grunt.registerTask('release', ['jshint', 'concat', 'minify', 'copy']);
-	grunt.registerTask('default', ['concat', 'run']);
+	grunt.registerTask('default', ['delete', 'concat', 'run', 'delete']);
 
 		
 };
