@@ -28,10 +28,10 @@ var http = require('http'),
 	fs = require('fs'),
 	jade = require('jade'),
 	url = require('url'),
+	db = require('./lib/database.js'),
 	forcedETagUpdateCounter = 0,
 	cachedBells = {},
-	indexCache = '',
-	db = {};
+	indexCache = '';
 
 console.log('[master] finished initialisation in ' + (Date.now() - all_start) + 'ms');
 
@@ -174,19 +174,6 @@ function onListening() {
 	console.log('[' + this.name + '] Listening on http://' + this.address().address + ':' + this.address().port + '/');
 }
 
-function writeDb() {
-	'use strict';
-	fs.writeFileSync('users.json', JSON.stringify(db));
-}
-
-var db_start = Date.now();
-console.log('[master] Loading DB...');
-if (fs.existsSync('users.json')) {
-	db = JSON.parse(fs.readFileSync('users.json'));
-}
-setInterval(writeDb, 3000000);
-
-console.log('[master] Done in', Date.now() - db_start,'ms');
 console.log('[master] SBHS-Timetable-Node revision ' + GIT_RV.substr(0, 6) + ' starting server...');
 
 index_cache = serverError;
