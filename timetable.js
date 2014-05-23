@@ -14,6 +14,7 @@
    You should have received a copy of the GNU Affero General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 /* the gnustomp-forkbomb style guide:
    Single tabs for indentation
    Single quotes for strings
@@ -174,6 +175,12 @@ function onListening() {
 	console.log('[' + this.name + '] Listening on http://' + this.address().address + ':' + this.address().port + '/');
 }
 
+function nxListening() {
+    /* jshint validthis: true*/
+    'use strict';
+    console.log('[' + this.name + '] Listening on ' + this.path);
+}
+
 console.log('[master] SBHS-Timetable-Node revision ' + GIT_RV.substr(0, 6) + ' starting server...');
 
 index_cache = serverError;
@@ -192,7 +199,7 @@ unixserver.on('request', onRequest);
 
 ipv4server.on('listening', onListening);
 ipv6server.on('listening', onListening);
-unixserver.on('listening', onListening);
+unixserver.on('listening', nxListening);
 
 ipv4server.listen(8080, '0.0.0.0');
 if (IPV6) {
@@ -200,4 +207,6 @@ if (IPV6) {
 }
 if (process.platform !== 'win32') {
 	unixserver.listen('/tmp/timetable.sock');
+    unixserver.path = '/tmp/timetable.sock';
+    fs.chmod('/tmp/timetable.sock', '777');
 }
