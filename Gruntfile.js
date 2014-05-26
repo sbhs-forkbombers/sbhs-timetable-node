@@ -1,13 +1,32 @@
-module.exports = function(grunt) {
+/* 
+ * Copyright (C) 2014  James Ye, Simon Shields
+ *
+ * This file is part of SBHS-Timetable-Node.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
+module.exports = function(grunt) {
+    'use strict';
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		GIT_RV: require('fs').readFileSync('.git/refs/heads/master').toString().trim(),
 		GIT_RV_SHORT: require('fs').readFileSync('.git/refs/heads/master').toString().trim().substr(0,6),
 		uglify: {
 			options: {
-				banner: '/*! <%= pkg.name %> rev. <%= GIT_RV_SHORT %> License: https://www.gnu.org/licenses/agpl-3.0.html (C) 2014.' + 
-						   ' Built: <%= grunt.template.today("yyyy-mm-dd H:MM Z") %> */\n',
+				banner: '/*! <%= pkg.name %> rev. <%= GIT_RV_SHORT %> License: https://www.gnu.org/licenses/agpl-3.0.html (C) 2014.' +
+                        ' Built: <%= grunt.template.today("yyyy-mm-dd H:MM Z") %> */\n',
 				compress: {
 					drop_console: true,
 					global_defs: {
@@ -23,7 +42,7 @@ module.exports = function(grunt) {
 				dest: 'build/',
 				ext: '.js',
 				extDot: 'last'
-			}		
+			}
 		},
 		jshint: {
 			files: ['script/*.js', 'timetable.js'],
@@ -111,7 +130,4 @@ module.exports = function(grunt) {
 	grunt.registerTask('minify', ['uglify', 'cssmin']);
 	grunt.registerTask('release', ['jshint', 'concat', 'minify', 'copy']);
 	grunt.registerTask('default', ['delete', 'concat', 'run', 'delete']);
-
-		
 };
-

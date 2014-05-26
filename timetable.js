@@ -1,30 +1,32 @@
 /*
-   Copyright (C) 2014  James Ye  Simon Shields
-
-   This program is free software: you can redistribute it and/or modify
-   it under the terms of the GNU Affero General Public License as published by
-   the Free Software Foundation, either version 3 of the License, or
-   (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU Affero General Public License for more details.
-
-   You should have received a copy of the GNU Affero General Public License
-   along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ * Copyright (C) 2014 James Ye, Simon Shields
+ *
+ * This file is part of SBHS-Timetable-Node.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 /* the gnustomp-forkbomb style guide:
-   Single tabs for indentation
-   Single quotes for strings
-   Opening braces on the same line as the statement
-   Spaces around operators
-   Empty line after a function defenition
-*/
+ * Single tabs for indentation
+ * Single quotes for strings
+ * Opening braces on the same line as the statement
+ * Spaces around operators
+ * Empty line after a function defenition
+ */
 
 all_start = Date.now();
-console.log('[master] loading...');
+console.log('[core] Loading...');
 var http = require('http'),
 	fs = require('fs'),
 	jade = require('jade'),
@@ -34,7 +36,7 @@ var http = require('http'),
 	cachedBells = {},
 	indexCache = '';
 
-console.log('[master] finished initialisation in ' + (Date.now() - all_start) + 'ms');
+console.log('[core] Initialised in in ' + (Date.now() - all_start) + 'ms');
 
 require('./variables.js'); // set globals appropriate to status - dev (DEBUG = true) or release (DEBUG = false and GIT_RV set)
 if (!RELEASE) {
@@ -70,14 +72,14 @@ function compile_jade(path) {
 
 function cache_index() {
 	'use strict';
-	console.log('[master] caching index page... [SIGHUP to reload]');
+	console.log('[core] Caching index page... (hangup to re-cache)');
 	var jade_comp = Date.now();
 	var idx = compile_jade('dynamic/index.jade');
 	index_cache = idx({title: ''});
 	if (index_cache == serverError) {
-		console.warn('WARNING: Encountered an error while caching index page. Fix errors, and then killall -HUP node to reload.');
+		console.warn('WARNING: Encountered an error while caching index page. Fix errors, and then hangup to reload.');
 	}
-	console.log('[master] Done in ' + (Date.now() - jade_comp) + 'ms');
+	console.log('[core] Index page cached in ' + (Date.now() - jade_comp) + 'ms');
 }
 
 process.on('SIGHUP', function() {
@@ -153,20 +155,23 @@ function onRequest(req, res) {
 		httpHeaders(res, 200, 'application/javascript');
 		target = uri.pathname.slice(1);
 		fs.createReadStream(target).pipe(res);
-	} else if (uri.pathname === '/favicon.ico') {
-		httpHeaders(res, 200, 'image/x-icon');
-		fs.createReadStream('static/favicon.ico').pipe(res);
 	} else if (uri.pathname == '/api/belltimes') { // belltimes wrapper
 		httpHeaders(res, 200, 'application/json');
 		getBelltimes(uri.query.date, res);
-	} else if (uri.pathname.match('[.]ht.*')) {
+	} else if (uri.pathname == '/favicon.ico') {
+		httpHeaders(res, 200, 'image/x-icon');
+		fs.createReadStream('static/favicon.ico').pipe(res);
+	} else if (uri.pathname == '/COPYING') {
+        httpHeaders(res, 200, 'text/plain');
+        fs.createReadStream('COPYING').pipe(res);
+    } else if (uri.pathname.match('[.]ht.*')) {
 		httpHeaders(res, 403, 'text/html');
 		fs.createReadStream('static/403.html').pipe(res);
 	} else {
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
 	}
-	console.log('[' + this.name + ']', req.method, req.url, '- responded in', Date.now()-start + 'ms');
+	console.log('[' + this.name + ']', req.method, req.url, 'in', Date.now()-start + 'ms');
 }
 
 function onListening() {
@@ -180,8 +185,11 @@ function nxListening() {
     'use strict';
     console.log('[' + this.name + '] Listening on ' + this.path);
 }
-
-console.log('[master] SBHS-Timetable-Node revision ' + GIT_RV.substr(0, 6) + ' starting server...');
+if (RELEASE) {
+    console.log('[core] SBHS-Timetable-Node version ' + REL_RV + ' starting server...');
+} else {
+    console.log('[core] SBHS-Timetable-Node git revision ' + GIT_RV.substr(0,6) + ' starting server...');
+}
 
 index_cache = serverError;
 cache_index();
@@ -206,7 +214,7 @@ if (IPV6) {
 	ipv6server.listen(8080, '::');
 }
 if (process.platform !== 'win32') {
-	unixserver.listen('/tmp/timetable.sock');
     unixserver.path = '/tmp/timetable.sock';
-    fs.chmod('/tmp/timetable.sock', '777');
+	unixserver.listen(unixserver.path);
+    fs.chmod(unixserver.path, '777');
 }
