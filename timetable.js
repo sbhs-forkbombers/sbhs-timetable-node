@@ -34,7 +34,8 @@ var http = require('http'),
 	db = require('./lib/database.js'),
 	forcedETagUpdateCounter = 0,
 	cachedBells = {},
-	indexCache = '';
+	indexCache = '',
+	sessions = {};
 
 console.log('[core] Initialised in in ' + (Date.now() - all_start) + 'ms');
 
@@ -94,6 +95,10 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 	var date;
 	dynamic = dynamic || false;
 	headers = headers || {};
+	if (!('Set-Cookie' in headers) && 'SESSID' in res) {
+		headers['Set-Cookie'] = 'SESSID='+res.SESSID+'; Max-Age=36000';
+	}
+		
 	if (dynamic || DEBUG) { // disable caching
 		headers['Cache-Control'] = 'no-cache';
 	} else if (!dynamic) {
@@ -132,6 +137,22 @@ function getBelltimes(date, res) {
 	}
 }
 
+function genSessionID(req) {
+	var ip = req.connection.remoteAddress;
+	var ua = req.headers['user-agent'];
+	var buf = new Buffer(Date.now().toString() + ip.toString() + ua + Math.floor(Math.random()*100));
+	return buf.toString('hex');	
+}
+
+function getCookies(s) {
+	var res = {};
+	s.split(';'.forEach(function (ck) {
+		var parts = ck.split('=');
+		res[parts.shift()] = parts.join('=');
+	});
+	return res;
+}
+
 function onRequest(req, res) {
 	/*jshint validthis: true*/
 	'use strict';
@@ -141,6 +162,23 @@ function onRequest(req, res) {
 		res.end();
 		return;
 	}
+	genSession = true;
+	user_data = {};
+	if ('cookie' in req.headers) {
+		var cookies = getCookies(req.headers.cookie);
+		if ('SESSID' in cookies) {
+			user_data = sessions[cookies.SESSID];
+			res.SESSID = cookies.SESSID;
+		}
+		else {
+			res.SESSID = genSessionID(req);
+		}
+	}
+	else {
+		res.SESSID = genSessionID(req);
+	}
+
+
 	var target, uri = url.parse(req.url, true);
 	if (uri.pathname === '/') {
 		httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
@@ -167,6 +205,12 @@ function onRequest(req, res) {
     } else if (uri.pathname.match('[.]ht.*')) {
 		httpHeaders(res, 403, 'text/html');
 		fs.createReadStream('static/403.html').pipe(res);
+	} else if (uri.pathname == '/try_do_oauth') {
+		httpHeaders(res, 301, '', false, {'Location': 'https://student.sbhs.net.au/api/authorize?response_type=code&client_id=SbhsTimetableTest&redirect_uri=http://alarmpi:8080/login&scope=all-ro'});
+		res.end();
+	} else if (uri.pathname == '/login') {
+		httpHeaders(res, 200, 'text/plain');
+		res.end(require('util').inspect(req));
 	} else {
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
