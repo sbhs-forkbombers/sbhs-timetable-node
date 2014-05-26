@@ -164,8 +164,8 @@ function onRequest(req, res) {
 		res.end();
 		return;
 	}
-	genSession = true;
-	user_data = {};
+	var genSession = true;
+	var user_data = {};
 	if ('cookie' in req.headers) {
 		var cookies = getCookies(req.headers.cookie);
 		if ('SESSID' in cookies) {
