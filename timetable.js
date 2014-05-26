@@ -138,6 +138,7 @@ function getBelltimes(date, res) {
 }
 
 function genSessionID(req) {
+	'use strict';
 	var ip = req.connection.remoteAddress;
 	var ua = req.headers['user-agent'];
 	var buf = new Buffer(Date.now().toString() + ip.toString() + ua + Math.floor(Math.random()*100));
@@ -145,11 +146,12 @@ function genSessionID(req) {
 }
 
 function getCookies(s) {
+	'use strict';
 	var res = {};
 	s.split(';'.forEach(function (ck) {
 		var parts = ck.split('=');
 		res[parts.shift()] = parts.join('=');
-	});
+	}));
 	return res;
 }
 
