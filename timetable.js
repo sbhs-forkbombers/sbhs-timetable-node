@@ -148,10 +148,10 @@ function genSessionID(req) {
 function getCookies(s) {
 	'use strict';
 	var res = {};
-	s.split(';'.forEach(function (ck) {
+	s.split(';').forEach(function (ck) {
 		var parts = ck.split('=');
 		res[parts.shift()] = parts.join('=');
-	}));
+	});
 	return res;
 }
 
