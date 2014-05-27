@@ -32,7 +32,10 @@ var http = require('http'),
 	jade = require('jade'),
 	url = require('url'),
 	db = require('./lib/database.js'),
-	secret = require('./secret.js'),
+    config = require('./config.js'),
+	secret = config.secret,
+	clientID = config.clientID,
+	redirectURI = config.redirectURI,
 	forcedETagUpdateCounter = 0,
 	cachedBells = {},
 	indexCache = '',
@@ -210,7 +213,9 @@ function onRequest(req, res) {
 		httpHeaders(res, 403, 'text/html');
 		fs.createReadStream('static/403.html').pipe(res);
 	} else if (uri.pathname == '/try_do_oauth') {
-		httpHeaders(res, 301, '', false, {'Location': 'https://student.sbhs.net.au/api/authorize?response_type=code&client_id=SbhsTimetableTest&redirect_uri=http://alarmpi:8080/login&scope=all-ro&state='+res.SESSID});
+		httpHeaders(res, 301, '', false, {
+			'Location': 'https://student.sbhs.net.au/api/authorize?response_type=code&client_id='+encodeURIComponent(clientID)+'&redirect_uri='+encodeURIComponent(redirectURI) + '&scope=all-ro&state='+encodeURIComponent(res.SESSID)
+		});
 		res.end();
 	} else if (uri.pathname == '/login') {
 		if ('code' in uri.query) {
@@ -231,7 +236,7 @@ function onRequest(req, res) {
 					'content-type': 'application/x-www-form-urlencoded'
 				}
 			}, function(e) { console.log(e.statusCode); e.on('data', onData); console.log('listener installed'); });
-			myReq.write('grant_type=authorization_code&code='+uri.query.code+'&redirect_uri=http://alarmpi:8080/login&client_id=SbhsTimetableTest&client_secret='+secret+'&state='+uri.query.state+'\n');
+			myReq.write('grant_type=authorization_code&code='+uri.query.code+'&redirect_uri='+encodeURIComponent(redirectURI)+'&client_id='+encodeURIComponent(clientID)+'&client_secret='+secret+'&state='+encodeURIComponent(uri.query.state)+'\n');
 			myReq.end();
 		}
 	} else if (uri.pathname == '/session_debug' && DEBUG) {
