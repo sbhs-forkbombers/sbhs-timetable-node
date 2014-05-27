@@ -35,7 +35,8 @@ var http = require('http'),
 	forcedETagUpdateCounter = 0,
 	cachedBells = {},
 	indexCache = '',
-	sessions = {};
+	sessions = {},
+	secret = require('./secret.js');
 
 console.log('[core] Initialised in in ' + (Date.now() - all_start) + 'ms');
 
@@ -158,26 +159,30 @@ function getCookies(s) {
 function onRequest(req, res) {
 	/*jshint validthis: true*/
 	'use strict';
-	var start = Date.now();
+	var start = Date.now(),
+		genSession;
 	if (req.headers['if-none-match'] == GIT_RV+'_'+forcedETagUpdateCounter && !DEBUG) {
 		res.writeHead(304);
 		res.end();
 		return;
 	}
-	var genSession = true;
-	var user_data = {};
+	genSession = true;
 	if ('cookie' in req.headers) {
 		var cookies = getCookies(req.headers.cookie);
 		if ('SESSID' in cookies) {
-			user_data = sessions[cookies.SESSID];
 			res.SESSID = cookies.SESSID;
+			if (sessions[res.SESSID] === undefined || sessions[res.SESSID] === null) {
+				sessions[res.SESSID] = {};
+			}
 		}
 		else {
 			res.SESSID = genSessionID(req);
+			sessions[res.SESSID] = {};
 		}
 	}
 	else {
 		res.SESSID = genSessionID(req);
+		sessions[res.SESSID] = {};
 	}
 
 
@@ -208,11 +213,33 @@ function onRequest(req, res) {
 		httpHeaders(res, 403, 'text/html');
 		fs.createReadStream('static/403.html').pipe(res);
 	} else if (uri.pathname == '/try_do_oauth') {
-		httpHeaders(res, 301, '', false, {'Location': 'https://student.sbhs.net.au/api/authorize?response_type=code&client_id=SbhsTimetableTest&redirect_uri=http://alarmpi:8080/login&scope=all-ro'});
+		httpHeaders(res, 301, '', false, {'Location': 'https://student.sbhs.net.au/api/authorize?response_type=code&client_id=SbhsTimetableTest&redirect_uri=http://alarmpi:8080/login&scope=all-ro&state='+res.SESSID});
 		res.end();
 	} else if (uri.pathname == '/login') {
-		httpHeaders(res, 200, 'text/plain');
-		res.end(require('util').inspect(req));
+		if ('code' in uri.query) {
+			// get the next code
+			var onData = function(c) {
+				httpHeaders(res, 200, 'application/json');
+				var z = JSON.parse(c);
+				sessions[res.SESSID].accessToken = z.access_token;
+				sessions[res.SESSID].refreshToken = z.refresh_token;
+				sessions[res.SESSID].json = z;
+				res.end(JSON.stringify(sessions[res.SESSID]));
+			};
+			var myReq = http.request({
+				'host': 'student.sbhs.net.au',
+				'method': 'POST',
+				'path': '/api/token',
+				'headers': {
+					'content-type': 'application/x-www-form-urlencoded'
+				}
+			}, function(e) { console.log(e.statusCode); e.on('data', onData); console.log('listener installed'); });
+			myReq.write('grant_type=authorization_code&code='+uri.query.code+'&redirect_uri=http://alarmpi:8080/login&client_id=SbhsTimetableTest&client_secret='+secret+'&state='+uri.query.state+'\n');
+			myReq.end();
+		}
+	} else if (uri.pathname == '/session_debug' && DEBUG) {
+		httpHeaders(res, 200, 'application/json');
+		res.end(JSON.stringify(sessions[res.SESSID]));
 	} else {
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);

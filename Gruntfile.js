@@ -83,7 +83,7 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				expand: true,
-				src: ['dynamic/**', 'static/**', 'timetable.js'],
+				src: ['dynamic/**', 'static/**', 'timetable.js', 'secret.js'],
 				dest: 'build/',
 			},
 			vars: {
