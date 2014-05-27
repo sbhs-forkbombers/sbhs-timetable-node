@@ -32,11 +32,11 @@ var http = require('http'),
 	jade = require('jade'),
 	url = require('url'),
 	db = require('./lib/database.js'),
+	secret = require('./secret.js'),
 	forcedETagUpdateCounter = 0,
 	cachedBells = {},
 	indexCache = '',
-	sessions = {},
-	secret = require('./secret.js');
+	sessions = {};
 
 console.log('[core] Initialised in in ' + (Date.now() - all_start) + 'ms');
 
@@ -99,7 +99,6 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 	if (!('Set-Cookie' in headers) && 'SESSID' in res) {
 		headers['Set-Cookie'] = 'SESSID='+res.SESSID+'; Max-Age=36000';
 	}
-		
 	if (dynamic || DEBUG) { // disable caching
 		headers['Cache-Control'] = 'no-cache';
 	} else if (!dynamic) {
@@ -121,8 +120,7 @@ function getBelltimes(date, res) {
 	}
 	if (date in cachedBells) {
 		res.end(cachedBells[date]);
-	}
-	else {
+	} else {
 		http.request({
 			hostname: 'student.sbhs.net.au',
 			port: 80,
@@ -143,7 +141,7 @@ function genSessionID(req) {
 	var ip = req.connection.remoteAddress;
 	var ua = req.headers['user-agent'];
 	var buf = new Buffer(Date.now().toString() + ip.toString() + ua + Math.floor(Math.random()*100));
-	return buf.toString('hex');	
+	return buf.toString('hex');
 }
 
 function getCookies(s) {
@@ -184,7 +182,6 @@ function onRequest(req, res) {
 		res.SESSID = genSessionID(req);
 		sessions[res.SESSID] = {};
 	}
-
 
 	var target, uri = url.parse(req.url, true);
 	if (uri.pathname === '/') {
