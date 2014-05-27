@@ -217,7 +217,7 @@ function onRequest(req, res) {
 			'Location': 'https://student.sbhs.net.au/api/authorize?response_type=code&client_id='+encodeURIComponent(clientID)+'&redirect_uri='+encodeURIComponent(redirectURI) + '&scope=all-ro&state='+encodeURIComponent(res.SESSID)
 		});
 		res.end();*/
-		auth.getAuthCode(res, clientID, redirectURI, res.SESSID);
+		auth.getAuthCode(res, res.SESSID);
 	} else if (uri.pathname == '/login') {
 /*		if ('code' in uri.query) {
 			// get the next code
@@ -239,11 +239,11 @@ function onRequest(req, res) {
 			}, function(e) { console.log(e.statusCode); e.on('data', onData); console.log('listener installed'); });
 			myReq.write('grant_type=authorization_code&code='+uri.query.code+'&redirect_uri='+encodeURIComponent(redirectURI)+'&client_id='+encodeURIComponent(clientID)+'&client_secret='+secret+'&state='+encodeURIComponent(uri.query.state)+'\n');
 			myReq.end();*/
-		auth.getAuthToken(res, uri, redirectURI, clientID, secret, null);
+		auth.getAuthToken(res, uri, null);
 		//}
 	} else if (uri.pathname == '/session_debug' && DEBUG) {
 		httpHeaders(res, 200, 'application/json');
-		res.end(JSON.stringify(sessions[res.SESSID]));
+		res.end(JSON.stringify(global.sessions[res.SESSID]));
 	} else {
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
