@@ -26,11 +26,15 @@ NPM dependencies (if you're curious):
 
 1. Clone the repository: `git clone https://github.com/sbhs-forkbombers/sbhs-timetable-node`
 2. Install the dependencies: `cd sbhs-timetable-node && npm install`
-3. Unleash the nodeiness: `grunt`
+3. Add your API key to the file 'secret.js' as follows: 
+```javascript
+module.exports = 'My Super Secret Key!';
+```
+4. Unleash the nodeiness: `grunt`
 
 ### Running a minified version
 
-Repeat steps 1-2 from above. Then:
+Repeat steps 1-3 from above. Then:
 
 1. Minify and lint everything: `grunt release`
 2. Run the script: `cd build && node timetable.js`
