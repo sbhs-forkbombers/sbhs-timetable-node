@@ -157,6 +157,17 @@ function getCookies(s) {
 	});
 	return res;
 }
+function requestSafeWrapper(req, res) {
+	try {
+		onRequest.call(this, req, res);
+	}
+	catch (e) {
+		console.log('ERROR HANDLING REQUEST: ' + req.url);
+		console.log(e);
+		console.log(e.stack);
+		serverError().pipe(res);
+	}
+}
 
 function onRequest(req, res) {
 	/*jshint validthis: true*/
@@ -220,8 +231,8 @@ function onRequest(req, res) {
 	} else if (uri.pathname == '/session_debug' && DEBUG) {
 		httpHeaders(res, 200, 'application/json');
 		res.end(JSON.stringify(global.sessions[res.SESSID]));
-	} else if (uri.pathname.match('/api/.*[.]json') && uri.pathname.slice(5) in apis) {
-		apis[uri.pathname.slice(5)]('', res.SESSID, function(obj) {
+	} else if (uri.pathname.match('/api/.*[.]json') && apis.isAPI(uri.pathname.slice(5))) {
+		apis.get(uri.pathname.slice(5), {}, res.SESSID, function(obj) {
 			httpHeaders(res, 200, 'application/json');
 			res.end(JSON.stringify(obj));
 		});
@@ -259,9 +270,9 @@ ipv4server.name = 'ipv4server';
 ipv6server.name = 'ipv6server';
 unixserver.name = 'unixserver';
 
-ipv4server.on('request', onRequest);
-ipv6server.on('request', onRequest);
-unixserver.on('request', onRequest);
+ipv4server.on('request', requestSafeWrapper);
+ipv6server.on('request', requestSafeWrapper);
+unixserver.on('request', requestSafeWrapper);
 
 ipv4server.on('listening', onListening);
 ipv6server.on('listening', onListening);
