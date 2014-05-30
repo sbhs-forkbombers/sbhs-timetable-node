@@ -141,7 +141,7 @@ function calculateUpcomingLesson() {
 		reloading = false;
 		return;
 	}
-	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15})) /*DEBUG: Uncomment next condition to count properly on weekend. Comment to test weekdays on weekends. >>>>>*/ || (new Date()).getDay() > 5 /*<<<<<*/) {
+	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15})) || (new Date()).getDay() > 5) {
 		now = getNextSchoolDay();
 	} else {
 		now = new Date();

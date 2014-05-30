@@ -27,20 +27,23 @@
 
 all_start = Date.now();
 console.log('[core] Loading...');
+/* Requires */
 var http = require('http'),
 	fs = require('fs'),
 	jade = require('jade'),
 	url = require('url'),
 	db = require('./lib/database.js'),
-    config = require('./config.js'),
-	secret = config.secret,
+	auth = require('./lib/auth.js'),
+	apis = require('./lib/api.js'),
+    config = require('./config.js');
+
+/* Variables */
+var secret = config.secret,
 	clientID = config.clientID,
 	redirectURI = config.redirectURI,
 	forcedETagUpdateCounter = 0,
 	cachedBells = {},
-	indexCache = '',
-	auth = require('./lib/auth.js'),
-	apis = require('./lib/api.js');
+	indexCache = '';
 sessions = {}; // global
 
 console.log('[core] Initialised in in ' + (Date.now() - all_start) + 'ms');
@@ -157,17 +160,6 @@ function getCookies(s) {
 	});
 	return res;
 }
-function requestSafeWrapper(req, res) {
-	try {
-		onRequest.call(this, req, res);
-	}
-	catch (e) {
-		console.log('ERROR HANDLING REQUEST: ' + req.url);
-		console.log(e);
-		console.log(e.stack);
-		serverError().pipe(res);
-	}
-}
 
 function onRequest(req, res) {
 	/*jshint validthis: true*/
@@ -199,48 +191,62 @@ function onRequest(req, res) {
 	}
 
 	var target, uri = url.parse(req.url, true);
-	if (uri.pathname === '/') {
+	if (uri.pathname === '/') { // Main page
 		httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
 		res.end(index_cache);
-	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) {
+	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) { // CSS
 		httpHeaders(res, 200, 'text/css');
 		target = uri.pathname.slice(1);
 		fs.createReadStream(target).pipe(res);
 	} else if (uri.pathname == '/script/belltimes.js' && !RELEASE) {
 		fs.createReadStream('script/belltimes.concat.js').pipe(res);
-	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) {
+	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) { // JS
 		httpHeaders(res, 200, 'application/javascript');
 		target = uri.pathname.slice(1);
 		fs.createReadStream(target).pipe(res);
-	} else if (uri.pathname == '/api/belltimes') { // belltimes wrapper
+	} else if (uri.pathname == '/api/belltimes') { // Belltimes wrapper
 		httpHeaders(res, 200, 'application/json');
 		getBelltimes(uri.query.date, res);
-	} else if (uri.pathname == '/favicon.ico') {
+	} else if (uri.pathname == '/favicon.ico') { // favicon
 		httpHeaders(res, 200, 'image/x-icon');
 		fs.createReadStream('static/favicon.ico').pipe(res);
-	} else if (uri.pathname == '/COPYING') {
+	} else if (uri.pathname == '/COPYING') { // License file
         httpHeaders(res, 200, 'text/plain');
         fs.createReadStream('COPYING').pipe(res);
-    } else if (uri.pathname.match('[.]ht.*')) {
+    } else if (uri.pathname.match('[.]ht.*')) { // Deny pattern
 		httpHeaders(res, 403, 'text/html');
 		fs.createReadStream('static/403.html').pipe(res);
-	} else if (uri.pathname == '/try_do_oauth') {
+	} else if (uri.pathname == '/try_do_oauth') { // OAuth2 attempt
 		auth.getAuthCode(res, res.SESSID);
-	} else if (uri.pathname == '/login') {
+	} else if (uri.pathname == '/login') { // Login
 		auth.getAuthToken(res, uri, null);
-	} else if (uri.pathname == '/session_debug' && DEBUG) {
+	} else if (uri.pathname == '/session_debug' && DEBUG) { // Session information
 		httpHeaders(res, 200, 'application/json');
 		res.end(JSON.stringify(global.sessions[res.SESSID]));
-	} else if (uri.pathname.match('/api/.*[.]json') && apis.isAPI(uri.pathname.slice(5))) {
+	} else if (uri.pathname.match('/api/.*[.]json') && apis.isAPI(uri.pathname.slice(5))) { // API calls
 		apis.get(uri.pathname.slice(5), {}, res.SESSID, function(obj) {
 			httpHeaders(res, 200, 'application/json');
 			res.end(JSON.stringify(obj));
 		});
-	} else {
+	} else { // 404 for everything else
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
 	}
 	console.log('[' + this.name + ']', req.method, req.url, 'in', Date.now()-start + 'ms');
+}
+
+function requestSafeWrapper(req, res) {
+    /*jshint validthis: true*/
+    'use strict';
+	try {
+		onRequest.call(this, req, res);
+	}
+	catch (e) {
+		console.log('ERROR HANDLING REQUEST: ' + req.url);
+		console.log(e);
+		console.log(e.stack);
+		serverError().pipe(res);
+	}
 }
 
 function onListening() {
@@ -250,7 +256,7 @@ function onListening() {
 }
 
 function nxListening() {
-    /* jshint validthis: true*/
+    /*jshint validthis: true*/
     'use strict';
     console.log('[' + this.name + '] Listening on ' + this.path);
 }
