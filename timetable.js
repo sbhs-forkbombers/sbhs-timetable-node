@@ -224,7 +224,7 @@ function onRequest(req, res) {
 		httpHeaders(res, 200, 'application/json');
 		res.end(JSON.stringify(global.sessions[res.SESSID]));
 	} else if (uri.pathname.match('/api/.*[.]json') && apis.isAPI(uri.pathname.slice(5))) { // API calls
-		apis.get(uri.pathname.slice(5), {}, res.SESSID, function(obj) {
+		apis.get(uri.pathname.slice(5), uri.query, res.SESSID, function(obj) {
 			httpHeaders(res, 200, 'application/json');
 			res.end(JSON.stringify(obj));
 		});
