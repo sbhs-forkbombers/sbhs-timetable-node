@@ -71,9 +71,11 @@ function calculateDay() {
 function reloadBelltimes() {
 	'use strict';
 	reloading = true;
+	var d = getNextSchoolDay();
+	var s = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
 	var myXHR = new XMLHttpRequest();
 	myXHR.onload = handleBells;
-	myXHR.open('get', '/api/belltimes?date=' + getNextSchoolDay().toString('yyyy-MM-d'), handleBells);
+	myXHR.open('get', '/api/belltimes?date=' + s, handleBells);
 	myXHR.send();
 	//$.getJSON('/api/belltimes?date=' + getNextSchoolDay().toString('yyyy-MM-d'), handleBells);
 }
@@ -82,6 +84,7 @@ function handleBells(bells) {
 	/* jshint validthis: true */
 	'use strict';
 	belltimes = JSON.parse(this.responseText);
+	loadTimetable(); // now that the belltimes are done, we can load the subject info
 	if (document.readyState == 'complete') {
 		loadComplete();
 	}
@@ -97,7 +100,7 @@ function domReady() {
 	if (belltimes !== null && belltimes !== undefined) {
 		loadComplete();
 	} else {
-		reloadBelltimes();
+//		reloadBelltimes();
 	}
 }
 

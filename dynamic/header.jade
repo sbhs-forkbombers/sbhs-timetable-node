@@ -20,6 +20,8 @@ head
 	//-link(rel="stylesheet",href="/style/common.css")
 	style
 		include ../style/common.css
+	//- this will be replaced
+	script window.loggedIn = '%%%LOGGEDIN%%%';
 	meta(charset="UTF-8")
 	meta(http-equiv="x-ua-compatible",content="IE=edge")
 	yield //- reset to 'head' level

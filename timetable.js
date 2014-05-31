@@ -193,7 +193,7 @@ function onRequest(req, res) {
 	var target, uri = url.parse(req.url, true);
 	if (uri.pathname === '/') { // Main page
 		httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
-		res.end(index_cache);
+		res.end(index_cache.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined));
 	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) { // CSS
 		httpHeaders(res, 200, 'text/css');
 		target = uri.pathname.slice(1);
