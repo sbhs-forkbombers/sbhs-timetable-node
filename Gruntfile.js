@@ -45,7 +45,7 @@ module.exports = function(grunt) {
 			}
 		},
 		jshint: {
-			files: ['script/*.js', 'timetable.js'],
+			files: ['script/*.js', 'timetable.js', 'lib/*.js'],
 			options: {
 				jshintrc: true,
 				reporter: require('jshint-stylish'),
