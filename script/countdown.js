@@ -99,8 +99,12 @@ function domReady() {
 	}
 	if (belltimes !== null && belltimes !== undefined) {
 		loadComplete();
-	} else {
-//		reloadBelltimes();
+	} 
+	if (getLoggedIn()) {
+		$('#login-status').html('Logged in. <a href="/logout">Logout</a>');
+	}
+	else {
+		$('#login-status').html('<a href="/try_do_oauth">Login');
 	}
 }
 

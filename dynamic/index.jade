@@ -24,6 +24,7 @@ html
 			#period-name{font-size:50px;}
 			#in{font-size:16px;font-weight:400;}
 			#countdown{font-size:100px;font-weight:100;}
+			#sidebar{position:fixed;right:0;top:0;text-align:right;font-size:12px}
 		//-link(rel="stylesheet",href="/style/main.css")
 		//-link(href='//fonts.googleapis.com/css?family=Roboto+Condensed:400&subset=latin',rel='stylesheet',type='text/css')
 		script(async,defer,src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js")
@@ -37,3 +38,7 @@ html
 					span#in-label ends in
 					div#countdown
 						span#countdown-label NaN:NaN:NaN
+		yield
+		div#sidebar
+			span#login-status
+			span#next

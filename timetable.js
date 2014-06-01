@@ -94,9 +94,8 @@ function cache_index() {
 
 process.on('SIGHUP', function() {
 	'use strict';
-	forcedETagUpdateCounter++;
 	cache_index();
-	console.log('ETagUpdateCounts: ' + forcedETagUpdateCounter);
+	cleanSessions();
 });
 
 function httpHeaders(res, response, contentType, dynamic, headers) {
@@ -161,6 +160,23 @@ function getCookies(s) {
 	return res;
 }
 
+function cleanSessions() {
+	var start = Date.now().
+		cleaned = 0;
+	console.log('[core] Cleaning sessions...');
+	for (i in global.sessions) {
+		if (global.sessions[i].expires < Date.now()) {
+			delete global.sessions[i];
+			cleaned++;
+		}
+		else if (Object.keys(global.sessions[i]).length < 2) { // not storing anything in the session, so it's just eating memory.
+			delete global.sessions[i];
+			cleaned++;
+		}
+	}
+	console.log('[core] Cleaned ' + cleaned + ' sessions in ' + Date.now()-start + 'ms');
+}
+
 function onRequest(req, res) {
 	/*jshint validthis: true*/
 	'use strict';
@@ -177,17 +193,17 @@ function onRequest(req, res) {
 		if ('SESSID' in cookies) {
 			res.SESSID = cookies.SESSID;
 			if (sessions[res.SESSID] === undefined || sessions[res.SESSID] === null) {
-				sessions[res.SESSID] = {};
+				sessions[res.SESSID] = { expires: Date.now() + (1000 * 60 * 60 * 24 * 90) };
 			}
 		}
 		else {
 			res.SESSID = genSessionID(req);
-			sessions[res.SESSID] = {};
+			sessions[res.SESSID] = { expires: Date.now() + (1000 * 60 * 60 * 24 * 90) };
 		}
 	}
 	else {
 		res.SESSID = genSessionID(req);
-		sessions[res.SESSID] = {};
+		sessions[res.SESSID] = { expires: Date.now() + (1000 * 60 * 60 * 24 * 90) };
 	}
 
 	var target, uri = url.parse(req.url, true);
@@ -218,7 +234,7 @@ function onRequest(req, res) {
 		fs.createReadStream('static/403.html').pipe(res);
 	} else if (uri.pathname == '/try_do_oauth') { // OAuth2 attempt
 		auth.getAuthCode(res, res.SESSID);
-	} else if (uri.pathname == '/login') { // Login
+	} else if (uri.pathname == '/login') { // Handle codes from OAuth
 		auth.getAuthToken(res, uri, null);
 	} else if (uri.pathname == '/session_debug' && DEBUG) { // Session information
 		httpHeaders(res, 200, 'application/json');
@@ -228,6 +244,13 @@ function onRequest(req, res) {
 			httpHeaders(res, 200, 'application/json');
 			res.end(JSON.stringify(obj));
 		});
+	} else if (uri.pathname == '/logout') {
+		httpHeaders(res, 302, 'text/plain');
+		res.end('Redirecting...');
+		delete global.sessions[res.SESSID].accessToken;
+		delete global.sessions[res.SESSID].refreshToken;
+		delete global.sessions[res.SESSID].accessTokenExpires;
+		delete global.sessions[res.SESSID].refreshTokenExpires;
 	} else { // 404 for everything else
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
@@ -285,6 +308,7 @@ ipv6server.on('listening', onListening);
 unixserver.on('listening', nxListening);
 
 ipv4server.listen(8080, '0.0.0.0');
+setInterval(cleanSessions, 36000000); // clean expired sessions every hour
 if (IPV6) {
 	ipv6server.listen(8080, '::');
 }
