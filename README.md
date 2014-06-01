@@ -27,7 +27,7 @@ NPM dependencies (if you're curious):
 1. Clone the repository: `git clone https://github.com/sbhs-forkbombers/sbhs-timetable-node`
 2. Install the dependencies: `cd sbhs-timetable-node && npm install`
 3. Rename config\_sample.js to config.js and configure the values appropriately.
-4. Install `grunt-cli` globally (if it's not): `npm install -g grunt-cli` (may need to be superuser).
+4. Install `grunt-cli` globally (if it's not already): `npm install -g grunt-cli` (may need to be superuser).
 5. Unleash the nodeiness: `grunt`
 
 ### Running a minified version
