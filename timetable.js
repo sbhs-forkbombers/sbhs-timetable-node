@@ -161,7 +161,7 @@ function getCookies(s) {
 }
 
 function cleanSessions() {
-	var start = Date.now().
+	var start = Date.now()
 		cleaned = 0;
 	console.log('[core] Cleaning sessions...');
 	for (i in global.sessions) {
