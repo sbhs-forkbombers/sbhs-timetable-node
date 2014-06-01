@@ -174,9 +174,10 @@ function calculateUpcomingLesson() {
 function updatePeriodLabel() {
 	'use strict';
 	var name = belltimes.bells[currentBellIndex].bell,
-		inLabel = 'starts in';
+		inLabel = 'starts in', pNum, roomChangedInfo, hasCover, hasCasual;
 	name = name.replace('Roll Call', 'School Starts').replace('End of Day', 'School Ends');
 	if (/^\d$/.test(name)) { // 'Period x' instead of 'x'
+		pNum = name;
 		if (name in window.todayNames.timetable) {
 			name = window.todayNames.timetable[name].fullName;
 		}
@@ -184,13 +185,35 @@ function updatePeriodLabel() {
 			name = 'Period ' + name;
 		}
 	} else if (name == 'Transition') {
-		name = 'Period ' + belltimes.bells[currentBellIndex - 1].bell;
+		pNum = belltimes.bells[currentBellIndex-1].bell;
+		if (name in window.todayNames.timetable) {
+			name = window.todayNames.timetable[belltimes.bells[currentBellIndex-1].bell].fullName;
+		}
+		else {
+			name = 'Period ' + belltimes.bells[currentBellIndex - 1].bell;
+		}
 		inLabel = 'ends in';
 	} else if (name == 'School Starts' || name == 'School Ends') {
 		inLabel = 'in';
 	}
+	if (pNum && pNum in window.todayNames.timetable && window.todayNames.timetable[pNum].changed) {
+		pNum = window.todayNames.timetable[pNum];
+		roomChangedInfo = '';
+		if ('roomTo' in pNum) {
+			roomChangedInfo = name + ' is in room ' + pNum.roomTo + ' instead of ' + pNum.roomFrom + '. ';
+		}
+		if ('hasCover' in pNum) {
+			if (pNum.hasCover && pNum.hasCasual) { // casual teacher
+				roomChangedInfo += 'You\'ll be having ' + pNum.casualDisplay + ' instead of your usual teacher.';
+			}
+			else if (!pNum.hasCover) { // no teacher
+				roomChangedInfo += 'There\'s no teacher covering this class today (we think).';
+			}
+		}
+	}
 	$('#period-label').text(name);
 	$('#in-label').text(inLabel);
+	$('#top-line-notice').text(roomChangedInfo);
 }
 
 function updateCountdownLabel() {

@@ -251,6 +251,9 @@ function onRequest(req, res) {
 		delete global.sessions[res.SESSID].refreshToken;
 		delete global.sessions[res.SESSID].accessTokenExpires;
 		delete global.sessions[res.SESSID].refreshTokenExpires;
+	} else if (uri.pathname == '/wat.html') {
+	   httpHeaders(res, 200, 'text/html');
+	   fs.createReadStream('static/wat.html').pipe(res);
 	} else { // 404 for everything else
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);

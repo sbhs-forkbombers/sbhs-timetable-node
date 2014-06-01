@@ -20,11 +20,12 @@ html
 	include header.jade
 		title SBHS Timetable #{page}
 		style.
-			#content{position:absolute;top:0;left:0;width:100%;text-align:center;font-weight:100;font-size:50px;}
+			#content{position:absolute;top:20px;left:0;width:100%;text-align:center;font-weight:100;font-size:50px;}
 			#period-name{font-size:50px;}
 			#in{font-size:16px;font-weight:400;}
 			#countdown{font-size:100px;font-weight:100;}
 			#sidebar{position:fixed;right:0;top:0;text-align:right;font-size:12px}
+			#top-line-notice{position:fixed;top:0;left:0;width:100%;text-align:center}
 		//-link(rel="stylesheet",href="/style/main.css")
 		//-link(href='//fonts.googleapis.com/css?family=Roboto+Condensed:400&subset=latin',rel='stylesheet',type='text/css')
 		script(async,defer,src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js")
@@ -39,6 +40,7 @@ html
 					div#countdown
 						span#countdown-label NaN:NaN:NaN
 		yield
+		div#top-line-notice
 		div#sidebar
 			span#login-status
 			span#next
