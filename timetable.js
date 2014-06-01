@@ -229,7 +229,7 @@ function onRequest(req, res) {
 	} else if (uri.pathname == '/COPYING') { // License file
         httpHeaders(res, 200, 'text/plain');
         fs.createReadStream('COPYING').pipe(res);
-    } else if (uri.pathname.match('[.]ht.*')) { // Deny pattern
+    } else if (uri.pathname.match('^[.]ht.*')) { // Deny pattern
 		httpHeaders(res, 403, 'text/html');
 		fs.createReadStream('static/403.html').pipe(res);
 	} else if (uri.pathname == '/try_do_oauth') { // OAuth2 attempt
