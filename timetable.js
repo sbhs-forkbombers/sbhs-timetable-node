@@ -155,7 +155,7 @@ function getCookies(s) {
 	var res = {};
 	s.split(';').forEach(function (ck) {
 		var parts = ck.split('=');
-		res[parts.shift()] = parts.join('=');
+		res[parts.shift().trim()] = parts.join('=').trim();
 	});
 	return res;
 }
