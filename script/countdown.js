@@ -173,15 +173,18 @@ function updatePeriodLabel() {
 		inLabel = 'starts in';
 	name = name.replace('Roll Call', 'School Starts').replace('End of Day', 'School Ends');
 	if (/^\d$/.test(name)) { // 'Period x' instead of 'x'
-		name = 'Period ' + name;
+		if (name in window.todayNames.timetable) {
+			name = window.todayNames.timetable[name].fullName;
+		}
+		else {
+			name = 'Period ' + name;
+		}
 	} else if (name == 'Transition') {
 		name = 'Period ' + belltimes.bells[currentBellIndex - 1].bell;
 		inLabel = 'ends in';
 	} else if (name == 'School Starts' || name == 'School Ends') {
 		inLabel = 'in';
 	}
-	console.log(name);
-	console.log(inLabel);
 	$('#period-label').text(name);
 	$('#in-label').text(inLabel);
 }

@@ -17,7 +17,7 @@ function loadTimetable() {
 		window.todayNames = JSON.parse(window.localStorage[belltimes.day+belltimes.weekType]);
 	}
 	else if (!getLoggedIn()) {
-		window.todayNames = {};
+		window.todayNames = {timetable: {}};
 		return;
 	}
 	var xhr = new XMLHttpRequest();
