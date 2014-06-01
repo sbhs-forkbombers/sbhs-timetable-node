@@ -92,6 +92,24 @@ function cache_index() {
 	console.log('[core] Index page cached in ' + (Date.now() - jade_comp) + 'ms');
 }
 
+function cleanSessions() {
+	'use strict';
+	var start = Date.now(),
+		cleaned = 0;
+	console.log('[core] Cleaning sessions...');
+	for (var i in global.sessions) {
+		if (global.sessions[i].expires < Date.now()) {
+			delete global.sessions[i];
+			cleaned++;
+		}
+		else if (Object.keys(global.sessions[i]).length < 2) { // not storing anything in the session, so it's just eating memory.
+			delete global.sessions[i];
+			cleaned++;
+		}
+	}
+	console.log('[core] Cleaned ' + cleaned + ' sessions in ' + Date.now()-start + 'ms');
+}
+
 process.on('SIGHUP', function() {
 	'use strict';
 	cache_index();
@@ -158,23 +176,6 @@ function getCookies(s) {
 		res[parts.shift().trim()] = parts.join('=').trim();
 	});
 	return res;
-}
-
-function cleanSessions() {
-	var start = Date.now()
-		cleaned = 0;
-	console.log('[core] Cleaning sessions...');
-	for (i in global.sessions) {
-		if (global.sessions[i].expires < Date.now()) {
-			delete global.sessions[i];
-			cleaned++;
-		}
-		else if (Object.keys(global.sessions[i]).length < 2) { // not storing anything in the session, so it's just eating memory.
-			delete global.sessions[i];
-			cleaned++;
-		}
-	}
-	console.log('[core] Cleaned ' + cleaned + ' sessions in ' + Date.now()-start + 'ms');
 }
 
 function onRequest(req, res) {

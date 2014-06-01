@@ -1,7 +1,7 @@
 function getLoggedIn() {
 	'use strict';
 	return window.loggedIn;
-}	
+}
 
 function handleTimetable(e) {
 	'use strict';
