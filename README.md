@@ -35,4 +35,4 @@ NPM dependencies (if you're curious):
 Do steps 1-4 from above. Then:
 
 1. Minify and lint everything: `grunt release`
-2. Run the script: `cd build && node timetable.js`
+2. Run the script: `cd build && node server.js`
