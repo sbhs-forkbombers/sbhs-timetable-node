@@ -46,7 +46,7 @@ module.exports = function(grunt) {
 			}
 		},
 		jshint: {
-			files: ['script/*.js', 'timetable.js', 'lib/*.js'],
+			files: ['script/*.js', 'server.js', 'lib/*.js'],
 			options: {
 				jshintrc: true,
 				reporter: require('jshint-stylish'),
@@ -57,7 +57,7 @@ module.exports = function(grunt) {
 				wait: true,
 			},
 			target: {
-				args: [ 'timetable.js' ],
+				args: [ 'server.js' ],
 			}
 
 		},
@@ -84,7 +84,7 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				expand: true,
-				src: ['dynamic/**', 'static/**', 'timetable.js', 'secret.js'],
+				src: ['dynamic/**', 'static/**', 'server.js', 'secret.js'],
 				dest: 'build/',
 			},
 			vars: {
