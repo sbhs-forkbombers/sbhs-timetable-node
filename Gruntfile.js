@@ -31,10 +31,11 @@ module.exports = function(grunt) {
 					drop_console: true,
 					global_defs: {
 						DEBUG: false,
-						RELEASE: false
+						RELEASE: true
 					},
 					dead_code: true
-				}
+				},
+				mangle: true
 			},
 			dynamic_mappings: {
 				expand: true,
