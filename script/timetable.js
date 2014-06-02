@@ -7,8 +7,11 @@ function handleTimetable(e) {
 	'use strict';
 	/* jshint validthis: true */
 	var lsKey = belltimes.day + belltimes.weekType;
-	window.localStorage[lsKey] = this.response;
+	if (e.timetable && !e.hasVariations) {
+		window.localStorage[lsKey] = this.response;
+	}
 	window.todayNames = JSON.parse(this.response);
+	updatePeriodLabel();
 }
 
 function loadTimetable() {
@@ -18,6 +21,9 @@ function loadTimetable() {
 	}
 	else if (!getLoggedIn()) {
 		window.todayNames = {timetable: {}};
+		return;
+	}
+	if (!getLoggedIn()) {
 		return;
 	}
 	var xhr = new XMLHttpRequest();

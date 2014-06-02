@@ -98,7 +98,7 @@ function domReady() {
 		return;
 	}
 	if (belltimes !== null && belltimes !== undefined) {
-		loadComplete();
+		setTimeout(loadComplete, 0);
 	} 
 	if (getLoggedIn()) {
 		$('#login-status').html('Logged in. <a href="/logout">Logout</a>');
@@ -106,6 +106,10 @@ function domReady() {
 	else {
 		$('#login-status').html('<a href="/try_do_oauth">Login');
 	}
+	
+	$('#left-pane-arrow').click(function() {
+		$('#left-pane-arrow,#left-pane').toggleClass('expanded');
+	});
 }
 
 function loadComplete() {
