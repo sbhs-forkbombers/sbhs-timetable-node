@@ -88,7 +88,7 @@
 	z-index: 3;
 	overflow: auto;
 	width: 40%;
-	background-color: rgba(0,0,0,0.5);
+	background-color: rgba(0,0,0,0.75);
 }
 
 #left-pane-arrow {
@@ -117,4 +117,20 @@
 	text-align: center;
 	top: 50%;
 	margin-top: -20px;
+}
+
+#left-pane table {
+	width: 100%;
+	text-align: center;
+	font-size: 40px;
+	font-weight: 100;
+}
+
+.changed {
+	color: #FFE733;
+}
+
+.cancelled {
+	text-decoration: line-through;
+	font-style: italic;
 }
