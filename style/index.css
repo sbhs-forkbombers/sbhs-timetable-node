@@ -27,6 +27,7 @@
 	right: 0;
 	top: 0;
 	text-align: right;
+	font-size: 12px
 }
 
 #top-line-notice {
@@ -100,7 +101,6 @@
 #left-pane-arrow.expanded {
 	border-left-color: transparent;
 	border-right-color: white;
-	left: 40%;
 }
 #left-pane {
 	left: -100%;
@@ -124,6 +124,7 @@
 	text-align: center;
 	font-size: 40px;
 	font-weight: 100;
+	cursor: default;
 }
 
 .changed {

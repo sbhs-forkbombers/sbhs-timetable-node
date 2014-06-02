@@ -247,7 +247,7 @@ function onRequest(req, res) {
 		});
 	} else if (uri.pathname == '/logout') {
 		httpHeaders(res, 302, 'text/plain');
-		res.end('Redirecting...');
+		//res.end('Redirecting...');
 		delete global.sessions[res.SESSID].accessToken;
 		delete global.sessions[res.SESSID].refreshToken;
 		delete global.sessions[res.SESSID].accessTokenExpires;
@@ -272,6 +272,7 @@ function requestSafeWrapper(req, res) {
 		console.log('ERROR HANDLING REQUEST: ' + req.url);
 		console.log(e);
 		console.log(e.stack);
+		res.writeHead(500, 'text/html');
 		serverError().pipe(res);
 	}
 }

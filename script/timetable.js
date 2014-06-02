@@ -18,8 +18,11 @@ function handleTimetable(e) {
 
 function loadTimetable() {
 	'use strict';
+	console.log(belltimes.day+belltimes.weekType);
 	if ((belltimes.day+belltimes.weekType) in window.localStorage) {
+		console.log('loading from localStorage');
 		window.todayNames = JSON.parse(window.localStorage[belltimes.day+belltimes.weekType]);
+		window.lso = todayNames;
 	}
 	else if (!getLoggedIn()) {
 		window.todayNames = {timetable: {}};
