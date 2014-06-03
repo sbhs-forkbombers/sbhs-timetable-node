@@ -68,7 +68,7 @@ function handleLeftPane() {
 			teacher = timetable[i].teacher;
 			fullTeacher = timetable[i].fullTeacher;
 			subjName = timetable[i].fullName;
-			if (/\d$/.test(timetable[i].title)) {
+			if (/\d$/.test(timetable[i].title) || /[a-z][A-Z]$/.test(timetable[i].title)) {
 				suffix = timetable[i].title.substr(-1);
 				subj = subj.slice(0,-1);
 			}
