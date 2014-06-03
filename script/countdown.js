@@ -116,6 +116,7 @@ function loadComplete() {
 	'use strict';
 	reloading = false;
 	calculateUpcomingLesson();
+	updateCountdownLabel();
 	setInterval(updateCountdownLabel, 1000);
 }
 
@@ -172,7 +173,7 @@ function calculateUpcomingLesson() {
 	currentBellIndex = Number(lastOK);
 	nextStart = nextBell;
 	reloading = false;
-	updatePeriodLabel();
+	setTimeout(updatePeriodLabel, 100); // async
 }
 
 function updatePeriodLabel() {
@@ -190,7 +191,7 @@ function updatePeriodLabel() {
 		}
 	} else if (name == 'Transition') {
 		pNum = belltimes.bells[currentBellIndex-1].bell;
-		if (name in window.todayNames.timetable) {
+		if (pNum in window.todayNames.timetable) {
 			name = window.todayNames.timetable[belltimes.bells[currentBellIndex-1].bell].fullName;
 		}
 		else {

@@ -11,7 +11,16 @@ function handleTimetable(e) {
 	if (res.timetable && !res.hasVariations) {
 		window.localStorage[lsKey] = this.response;
 	}
+	else if (!res.timetable) {
+		$('#rtd-unavailable').html('Real-time data inaccessible');
+		return; // we don't want to do that... TODO refresh access token and stuff
+	}
 	window.todayNames = res;
+	$('#rtd-unavailable').html('Loaded real-time data!');
+	setTimeout(function() { 
+		$('#rtd-unavailable').fadeOut();
+		setTimeout(function() { $('#rtd-unavailable').html('').css({'display': 'block'}); }, 1000);
+	}, 3000);
 	updatePeriodLabel();
 	handleLeftPane();
 }
@@ -22,13 +31,15 @@ function loadTimetable() {
 	if ((belltimes.day+belltimes.weekType) in window.localStorage) {
 		console.log('loading from localStorage');
 		window.todayNames = JSON.parse(window.localStorage[belltimes.day+belltimes.weekType]);
-		window.lso = todayNames;
+		setTimeout(handleLeftPane, 0);
+		$('#rtd-unavailable').html('Loading real-time data...');
 	}
-	else if (!getLoggedIn()) {
-		window.todayNames = {timetable: {}};
-		return;
+	else if (!getLoggedIn() && !window.todayNames) {
+		console.log('umm');
+		window.todayNames = {timetable: {failure: true}};
 	}
 	if (!getLoggedIn()) {
+		$('#rtd-unavailable').html('<a href="/try_do_oauth">Login</a> to use real-time data');
 		return;
 	}
 	var xhr = new XMLHttpRequest();

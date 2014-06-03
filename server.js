@@ -35,7 +35,8 @@ var http = require('http'),
 	db = require('./lib/database.js'),
 	auth = require('./lib/auth.js'),
 	apis = require('./lib/api.js'),
-    config = require('./config.js');
+    config = require('./config.js'),
+	request = require('request');
 
 /* Variables */
 var secret = config.secret,
@@ -146,18 +147,22 @@ function getBelltimes(date, res) {
 	if (date in cachedBells) {
 		res.end(cachedBells[date]);
 	} else {
-		http.request({
-			hostname: 'student.sbhs.net.au',
-			port: 80,
-			path: '/api/timetable/bells.json?date='+date,
-			method: 'GET'
-		}, function(rsp) {
-			rsp.setEncoding('utf8');
-			rsp.on('data', function(b) {
+		request('http://student.sbhs.net.au/api/timetable/bells.json?date='+date, 
+			function(err, r, b) {
+				if (err || r.statusCode != 200) {
+					if (err) {
+						console.error('failed to get bells for',date,' err='+err);
+						res.end('{"error": "internal", "statusCode": 500}');
+					} else {
+						console.error('Got a ' + r.statusCode + ' from SBHS for the belltimes for ' + date);
+						res.end('{"error": "remote", "statusCode":'+r.statusCode+'}');
+					}
+					return;
+				}
 				cachedBells[date] = b;
 				res.end(b);
-			});
-		}).end();
+			}
+		);
 	}
 }
 
@@ -228,9 +233,9 @@ function onRequest(req, res) {
 		httpHeaders(res, 200, 'image/x-icon');
 		fs.createReadStream('static/favicon.ico').pipe(res);
 	} else if (uri.pathname == '/COPYING') { // License file
-        httpHeaders(res, 200, 'text/plain');
-        fs.createReadStream('COPYING').pipe(res);
-    } else if (uri.pathname.match('^[.]ht.*')) { // Deny pattern
+		httpHeaders(res, 200, 'text/plain');
+		fs.createReadStream('COPYING').pipe(res);
+	} else if (uri.pathname.match('^[.]ht.*')) { // Deny pattern
 		httpHeaders(res, 403, 'text/html');
 		fs.createReadStream('static/403.html').pipe(res);
 	} else if (uri.pathname == '/try_do_oauth') { // OAuth2 attempt
@@ -253,8 +258,22 @@ function onRequest(req, res) {
 		delete global.sessions[res.SESSID].accessTokenExpires;
 		delete global.sessions[res.SESSID].refreshTokenExpires;
 	} else if (uri.pathname == '/wat.html') {
-	   httpHeaders(res, 200, 'text/html');
-	   fs.createReadStream('static/wat.html').pipe(res);
+		httpHeaders(res, 200, 'text/html');
+		fs.createReadStream('static/wat.html').pipe(res);
+	} else if (uri.pathname == '/reset_access_token') {
+		httpHeaders(res, 200, 'application/json');
+		delete global.sessions[res.SESSID].accessToken;	
+		global.sessions[res.SESSID].accessTokenExpires = 0;
+		res.end(JSON.stringify(global.sessions[res.SESSID]));
+	} else if (uri.pathname == '/refresh_token') {
+		httpHeaders(res, 200, 'application/json');
+		if (global.sessions[res.SESSID].refreshToken) {
+		  auth.refreshAuthToken(global.sessions[res.SESSID].refreshToken, res.SESSID, function() {
+			  res.end(JSON.stringify(global.sessions[res.SESSID]));
+		  });
+		} else {
+			res.end('{"error": "not logged in"}');
+		}
 	} else { // 404 for everything else
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
@@ -263,8 +282,8 @@ function onRequest(req, res) {
 }
 
 function requestSafeWrapper(req, res) {
-    /*jshint validthis: true*/
-    'use strict';
+	/*jshint validthis: true*/
+	'use strict';
 	try {
 		onRequest.call(this, req, res);
 	}
@@ -284,14 +303,14 @@ function onListening() {
 }
 
 function nxListening() {
-    /*jshint validthis: true*/
-    'use strict';
-    console.log('[' + this.name + '] Listening on ' + this.path);
+	/*jshint validthis: true*/
+	'use strict';
+	console.log('[' + this.name + '] Listening on ' + this.path);
 }
 if (RELEASE) {
-    console.log('[core] SBHS-Timetable-Node version ' + REL_RV + ' starting server...');
+	console.log('[core] SBHS-Timetable-Node version ' + REL_RV + ' starting server...');
 } else {
-    console.log('[core] SBHS-Timetable-Node git revision ' + GIT_RV.substr(0,6) + ' starting server...');
+	console.log('[core] SBHS-Timetable-Node git revision ' + GIT_RV.substr(0,6) + ' starting server...');
 }
 
 index_cache = serverError;
@@ -318,7 +337,7 @@ if (IPV6) {
 	ipv6server.listen(8080, '::');
 }
 if (process.platform !== 'win32') {
-    unixserver.path = '/tmp/timetable.sock';
+	unixserver.path = '/tmp/timetable.sock';
 	unixserver.listen(unixserver.path);
-    fs.chmod(unixserver.path, '777');
+	fs.chmod(unixserver.path, '777');
 }
