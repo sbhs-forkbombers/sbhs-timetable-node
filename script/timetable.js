@@ -56,7 +56,7 @@ function handleLeftPane() {
 		prefix, subj, suffix, room, teacher, fullTeacher, subjName,
 		roomChanged, teacherChanged, cancelled = false;
 	for (var i = 1; i < 6; i++) {
-		if (!timetable[i].room) {
+		if (!(i in timetable) || !timetable[i].room) {
 			html += '<tr><td>Free period</td><td></td><td></td></tr>';
 		}
 		else {

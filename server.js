@@ -260,6 +260,9 @@ function onRequest(req, res) {
 	} else if (uri.pathname == '/wat.html') {
 		httpHeaders(res, 200, 'text/html');
 		fs.createReadStream('static/wat.html').pipe(res);
+	} else if (uri.pathname == '/faq.html') {
+	   httpHeaders(res, 200, 'text/html');
+	   fs.createReadStream('static/faq.html').pipe(res);
 	} else if (uri.pathname == '/reset_access_token') {
 		httpHeaders(res, 200, 'application/json');
 		delete global.sessions[res.SESSID].accessToken;	

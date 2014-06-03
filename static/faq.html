@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="/style/common.css" />
+		<link href='//fonts.googleapis.com/css?family=Roboto:400,100&subset=latin' rel='stylesheet' type='text/css' />
+        <meta charset="UTF-8" />
+		<title>What's This?</title>
+	</head>
+	<script>
+function clearLocalStorage() {
+	for (i in localStorage) {
+		localStorage.removeItem(i);
+	}
+	document.getElementById('removed').innerHTML = 'Done! 0 entries stored.';
+}
+	</script>
+	<body onload="document.getElementById('removed').innerHTML = localStorage.length + ' entries stored.'">
+	<h1 style="font-weight: 100; font-size: 50px">Hi there!</h1>
+	Congratulations - you've reached SBHSTimetable.tk v2.0!<br /><br />
+	<h2>What's new?</h2>
+	<hr />
+	<ol>
+		<li><strong>Security</strong> &mdash; Now you don't have to type in your timetable - or even give us your identity. All we get is a single token that allows us to retrieve data on your behalf and display it to you.<br />We can't store or log your data, so only you and the people sitting behind you can see it.</li>
+		<li><strong>Simplicity</strong> &mdash; It's been rewritten from the ground up using the same engine as Google Chrome, to be faster, smaller and more efficient.</li>
+		<li><strong>Real-time updates</strong> &mdash; Got a room change? Or maybe a casual? It'll show up here (we make no claims as to the reliability of this information. <strong>Check your student portal or the room your class is timetabled at for more solid information</strong>)</li>
+	</ol>
+	All these good things, and if you're curious about how your data is handled, or want to contribute, you can take a look at the code which can be found <a href="https://github.com/sbhs-forkbombers/sbhs-timetable-node">here</a><br /><br />
+	<h2>I'm logged out, but it still remembers my timetable?</h2>
+	That's normal. If you want to make it forget this you can either clear the local storage data in your browser or click 
+	<a href="javascript:void(0)" onclick="clearLocalStorage()">here</a><span style="position: absolute; right: 0; text-align: right; font-size: 24px" id="removed"></div>
+	</body>
+</html>
