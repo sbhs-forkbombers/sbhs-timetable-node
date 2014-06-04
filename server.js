@@ -25,7 +25,7 @@
  * Empty line after a function defenition
  */
 
-all_start = Date.now();
+var all_start = Date.now();
 console.log('[core] Loading...');
 /* Requires */
 var http = require('http'),
@@ -316,7 +316,7 @@ if (RELEASE) {
 	console.log('[core] SBHS-Timetable-Node git revision ' + GIT_RV.substr(0,6) + ' starting server...');
 }
 
-index_cache = serverError;
+var index_cache = serverError;
 cache_index();
 var ipv4server = http.createServer(),
 	ipv6server = http.createServer(),
