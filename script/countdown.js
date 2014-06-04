@@ -84,7 +84,8 @@ function handleBells(bells) {
 	/* jshint validthis: true */
 	'use strict';
 	belltimes = JSON.parse(this.responseText);
-	loadTimetable(); // now that the belltimes are done, we can load the subject info
+	setTimeout(loadTimetable, 0); // now that the belltimes are done, we can load the subject info
+	setTimeout(loadNotices, 0);
 	if (document.readyState == 'complete') {
 		loadComplete();
 	}

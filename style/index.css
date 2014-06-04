@@ -128,7 +128,7 @@
 }
 
 #top-pane {
-	top: -100%;
+	top: -200%;
 	width: 100%;
 }
 
@@ -148,6 +148,12 @@
 	border-bottom-color: white;
 }
 
+#top-pane table {
+	padding-right: 10px;
+	margin-right: 10px;
+	width: 99%;
+}
+
 .changed {
 	color: #FFE733;
 }
@@ -164,3 +170,31 @@
 	-o-transition: all 500ms ease;
 	transition: all 500ms ease;
 }
+
+.notices-header { /* TODO why does this get overriden by some rule up there??? */
+	position: static !important;
+	margin-top: 10px !important;
+}
+
+.notice-target {
+	width: 180px;
+}
+
+.meeting .notice-data {
+	background-color: #F80;
+	border: 0;
+}
+
+td {
+	border-radius: 5px 5px 5px 5px;
+}
+
+.notice-hidden {
+	display: none;
+}
+
+.notice-row td {
+	cursor: pointer;
+}
+
+
