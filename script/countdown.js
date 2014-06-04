@@ -110,6 +110,10 @@ function domReady() {
 	$('#left-pane-arrow').click(function() {
 		$('#left-pane-arrow,#left-pane').toggleClass('expanded');
 	});
+
+	$('#top-pane-arrow').click(function() {
+		$('#top-pane-arrow,#top-pane').toggleClass('expanded');
+	});
 }
 
 function loadComplete() {

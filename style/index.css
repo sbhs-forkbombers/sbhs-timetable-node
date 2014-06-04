@@ -111,7 +111,7 @@
 	border-right: 0.5px solid white;
 }
 
-#left-pane h1 {
+.pane h1 {
 	position: relative;
 	width: 100%;
 	text-align: center;
@@ -125,6 +125,27 @@
 	font-size: 40px;
 	font-weight: 100;
 	cursor: default;
+}
+
+#top-pane {
+	top: -100%;
+	width: 100%;
+}
+
+#top-pane-arrow {
+	top: 0;
+	left: 15%;
+	border-top-color: white;
+	z-index: 5;
+}
+
+#top-pane.expanded {
+	top: 0;
+}
+
+#top-pane-arrow.expanded {
+	border-top-color: transparent;
+	border-bottom-color: white;
 }
 
 .changed {
