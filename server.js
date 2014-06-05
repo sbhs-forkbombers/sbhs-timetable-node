@@ -57,6 +57,11 @@ if (!RELEASE) {
 		GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
 	});
 }
+fs.writeFile('.reload', '0');
+var reloadWatcher = fs.watch('.reload', { persistent: false }, function() {
+	console.log('[core] reloading jade and clearing sessions');
+	process.kill(process.pid, 'SIGHUP');
+});
 
 var jade_opts = {
 	pretty: DEBUG,

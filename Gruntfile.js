@@ -108,11 +108,54 @@ module.exports = function(grunt) {
 		},
 		'delete': {
 			run: 'true'
+		},
+		nodemon: {
+			dev: {
+				script: 'server.js',
+				options: {
+					callback: function(nm) {
+						nm.on('restart', function() {
+							if (require('fs').existsSync('/tmp/timetable.sock')) {
+								require('fs').unlinkSync('/tmp/timetable.sock');
+							}
+							grunt.task.run('concat');
+							console.log();
+							console.log('[nodemon] *** RESTARTING ***');
+							console.log();
+						});
+					},
+					ignore: ['node_modules/**', 'Gruntfile.js', 'script/*', 'style/*', 'static/*']
+				}
+			}
+		},
+		watch: {
+			scripts: {
+				files: ['script/**.js', '!script/*.concat.js'],
+				tasks: ['concat']
+			},
+			content: {
+				files: ['style/*.css', 'dynamic/*.jade'],
+				tasks: ['reload']
+			}
+		},
+		concurrent: {
+			develop: {
+				tasks: ['watch', 'nodemon'],
+				options: {
+					logConcurrentOutput: true
+				}
+			}
+		},
+		reload: {
+			why: 'is this necessary?'
 		}
 	});
 	
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-run');
+	grunt.loadNpmTasks('grunt-nodemon');
+	grunt.loadNpmTasks('grunt-concurrent');
+	grunt.loadNpmTasks('grunt-contrib-watch');
 	grunt.loadNpmTasks('grunt-contrib-cssmin');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-copy');
@@ -128,7 +171,11 @@ module.exports = function(grunt) {
 		}
 	});
 
+	grunt.registerMultiTask('reload', 'tell a process to reload', function() {
+		require('fs').writeFile('.reload', '1');
+	});
+
 	grunt.registerTask('minify', ['uglify', 'cssmin']);
 	grunt.registerTask('release', ['jshint', 'concat', 'minify', 'copy']);
-	grunt.registerTask('default', ['delete', 'concat', 'run', 'delete']);
+	grunt.registerTask('default', ['delete', 'concat', 'concurrent:develop', 'delete']);
 };
