@@ -3,7 +3,7 @@ function handleLeftPane() {
 	var pane = $('#left-pane'),
 		html = '<table><tbody><tr><td>Subject</td><td>Teacher</td><td>Room</td></tr>',
 		timetable = todayNames.timetable,
-		prefix, subj, suffix, room, teacher, fullTeacher, subjName,
+		prefix, subj, suffix, room, teacher, fullTeacher, subjName, final,
 		roomChanged, teacherChanged, cancelled = false;
 	for (var i = 1; i < 6; i++) {
 		if (!(i in timetable) || !timetable[i].room) {
@@ -18,6 +18,7 @@ function handleLeftPane() {
 			teacher = timetable[i].teacher;
 			fullTeacher = timetable[i].fullTeacher;
 			subjName = timetable[i].fullName;
+			final = timetable.variationsFinalised;
 			if (/\d$/.test(timetable[i].title) || /[a-z][A-Z]$/.test(timetable[i].title)) {
 				suffix = timetable[i].title.substr(-1);
 				subj = subj.slice(0,-1);
@@ -42,13 +43,20 @@ function handleLeftPane() {
 					room = timetable[i].roomTo;
 				}
 			}
-			html += '<tr'+(cancelled?' class="cancelled"':'')+'><td title="'+subjName+'">'+timetable[i].year+prefix+'<strong>'+subj+'</strong>'+suffix+'</td><td '+(teacherChanged?'class="changed" ':'')+'title="'+fullTeacher+'">'+teacher+'</td><td'+(roomChanged?' class="changed"':'')+'>'+room+'</td></tr>';
+
+			html += '<tr'+(cancelled?' class="cancelled"':'')+'><td title="'+subjName+'">'+timetable[i].year+prefix+'<strong>'+subj+'</strong>'+suffix+'</td><td '+(teacherChanged?'class="changed'+(!final?' changeable" ':'" '):'')+'title="'+fullTeacher+'">'+teacher+'</td><td'+(roomChanged?' class="changed' + (!final?' changeable"':'"'):'')+'>'+room+'</td></tr>';
 			cancelled = false;
 			roomChanged = false;
 			teacherChanged = false;
 		}
 	}
-	html += '</tbody></table>';
+	html += '</tbody></table><div class="changeable-status">';
+	if (todayNames.variationsFinalised) {
+		html += 'This info is \'fixed\'</div>';
+	}
+	else {
+		html += 'This info may change</div>';
+	}
 	pane.html(html);
 
 }

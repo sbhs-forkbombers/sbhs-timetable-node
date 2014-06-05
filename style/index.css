@@ -197,4 +197,15 @@ td {
 	cursor: pointer;
 }
 
+.changeable-status {
+	padding-top: 20px;
+	font-size: 20px;
+	color: #FB0;
+	font-style: italic;
+}
+
+.changeable {
+	font-style: italic;
+}
+
 
