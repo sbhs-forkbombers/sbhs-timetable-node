@@ -121,7 +121,7 @@
 #left-pane table {
 	width: 100%;
 	text-align: center;
-	font-size: 40px;
+	font-size: 30px;
 	font-weight: 100;
 	cursor: default;
 }
@@ -204,8 +204,13 @@ td {
 	font-size: 20px;
 	color: #ffbb33;
 	font-style: italic;
+	text-align: center;
 }
 
 .changeable {
+	font-style: italic;
+}
+
+.free {
 	font-style: italic;
 }
