@@ -57,6 +57,13 @@ function loadNotices() {
 		window.notices = JSON.parse(window.localStorage[lsKey]);
 		handleTopPane();
 	}
+	else if (!getLoggedIn()) {
+		window.notices = { 'notices': {} };
+		return;
+	}
+	if (!getLoggedIn()) {
+		return;
+	}
 	var xhr = new XMLHttpRequest();
 	xhr.onload = handleNotices;
 	xhr.open('GET', '/api/notices.json', true);
