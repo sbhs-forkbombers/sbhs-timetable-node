@@ -44,7 +44,7 @@ var secret = config.secret,
 	redirectURI = config.redirectURI,
 	forcedETagUpdateCounter = 0,
 	cachedBells = {},
-	index_cache;
+	index_cache, ipv4server, ipv6server, unixserver;
 sessions = {}; // global
 
 console.log('[core] Initialised in in ' + (Date.now() - all_start) + 'ms');
@@ -116,6 +116,16 @@ process.on('SIGHUP', function() {
 	cache_index();
 	cleanSessions();
 });
+
+process.on('SIGINT', function() {
+	'use strict';
+	unixserver.close(function() { global.unixDone = true; });
+	ipv4server.close(function() { global.ipv4Done = true; });
+	ipv6server.close(function() { global.ipv6Done = true; });
+	fs.writeFileSync('sessions.json', JSON.stringify(global.sessions));
+	console.log('Saved sessions.');
+});
+
 
 function httpHeaders(res, response, contentType, dynamic, headers) {
 	'use strict';
@@ -318,9 +328,9 @@ if (RELEASE) {
 
 var index_cache = serverError;
 cache_index();
-var ipv4server = http.createServer(),
-	ipv6server = http.createServer(),
-	unixserver = http.createServer();
+ipv4server = http.createServer();
+ipv6server = http.createServer();
+unixserver = http.createServer();
 
 ipv4server.name = 'ipv4server';
 ipv6server.name = 'ipv6server';
@@ -336,6 +346,12 @@ unixserver.on('listening', nxListening);
 
 ipv4server.listen(8080, '0.0.0.0');
 setInterval(cleanSessions, 36000000); // clean expired sessions every hour
+
+if (fs.existsSync('sessions.json')) {
+	console.log('[core] Loading sessions...');
+	global.sessions = JSON.parse(fs.readFileSync('sessions.json'));
+	console.log('[core] Success!');
+}
 if (IPV6) {
 	ipv6server.listen(8080, '::');
 }
