@@ -84,7 +84,7 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				expand: true,
-				src: ['dynamic/**', 'static/**', 'server.js', 'secret.js'],
+				src: ['dynamic/**', 'static/**', 'server.js', 'lib/**', 'config.js'],
 				dest: 'build/',
 			},
 			vars: {
