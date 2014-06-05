@@ -24,7 +24,11 @@ var timetable,
 	needMidnightCountdown = false,
 	reloading = false,
 	currentBellIndex = -1, // next bell
-	nextStart;
+	nextStart,
+	topExpanded = false,
+	leftExpanded = false,
+	rightExpanded = false,
+	bottomExpanded = false;
 
 /** returns midnight ON the next school day */
 function getNextSchoolDay() {
@@ -109,10 +113,18 @@ function domReady() {
 	}
 	
 	$('#left-pane-arrow').click(function() {
+		if (topExpanded) {
+			$('#top-pane-arrow,#top-pane').toggleClass('expanded');
+		}
+		leftExpanded = !leftExpanded;
 		$('#left-pane-arrow,#left-pane').toggleClass('expanded');
 	});
 
 	$('#top-pane-arrow').click(function() {
+		if (leftExpanded) {
+			$('#left-pane-arrow,#left-pane').removeClass('expanded');
+		}
+		topExpanded = !topExpanded;
 		$('#top-pane-arrow,#top-pane').toggleClass('expanded');
 	});
 }
