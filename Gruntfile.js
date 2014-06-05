@@ -98,9 +98,6 @@ module.exports = function(grunt) {
 			}
 		},
 		concat: {
-			options: {
-				separator: ';',
-			},
 			dist: {
 				src: ['script/*.js', '!script/belltimes.concat.js'],
 				dest: 'script/belltimes.concat.js'
