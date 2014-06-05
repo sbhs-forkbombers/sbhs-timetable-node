@@ -59,7 +59,8 @@ if (!RELEASE) {
 }
 fs.writeFile('.reload', '0');
 var reloadWatcher = fs.watch('.reload', { persistent: false }, function() {
-	console.log('[core] reloading jade and clearing sessions');
+	'use strict';
+	console.log('[core] reloading...');
 	process.kill(process.pid, 'SIGHUP');
 });
 
@@ -162,7 +163,7 @@ function getBelltimes(date, res) {
 	if (date in cachedBells) {
 		res.end(cachedBells[date]);
 	} else {
-		request('http://student.sbhs.net.au/api/timetable/bells.json?date='+date, 
+		request('http://student.sbhs.net.au/api/timetable/bells.json?date='+date,
 			function(err, r, b) {
 				if (err || r.statusCode != 200) {
 					if (err) {
@@ -228,39 +229,50 @@ function onRequest(req, res) {
 	}
 
 	var target, uri = url.parse(req.url, true);
-	if (uri.pathname === '/') { // Main page
+	if (uri.pathname === '/') {
+		/* Main page */
 		httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
 		res.end(index_cache.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined));
-	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) { // CSS
+	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) {
+		/* Style sheets */
 		httpHeaders(res, 200, 'text/css');
 		target = uri.pathname.slice(1);
 		fs.createReadStream(target).pipe(res);
 	} else if (uri.pathname == '/script/belltimes.js' && !RELEASE) {
 		fs.createReadStream('script/belltimes.concat.js').pipe(res);
-	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) { // JS
+	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) {
+		/* JavaScript */
 		httpHeaders(res, 200, 'application/javascript');
 		target = uri.pathname.slice(1);
 		fs.createReadStream(target).pipe(res);
-	} else if (uri.pathname == '/api/belltimes') { // Belltimes wrapper
+	} else if (uri.pathname == '/api/belltimes') {
+		/* Belltimes wrapper */
 		httpHeaders(res, 200, 'application/json');
 		getBelltimes(uri.query.date, res);
-	} else if (uri.pathname == '/favicon.ico') { // favicon
+	} else if (uri.pathname == '/favicon.ico') {
+		/* favicon */
 		httpHeaders(res, 200, 'image/x-icon');
 		fs.createReadStream('static/favicon.ico').pipe(res);
-	} else if (uri.pathname == '/COPYING') { // License file
+	} else if (uri.pathname == '/COPYING') {
+		/* license */
 		httpHeaders(res, 200, 'text/plain');
 		fs.createReadStream('COPYING').pipe(res);
-	} else if (uri.pathname.match('^[.]ht.*')) { // Deny pattern
+	} else if (uri.pathname.match('^[.]ht.*')) {
+		/* Disallow pattern */
 		httpHeaders(res, 403, 'text/html');
 		fs.createReadStream('static/403.html').pipe(res);
-	} else if (uri.pathname == '/try_do_oauth') { // OAuth2 attempt
+	} else if (uri.pathname == '/try_do_oauth') {
+		/* OAuth2 attempt */
 		auth.getAuthCode(res, res.SESSID);
-	} else if (uri.pathname == '/login') { // Handle codes from OAuth
+	} else if (uri.pathname == '/login') {
+		/* OAuth2 handler */
 		auth.getAuthToken(res, uri, null);
-	} else if (uri.pathname == '/session_debug' && DEBUG) { // Session information
+	} else if (uri.pathname == '/session_debug' && DEBUG) {
+		/* Session info */
 		httpHeaders(res, 200, 'application/json');
 		res.end(JSON.stringify(global.sessions[res.SESSID]));
-	} else if (uri.pathname.match('/api/.*[.]json') && apis.isAPI(uri.pathname.slice(5))) { // API calls
+	} else if (uri.pathname.match('/api/.*[.]json') && apis.isAPI(uri.pathname.slice(5))) {
+		/* API calls */
 		apis.get(uri.pathname.slice(5), uri.query, res.SESSID, function(obj) {
 			httpHeaders(res, 200, 'application/json');
 			res.end(JSON.stringify(obj));
@@ -273,26 +285,29 @@ function onRequest(req, res) {
 		delete global.sessions[res.SESSID].accessTokenExpires;
 		delete global.sessions[res.SESSID].refreshTokenExpires;
 	} else if (uri.pathname == '/wat.html') {
+		/* Landing page */
 		httpHeaders(res, 200, 'text/html');
 		fs.createReadStream('static/wat.html').pipe(res);
 	} else if (uri.pathname == '/faq.html') {
-	   httpHeaders(res, 200, 'text/html');
-	   fs.createReadStream('static/faq.html').pipe(res);
+		/* FAQs */
+		httpHeaders(res, 200, 'text/html');
+		fs.createReadStream('static/faq.html').pipe(res);
 	} else if (uri.pathname == '/reset_access_token') {
 		httpHeaders(res, 200, 'application/json');
-		delete global.sessions[res.SESSID].accessToken;	
+		delete global.sessions[res.SESSID].accessToken;
 		global.sessions[res.SESSID].accessTokenExpires = 0;
 		res.end(JSON.stringify(global.sessions[res.SESSID]));
 	} else if (uri.pathname == '/refresh_token') {
 		httpHeaders(res, 200, 'application/json');
 		if (global.sessions[res.SESSID].refreshToken) {
-		  auth.refreshAuthToken(global.sessions[res.SESSID].refreshToken, res.SESSID, function() {
-			  res.end(JSON.stringify(global.sessions[res.SESSID]));
-		  });
+			auth.refreshAuthToken(global.sessions[res.SESSID].refreshToken, res.SESSID, function() {
+				res.end(JSON.stringify(global.sessions[res.SESSID]));
+			});
 		} else {
 			res.end('{"error": "not logged in"}');
 		}
-	} else { // 404 for everything else
+	} else {
+		/* 404 everything else */
 		httpHeaders(res, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
 	}
@@ -332,7 +347,9 @@ if (RELEASE) {
 }
 
 var index_cache = serverError;
+
 cache_index();
+
 ipv4server = http.createServer();
 ipv6server = http.createServer();
 unixserver = http.createServer();
