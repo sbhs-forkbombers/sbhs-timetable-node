@@ -60,8 +60,12 @@ if (!RELEASE) {
 fs.writeFile('.reload', '0');
 var reloadWatcher = fs.watch('.reload', { persistent: false }, function() {
 	'use strict';
-	console.log('[core] reloading...');
-	process.kill(process.pid, 'SIGHUP');
+	if (process.platform !== 'win32') {
+		console.log('[core] reloading...');
+		process.kill(process.pid, 'SIGHUP');
+	} else {
+		console.log('[core] reload not supported on Windows');
+	}
 });
 
 var jade_opts = {
