@@ -44,7 +44,7 @@ var secret = config.secret,
 	redirectURI = config.redirectURI,
 	forcedETagUpdateCounter = 0,
 	cachedBells = {},
-	indexCache;
+	index_cache;
 sessions = {}; // global
 
 console.log('[core] Initialised in in ' + (Date.now() - all_start) + 'ms');
@@ -316,7 +316,7 @@ if (RELEASE) {
 	console.log('[core] SBHS-Timetable-Node git revision ' + GIT_RV.substr(0,6) + ' starting server...');
 }
 
-var indexCache = serverError;
+var index_cache = serverError;
 cache_index();
 var ipv4server = http.createServer(),
 	ipv6server = http.createServer(),
