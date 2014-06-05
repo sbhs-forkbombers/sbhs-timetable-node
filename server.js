@@ -58,15 +58,7 @@ if (!RELEASE) {
 	});
 }
 fs.writeFile('.reload', '0');
-var reloadWatcher = fs.watch('.reload', { persistent: false }, function() {
-	'use strict';
-	if (process.platform !== 'win32') {
-		console.log('[core] reloading...');
-		process.kill(process.pid, 'SIGHUP');
-	} else {
-		console.log('[core] reload not supported on Windows');
-	}
-});
+
 
 var jade_opts = {
 	pretty: DEBUG,
@@ -120,6 +112,12 @@ function cleanSessions() {
 	}
 	console.log('[core] Cleaned ' + cleaned + ' sessions in ' + Date.now()-start + 'ms');
 }
+
+var reloadWatcher = fs.watch('.reload', { persistent: false }, function() {
+	'use strict';
+	cache_index();
+	cleanSessions();
+});
 
 process.on('SIGHUP', function() {
 	'use strict';
