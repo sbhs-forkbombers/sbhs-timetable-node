@@ -52,7 +52,7 @@ function handleLeftPane() {
 	}
 	html += '</tbody></table><div class="changeable-status">';
 	if (todayNames.variationsFinalised) {
-		html += 'This info is \'fixed\'</div>';
+		html += 'This info is final</div>';
 	}
 	else {
 		html += 'This info may change</div>';

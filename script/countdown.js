@@ -100,7 +100,7 @@ function domReady() {
 	}
 	if (belltimes !== null && belltimes !== undefined) {
 		setTimeout(loadComplete, 0);
-	} 
+	}
 	if (getLoggedIn()) {
 		$('#login-status').html('Logged in. <a href="/logout">Logout</a>');
 	}
