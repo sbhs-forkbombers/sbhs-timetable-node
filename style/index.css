@@ -43,7 +43,7 @@
 	font-size: 50px;
 	font-weight: 100;
 	z-index: -1;
-	color: #CC0000
+	color: #cc0000
 }
 
 #tl {
@@ -76,20 +76,19 @@
 }
 
 .pane {
-	-webkit-transition:all 1s ease;
-	-moz-transition:all 1s ease;
-	-ms-transition:all 1s ease;
-	-o-transition:all 1s ease;
-	transition:all 1s ease;
-	height: 98%;
+	-webkit-transition: all 1s ease;
+	-moz-transition: all 1s ease;
+	-ms-transition: all 1s ease;
+	-o-transition: all 1s ease;
+	transition: all 1s ease;
+	height: 100%;
 	padding: 10px;
 	position: fixed;
-	top: 1%;
-	margin-bottom: 1%;
+	top: 0;
 	z-index: 3;
 	overflow: auto;
 	width: 40%;
-	background-color: rgba(0,0,0,0.75);
+	background-color: rgba(0,0,0,0.80);
 }
 
 #left-pane-arrow {
@@ -130,6 +129,7 @@
 #top-pane {
 	top: -200%;
 	width: 100%;
+	left: 0;
 }
 
 #top-pane-arrow {
@@ -155,7 +155,7 @@
 }
 
 .changed {
-	color: #FFE733;
+	color: #ffbb33;
 }
 
 .cancelled {
@@ -183,7 +183,7 @@
 }
 
 .meeting .notice-data {
-	background-color: #F80;
+	background-color: #ffbb33;
 	border: 0;
 }
 
@@ -209,5 +209,3 @@ td {
 .changeable {
 	font-style: italic;
 }
-
-
