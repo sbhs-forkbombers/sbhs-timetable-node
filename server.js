@@ -340,8 +340,11 @@ function nxListening() {
 	'use strict';
 	console.log('[' + this.name + '] Listening on ' + this.path);
 }
-
-console.log('[core] SBHS-Timetable-Node git revision ' + GIT_RV.substr(0,6) + ' starting server...');
+if (RELEASE) {
+	console.log('[core] SBHS-Timetable-Node version ' + REL_RV + ' starting server...');
+} else {
+	console.log('[core] SBHS-Timetable-Node git revision ' + GIT_RV.substr(0,6) + ' starting server...');
+}
 
 var index_cache = serverError;
 
