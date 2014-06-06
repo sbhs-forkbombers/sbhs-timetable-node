@@ -39,10 +39,10 @@ function handleTopPane() {
 			res += '<td class="notice-data"><h2 class="notice-title">'+entry.title+'</h2><div class="notice-hidden" id="n'+entry.id+'-hidden">';
 			if (entry.isMeeting) {
 				res += '<div class="notice-meeting"><strong>Meeting Date:</strong> ' + entry.meetingDate + '<br />';
-				res += '<strong>Meeting Time:</strong> ' + entry.meetingTime + ' in ' + entry.meetingPlace + '<br />';
+				res += '<strong>Meeting Time:</strong> ' + entry.meetingTime + ' in ' + entry.meetingPlace + '<br /></div>';
 			}
 			res += '<div id="n'+entry.id+'-txt" class="notice-content">';
-			res += entry.text + '</div>&mdash;<div class="notice-author">'+entry.author+'</div></div></td></tr>';
+			res += entry.text + '</div><div class="notice-author">'+entry.author+'</div></div></td></tr>';
 		}
 	}
 	res += '</tbody></table>';

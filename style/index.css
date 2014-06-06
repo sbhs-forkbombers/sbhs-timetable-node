@@ -202,8 +202,15 @@
 }
 
 .meeting .notice-data {
-	background-color: #ffbb33;
+	background-color: #C00;
 	border: 0;
+}
+
+.notice-meeting {
+	padding: 5px;
+	display: block;
+	margin: 5px;
+	font-size: 18px;
 }
 
 td {
@@ -216,6 +223,19 @@ td {
 
 .notice-row td {
 	cursor: pointer;
+}
+
+.notice-row p {
+	display: block;
+	padding: 0;
+	margin: 0;
+}
+
+.notice-author {
+	font-size: 20px;
+	font-variant: small-caps;
+	font-style: italic;
+	margin-top: 10px;
 }
 
 .changeable-status {

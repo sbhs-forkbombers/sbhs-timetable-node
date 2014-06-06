@@ -170,6 +170,7 @@ module.exports = function(grunt) {
 
 	grunt.registerMultiTask('reload', 'tell a process to reload', function() {
 		require('fs').writeFile('.reload', '1');
+		grunt.log.writeln('reloaded process.');
 	});
 
 	grunt.registerTask('minify', ['uglify', 'cssmin']);
