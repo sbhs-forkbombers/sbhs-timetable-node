@@ -26,6 +26,7 @@ var timetable,
 	reloading = false,
 	currentBellIndex = -1, // next bell
 	nextStart,
+	manualOverride = 0, // manual date offset for public holidays etc (should cap at some number, TODO)
 	topExpanded = false,
 	leftExpanded = false,
 	rightExpanded = false,
@@ -38,7 +39,8 @@ function getNextSchoolDay() {
 		calculateDay();
 	}
 	var res = new Date();
-	res.setDate(res.getDate() + dateOffset + (needMidnightCountdown ? 1 : 0));
+	res.setDate(res.getDate() + dateOffset + manualOverride + (needMidnightCountdown ? 1 : 0));
+	res.setHours(0,0,0);
 	return res;
 }
 
@@ -49,7 +51,7 @@ function getDateOffsetDate() {
 		calculateDay();
 	}
 	var res = new Date();
-	res.setDate(res.getDate() + dateOffset);
+	res.setDate(res.getDate() + dateOffset + manualOverride);
 	return res;
 }
 
@@ -69,7 +71,7 @@ function calculateDay() {
 	} else if (date.getDay() === 0 || date > schoolEnd) { // Sunday
 		needMidnightCountdown = true;
 	}
-	date.setDate(date.getDate() + dayOffset);
+	date.setDate(date.getDate() + dayOffset + manualOverride);
 	dateOffset = dayOffset;
 }
 
@@ -89,6 +91,16 @@ function handleBells(bells) {
 	/* jshint validthis: true */
 	'use strict';
 	belltimes = JSON.parse(this.responseText);
+	if (belltimes.status === 'Error') {
+		manualOverride++;
+		if (manualOverride > 5) {
+			document.getElementById('period-label').innerHTML = 'WAT?!?';
+			return;
+		}
+		document.getElementById('period-label').innerHTML = 'One sec...';
+		reloadBelltimes();
+		return;
+	}
 	setTimeout(loadTimetable, 0); // now that the belltimes are done, we can load the subject info
 	setTimeout(loadNotices, 0);
 	if (document.readyState == 'complete') {
@@ -165,7 +177,7 @@ function prettifySecondsLeft(sec) {
 function calculateUpcomingLesson() {
 	'use strict';
 	reloading = true;
-	var i, lastOK, bell, bdate, nextBell, now;
+	var i, lastOK = 0, bell, bdate, nextBell, now;
 	if (belltimes === null) {
 		reloadBelltimes();
 		reloading = false;
