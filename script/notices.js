@@ -46,7 +46,7 @@ function handleTopPane() {
 		}
 	}
 	res += '</tbody></table>';
-	$('#top-pane').html(res);
+	document.getElementById('top-pane').innerHTML = res;
 	$('.notice-row').click(function() {
 		/*jshint validthis: true*/
 		var id = this.id;
@@ -58,9 +58,9 @@ function handleNotices(err) {
 	/*jshint validthis: true*/
 	'use strict';
 	var lsKey = new Date().toDateString();
-	var res = JSON.parse(this.response);
+	var res = JSON.parse(this.responseText);
 	if (res.notices) {
-		window.localStorage[lsKey] = this.response;
+		window.localStorage[lsKey] = this.responseText;
 		window.notices = res;
 		handleTopPane();
 	}

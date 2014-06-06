@@ -89,9 +89,9 @@ function handleTimetable(e) {
 	'use strict';
 	/* jshint validthis: true */
 	var lsKey = belltimes.day + belltimes.weekType;
-	var res = JSON.parse(this.response);
+	var res = JSON.parse(this.responseText);
 	if (res.timetable && !res.hasVariations) {
-		window.localStorage[lsKey] = this.response;
+		window.localStorage[lsKey] = this.responseText;
 	}
 	else if (!res.timetable) {
 		$('#rtd-unavailable').html('Real-time data inaccessible');
@@ -103,6 +103,9 @@ function handleTimetable(e) {
 		$('#rtd-unavailable').fadeOut();
 		setTimeout(function() { $('#rtd-unavailable').html('').css({'display': 'block'}); }, 1000);
 	}, 3000);
+	if (currentBellIndex == -1) {
+		calculateUpcomingLesson();
+	}
 	updatePeriodLabel();
 	handleLeftPane();
 }
