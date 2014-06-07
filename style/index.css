@@ -255,28 +255,43 @@ td {
 	font-style: italic;
 }
 
-@media screen and (max-device-width: 400px) { /* phones/small screens */
-	.pane {
-		width: 100%;
+@media screen and (max-device-width: 800px) {
+	#left-pane {
+		width: 50%;
 	}
-
-	#countdown-label {
-		font-size: 3em;
-	}
-
-	#period-label {
-		/*padding-top: 10px;*/
-		font-size: 1.5em;
-	}
-
-	#content {
-		top: 70px;
-	}
-
 	.really-annoying {
 		font-size: 0.75em;
 	}
+}
 
+@media screen and (max-device-width: 700px) {
+	#countdown-label {
+		font-size: 5em;
+	}
+	#period-label {
+		font-size: 3em;
+	}
+}
+
+@media screen and (max-device-width: 550px) {
+	#left-pane {
+		width: 100%;
+	}
+	#content {
+		top: 40px;
+	}
+}
+
+@media screen and (max-device-width: 400px) { /* phones/small screens */
+	#content {
+		top: 70px;
+	}
+	#countdown-label {
+		font-size: 4em;
+	}
+	#period-label {
+		font-size: 2em;
+	}
 	#left-pane, #top-pane {
 		font-size: 0.8em;
 	}
