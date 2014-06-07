@@ -261,9 +261,6 @@ td {
 	#left-pane {
 		width: 50%;
 	}
-	.really-annoying {
-		font-size: 0.75em;
-	}
 }
 
 @media screen and (max-device-width: 700px), screen and (max-width: 700px) {
@@ -273,6 +270,9 @@ td {
 	#period-label {
 		font-size: 3em;
 	}
+	#content {
+		top: 60px;
+	}
 }
 
 @media screen and (max-device-width: 550px), screen and (max-width: 550px) {
@@ -280,10 +280,13 @@ td {
 		width: 100%;
 	}
 	#content {
-		top: 40px;
+		top: 50px;
 	}
 	.notice-target {
 		width: 70px;
+	}
+	.really-annoying {
+		font-size: 0.75em;
 	}
 }
 
