@@ -117,6 +117,7 @@
 #left-pane-arrow.expanded {
 	border-left-color: transparent;
 	border-right-color: white;
+	left: -25px;
 }
 #left-pane {
 	left: -200%;
@@ -163,6 +164,7 @@
 #top-pane-arrow.expanded {
 	border-top-color: transparent;
 	border-bottom-color: white;
+	top: -25px;
 }
 
 #top-pane table {
@@ -280,6 +282,9 @@ td {
 	#content {
 		top: 40px;
 	}
+	.notice-target {
+		width: 70px;
+	}
 }
 
 @media screen and (max-device-width: 400px) { /* phones/small screens */
@@ -294,8 +299,5 @@ td {
 	}
 	#left-pane, #top-pane {
 		font-size: 0.8em;
-	}
-	.notice-target {
-		width: 70px;
 	}
 }
