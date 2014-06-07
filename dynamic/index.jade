@@ -23,6 +23,11 @@ html
 		style
 			include ../style/index.css
 		meta(name="application-name",content="SBHS Timetable")
+		meta(name="mobile-web-app-capable",content="yes")
+		meta(name="apple-mobile-web-app-capable",content="yes")
+		meta(name="apple-mobile-web-app-status-bar-style",content="black")
+		link(rel="icon",sizes="196x196",href="../static/icon-hires.png")
+		link(rel="apple-touch-icon",sizes="196x196",href="../static/icon-hires.png")
 		script(async,defer,src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js")
 		script(async,defer,src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
 		script(async,src="/script/belltimes.concat.js")

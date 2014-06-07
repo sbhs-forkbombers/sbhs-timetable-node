@@ -245,6 +245,10 @@ function onRequest(req, res) {
 		/* favicon */
 		httpHeaders(res, 200, 'image/x-icon');
 		fs.createReadStream('static/favicon.ico').pipe(res);
+	} else if (uri.pathname == '/static/icon-hires.png') {
+		/* hires icon */
+		httpHeaders(res, 200, 'image/png');
+		fs.createReadStream('static/icon-hires.png').pipe(res);
 	} else if (uri.pathname == '/COPYING') {
 		/* license */
 		httpHeaders(res, 200, 'text/plain');
