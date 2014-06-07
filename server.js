@@ -1,4 +1,4 @@
-/*
+/* SBHS-Timetable-Node: Countdown and timetable all at once (NodeJS app).
  * Copyright (C) 2014 James Ye, Simon Shields
  *
  * This file is part of SBHS-Timetable-Node.
@@ -15,14 +15,6 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-/* the gnustomp-forkbomb style guide:
- * Single tabs for indentation
- * Single quotes for strings
- * Opening braces on the same line as the statement
- * Spaces around operators
- * Empty line after a function defenition
  */
 
 var all_start = Date.now();

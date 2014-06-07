@@ -1,4 +1,4 @@
-/*
+/* SBHS-Timetable-Node: Countdown and timetable all at once (NodeJS app).
  * Copyright (C) 2014 James Ye,  Simon Shields
  *
  * This file is part of SBHS-Timetable-Node.
@@ -17,7 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*jshint latedef: nofunc */
 var timetable,
 	belltimes,
 	year,
