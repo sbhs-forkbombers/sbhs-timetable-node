@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*jshint latedef:nofunc*/
 function handleTopPane() {
 	'use strict';
 	var entry, list, today = new Date();
