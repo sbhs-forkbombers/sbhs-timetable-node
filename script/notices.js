@@ -69,11 +69,21 @@ function handleNotices(err) {
 	}
 }
 
+function clearOldNotices() {
+	'use strict';
+	for (var i in window.localStorage) {
+		if (/\d/.match(i)) {
+			delete window.localStorage[i];
+		}
+	}
+}
+
 function loadNotices() {
 	'use strict';
 	var lsKey = new Date().toDateString();
 	var date = getNextSchoolDay();
 	var ds = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+	setTimeout(clearOldNotices, 1000); // let the display keep doing important stuff
 	if (lsKey in window.localStorage) {
 		window.notices = JSON.parse(window.localStorage[lsKey]);
 		handleTopPane();

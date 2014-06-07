@@ -91,16 +91,24 @@ function cleanSessions() {
 	var start = Date.now(),
 		cleaned = 0;
 	for (var i in global.sessions) {
+		console.log('Considering session for expiry. Length:',Object.keys(global.sessions[i]).length,' Expiry:',global.sessions[i].expires,'time left:',Math.floor((global.sessions[i].expires - Date.now())/1000), 'seconds');
 		if (global.sessions[i].expires < Date.now()) {
 			delete global.sessions[i];
 			cleaned++;
+			console.log('10/10 would clean again');
 		}
 		else if (Object.keys(global.sessions[i]).length < 2) { // not storing anything in the session, so it's just eating memory.
 			delete global.sessions[i];
 			cleaned++;
+			console.log('10/10 would clean again');
+		}
+		else {
+			console.log('0/10 would not recommend');
 		}
 	}
 	console.log('[core] Cleaned ' + cleaned + ' sessions');
+	fs.writeFileSync('sessions.json', JSON.stringify(global.sessions));
+	console.log('[core] Wrote ' + Object.keys(global.sessions).length + ' sessions to disk');
 }
 
 var reloadWatcher = fs.watch('.reload', { persistent: false }, function() {
