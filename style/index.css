@@ -27,7 +27,7 @@
 }
 
 #period-label {
-	font-size: 4em;
+	font-size: 5em;
 }
 
 #in-label {
@@ -257,19 +257,51 @@ td {
 	font-style: italic;
 }
 
+@media screen and (max-device-width: 1000px), screen and (max-width: 1000px) {
+	#left-pane {
+		width: 50%;
+	}
+    
+	#period-label {
+		font-size: 4.5em;
+	}
+    
+    #countdown-label {
+        font-size: 6em;
+    }
+    
+    .really-annoying {
+        font-size: 2.85em;
+    }
+}
+
 @media screen and (max-device-width: 800px), screen and (max-width: 800px) {
 	#left-pane {
 		width: 50%;
 	}
+    
+    #countdown-label {
+        font-size: 5.5em;
+    }
+    
+	#period-label {
+		font-size: 4em;
+	}
+    
+    .really-annoying {
+        font-size: 2.6em;
+    }
 }
 
 @media screen and (max-device-width: 700px), screen and (max-width: 700px) {
 	#countdown-label {
-		font-size: 5em;
+		font-size: 4.5em;
 	}
+    
 	#period-label {
-		font-size: 3em;
+		font-size: 3.5em;
 	}
+    
 	#content {
 		top: 60px;
 	}
@@ -279,28 +311,34 @@ td {
 	#left-pane {
 		width: 100%;
 	}
-	#content {
-		top: 50px;
-	}
+    
 	.notice-target {
 		width: 70px;
 	}
+    
 	.really-annoying {
-		font-size: 0.75em;
+		font-size: 2.4em;
 	}
 }
 
-@media screen and (max-device-width: 400px), screen and (max-width: 400px) { /* phones/small windows */
-	#content {
-		top: 70px;
-	}
+@media screen and (max-device-width: 450px), screen and (max-width: 450px) { /* phones/small windows */
 	#countdown-label {
-		font-size: 4em;
+		font-size: 3.2em;
 	}
+    
 	#period-label {
-		font-size: 2em;
+		font-size: 2.5em;
 	}
+    
 	#left-pane, #top-pane {
 		font-size: 0.8em;
 	}
+    
+	.really-annoying {
+		font-size: 2em;
+	}
+    
+    #playground {
+        display: none;
+    }
 }
