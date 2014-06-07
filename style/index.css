@@ -214,6 +214,9 @@
 }
 
 td {
+	-webkit-border-radius: 5px 5px 5px 5px;
+	-moz-border-radius: 5px 5px 5px 5px;
+	-ms-border-radius: 5px 5px 5px 5px;
 	border-radius: 5px 5px 5px 5px;
 }
 

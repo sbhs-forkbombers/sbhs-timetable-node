@@ -6,3 +6,5 @@ belltimes.concat.js
 config.js
 sessions.json
 .reload
+.DS_Store
+.Trashes

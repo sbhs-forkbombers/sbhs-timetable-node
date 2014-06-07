@@ -306,6 +306,9 @@ function onRequest(req, res) {
 		} else {
 			res.end('{"error": "not logged in"}');
 		}
+	} else if (uri.pathname == '/browserconfig.xml') {
+		httpHeaders(res, 200, 'text/xml');
+		fs.createReadStream('w8tile/browserconfig.xml').pipe(res);
 	} else {
 		/* 404 everything else */
 		httpHeaders(res, 404, 'text/html');
