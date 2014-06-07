@@ -192,7 +192,7 @@ function getCookies(s) {
 }
 
 function onRequest(req, res) {
-	/*jshint validthis: true*/
+	/* jshint validthis: true */
 	'use strict';
 	var start = Date.now(),
 		genSession;
@@ -310,7 +310,7 @@ function onRequest(req, res) {
 }
 
 function requestSafeWrapper(req, res) {
-	/*jshint validthis: true*/
+	/* jshint validthis: true */
 	'use strict';
 	try {
 		onRequest.call(this, req, res);
@@ -325,13 +325,13 @@ function requestSafeWrapper(req, res) {
 }
 
 function onListening() {
-	/*jshint validthis: true*/
+	/* jshint validthis: true */
 	'use strict';
 	console.log('[' + this.name + '] Listening on http://' + this.address().address + ':' + this.address().port + '/');
 }
 
 function nxListening() {
-	/*jshint validthis: true*/
+	/* jshint validthis: true */
 	'use strict';
 	console.log('[' + this.name + '] Listening on ' + this.path);
 }
