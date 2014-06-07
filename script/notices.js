@@ -19,7 +19,7 @@
 
 function handleTopPane() {
 	'use strict';
-	var entry, list, today = new Date();
+	var entry, list, today = new Date(), res;
 	if (!window.notices) {
 		return;
 	}
@@ -29,7 +29,11 @@ function handleTopPane() {
 		}
 		return 1;
 	});
-	var res = '<h1 class="notices-header">Notices for ' + window.notices.date + ' (Week ' + window.notices.week + ')</h1><table><tbody>';
+	if (window.notices.date !== null) {
+		res = '<h1 class="notices-header">Notices for ' + window.notices.date + ' (Week ' + window.notices.week + ')</h1><table><tbody>';
+	} else {
+		res = '<h1 class="notices-header">Notices for ' + belltimes.date + ' (Week ' + belltimes.week + belltimes.weekType + ')</h1><table><tbody>';
+	}
 	for (var i in sorted) {
 		list = window.notices.notices[sorted[i]];
 		for (var j in list) {
@@ -69,21 +73,11 @@ function handleNotices(err) {
 	}
 }
 
-function clearOldNotices() {
-	'use strict';
-	for (var i in window.localStorage) {
-		if (/\d/.match(i)) {
-			delete window.localStorage[i];
-		}
-	}
-}
-
 function loadNotices() {
 	'use strict';
 	var lsKey = new Date().toDateString();
 	var date = getNextSchoolDay();
 	var ds = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
-	setTimeout(clearOldNotices, 1000); // let the display keep doing important stuff
 	if (lsKey in window.localStorage) {
 		window.notices = JSON.parse(window.localStorage[lsKey]);
 		handleTopPane();
