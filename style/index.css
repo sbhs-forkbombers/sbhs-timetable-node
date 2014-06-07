@@ -257,7 +257,7 @@ td {
 	font-style: italic;
 }
 
-@media screen and (max-device-width: 800px) {
+@media screen and (max-device-width: 800px), screen and (max-width: 800px) {
 	#left-pane {
 		width: 50%;
 	}
@@ -266,7 +266,7 @@ td {
 	}
 }
 
-@media screen and (max-device-width: 700px) {
+@media screen and (max-device-width: 700px), screen and (max-width: 700px) {
 	#countdown-label {
 		font-size: 5em;
 	}
@@ -275,7 +275,7 @@ td {
 	}
 }
 
-@media screen and (max-device-width: 550px) {
+@media screen and (max-device-width: 550px), screen and (max-width: 550px) {
 	#left-pane {
 		width: 100%;
 	}
@@ -287,7 +287,7 @@ td {
 	}
 }
 
-@media screen and (max-device-width: 400px) { /* phones/small screens */
+@media screen and (max-device-width: 400px), screen and (max-width: 400px) { /* phones/small windows */
 	#content {
 		top: 70px;
 	}

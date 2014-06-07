@@ -271,7 +271,7 @@ function onRequest(req, res) {
 		});
 	} else if (uri.pathname == '/logout') {
 		httpHeaders(res, 302, 'text/plain');
-		//res.end('Redirecting...');
+		res.end();
 		delete global.sessions[res.SESSID].accessToken;
 		delete global.sessions[res.SESSID].refreshToken;
 		delete global.sessions[res.SESSID].accessTokenExpires;
