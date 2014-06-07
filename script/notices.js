@@ -72,6 +72,8 @@ function handleNotices(err) {
 function loadNotices() {
 	'use strict';
 	var lsKey = new Date().toDateString();
+	var date = getNextSchoolDay();
+	var ds = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
 	if (lsKey in window.localStorage) {
 		window.notices = JSON.parse(window.localStorage[lsKey]);
 		handleTopPane();
@@ -85,6 +87,6 @@ function loadNotices() {
 	}
 	var xhr = new XMLHttpRequest();
 	xhr.onload = handleNotices;
-	xhr.open('GET', '/api/notices.json', true);
+	xhr.open('GET', '/api/notices.json?date='+ds, true);
 	xhr.send();
 }

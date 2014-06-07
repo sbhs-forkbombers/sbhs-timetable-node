@@ -29,7 +29,28 @@ var timetable,
 	topExpanded = false,
 	leftExpanded = false,
 	rightExpanded = false,
-	bottomExpanded = false;
+	bottomExpanded = false,
+	miniMode = false;
+
+/** calculate the day that school will be starting on - this may NOT use DateJS functions as it may be called before DateJS is loaded. */
+function calculateDay() {
+	'use strict';
+	var date = new Date(),
+		dayOffset = 0,
+		schoolEnd = new Date();
+	schoolEnd.setHours(15, 15);
+	if (date.getDay() === 5 && date > schoolEnd) { // Friday
+		dayOffset += 2; // push to Sunday at this time.
+		needMidnightCountdown = true;
+	} else if (date.getDay() === 6 ) { // Saturday
+		dayOffset += 1; // same as above
+		needMidnightCountdown = true;
+	} else if (date.getDay() === 0 || date > schoolEnd) { // Sunday
+		needMidnightCountdown = true;
+	}
+	date.setDate(date.getDate() + dayOffset + manualOverride);
+	dateOffset = dayOffset;
+}
 
 /** returns midnight ON the next school day */
 function getNextSchoolDay() {
@@ -54,26 +75,6 @@ function getDateOffsetDate() {
 	return res;
 }
 
-/** calculate the day that school will be starting on - this may NOT use DateJS functions as it may be called before DateJS is loaded. */
-function calculateDay() {
-	'use strict';
-	var date = new Date(),
-		dayOffset = 0,
-		schoolEnd = new Date();
-	schoolEnd.setHours(15, 15);
-	if (date.getDay() === 5 && date > schoolEnd) { // Friday
-		dayOffset += 2; // push to Sunday at this time.
-		needMidnightCountdown = true;
-	} else if (date.getDay() === 6 ) { // Saturday
-		dayOffset += 1; // same as above
-		needMidnightCountdown = true;
-	} else if (date.getDay() === 0 || date > schoolEnd) { // Sunday
-		needMidnightCountdown = true;
-	}
-	date.setDate(date.getDate() + dayOffset + manualOverride);
-	dateOffset = dayOffset;
-}
-
 function reloadBelltimes() {
 	'use strict';
 	reloading = true;
@@ -94,6 +95,7 @@ function handleBells(bells) {
 		manualOverride++;
 		if (manualOverride > 5) {
 			document.getElementById('period-label').innerHTML = 'WAT?!?';
+			console.error('No bells for more than five days in a row, SBHS might be down!');
 			return;
 		}
 		document.getElementById('period-label').innerHTML = 'One sec...';
@@ -127,6 +129,7 @@ function domReady() {
 	$('#left-pane-arrow').click(function() {
 		if (topExpanded) {
 			$('#top-pane-arrow,#top-pane').toggleClass('expanded');
+			topExpanded = !topExpanded;
 		}
 		leftExpanded = !leftExpanded;
 		$('#left-pane-arrow,#left-pane').toggleClass('expanded');
@@ -135,6 +138,7 @@ function domReady() {
 	$('#top-pane-arrow').click(function() {
 		if (leftExpanded) {
 			$('#left-pane-arrow,#left-pane').removeClass('expanded');
+			leftExpanded = !leftExpanded;
 		}
 		topExpanded = !topExpanded;
 		$('#top-pane-arrow,#top-pane').toggleClass('expanded');

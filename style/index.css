@@ -119,7 +119,7 @@
 	border-right-color: white;
 }
 #left-pane {
-	left: -100%;
+	left: -200%;
 }
 
 #left-pane.expanded {
@@ -253,4 +253,34 @@ td {
 
 .free {
 	font-style: italic;
+}
+
+@media screen and (max-device-width: 400px) { /* phones/small screens */
+	.pane {
+		width: 100%;
+	}
+
+	#countdown-label {
+		font-size: 3em;
+	}
+
+	#period-label {
+		/*padding-top: 10px;*/
+		font-size: 1.5em;
+	}
+
+	#content {
+		top: 70px;
+	}
+
+	.really-annoying {
+		font-size: 0.75em;
+	}
+
+	#left-pane, #top-pane {
+		font-size: 0.8em;
+	}
+	.notice-target {
+		width: 70px;
+	}
 }
