@@ -18,7 +18,7 @@
  */
 
 module.exports = function(grunt) {
-    'use strict';
+	'use strict';
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
 		GIT_RV: require('fs').readFileSync('.git/refs/heads/master').toString().trim(),
@@ -26,7 +26,7 @@ module.exports = function(grunt) {
 		uglify: {
 			options: {
 				banner: '/*! <%= pkg.name %> rev. <%= GIT_RV_SHORT %> License: https://www.gnu.org/licenses/agpl-3.0.html (C) 2014.' +
-                        ' Built: <%= grunt.template.today("yyyy-mm-dd H:MM Z") %> */\n',
+						' Built: <%= grunt.template.today("yyyy-mm-dd H:MM Z") %> */\n',
 				compress: {
 					drop_console: true,
 					global_defs: {
