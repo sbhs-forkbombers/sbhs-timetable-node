@@ -35,3 +35,7 @@ a {
 a:hover {
 	color: #33B5E5;
 }
+
+.ss {
+	-webkit-font-smoothing: subpixel-antialiased;
+}

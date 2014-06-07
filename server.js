@@ -257,7 +257,7 @@ function onRequest(req, res) {
 		/* license */
 		httpHeaders(res, 200, 'text/plain');
 		fs.createReadStream('COPYING').pipe(res);
-	} else if (uri.pathname.match('^[.]ht.*')) {
+	} else if (uri.pathname.match('^/[.]ht.*')) {
 		/* Disallow pattern */
 		httpHeaders(res, 403, 'text/html');
 		fs.createReadStream('static/403.html').pipe(res);

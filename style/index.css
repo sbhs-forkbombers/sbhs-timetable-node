@@ -24,21 +24,19 @@
 	width: 100%;
 	text-align: center;
 	font-weight: 100;
-	font-size: 50px;
 }
 
-#period-name {
-	font-size: 50px;
+#period-label {
+	font-size: 4em;
 }
 
-#in {
-	font-size: 16px;
+#in-label {
+	font-size: 1em;
 	font-weight: 400;
 }
 
-#countdown {
-	font-size: 100px;
-	font-weight: 100;
+#countdown-label {
+	font-size: 7em;
 }
 
 #sidebar {
@@ -46,7 +44,7 @@
 	right: 0;
 	top: 0;
 	text-align: right;
-	font-size: 14px
+	font-size: 0.9em;
 }
 
 #top-line-notice {
@@ -59,7 +57,7 @@
 
 .really-annoying {
 	position: fixed;
-	font-size: 50px;
+	font-size: 3em;
 	font-weight: 100;
 	z-index: -1;
 	color: #cc0000
@@ -140,7 +138,7 @@
 #left-pane table {
 	width: 100%;
 	text-align: center;
-	font-size: 30px;
+	font-size: 2em;
 	font-weight: 100;
 	cursor: default;
 }
@@ -190,7 +188,7 @@
 	transition: all 500ms ease;
 }
 
-.notices-header { /* TODO why does this get overriden by some rule up there??? */
+.notices-header {
 	position: static;
 	margin-top: 10px;
 	width: 100%;
@@ -210,7 +208,7 @@
 	padding: 5px;
 	display: block;
 	margin: 5px;
-	font-size: 18px;
+	font-size: 1.2em;
 }
 
 td {
@@ -235,7 +233,7 @@ td {
 }
 
 .notice-author {
-	font-size: 20px;
+	font-size: 1.3em;
 	font-variant: small-caps;
 	font-style: italic;
 	margin-top: 10px;
@@ -243,7 +241,7 @@ td {
 
 .changeable-status {
 	padding-top: 20px;
-	font-size: 20px;
+	font-size: 1.3em;
 	color: #ffbb33;
 	font-style: italic;
 	text-align: center;
