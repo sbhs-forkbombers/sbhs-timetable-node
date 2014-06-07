@@ -1,9 +1,9 @@
 SBHS-Timetable v2.0
 ====================
 
-This is going to be a rewrite of [SBHS Timetable](https://github.com/sbhs-forkbombers/sbhs-timetable) for Node.js.
+This is a rewrite of [SBHS Timetable](https://github.com/sbhs-forkbombers/sbhs-timetable) for Node.js.
 
-We hope.
+Join `##sbhstimetable` on [freenode](http://freenode.net) for development news.
 
 _(Note that these instructions may not be up to date.)_
 
