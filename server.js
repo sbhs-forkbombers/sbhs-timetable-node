@@ -282,8 +282,8 @@ function onRequest(req, res) {
 			res.end(JSON.stringify(obj));
 		});
 	} else if (uri.pathname == '/logout') {
-		httpHeaders(res, 302, 'text/plain');
-		res.end();
+		httpHeaders(res, 302, 'text/plain', true, { 'Location': '/' });
+		res.end('Redirecting...');
 		delete global.sessions[res.SESSID].accessToken;
 		delete global.sessions[res.SESSID].refreshToken;
 		delete global.sessions[res.SESSID].accessTokenExpires;
