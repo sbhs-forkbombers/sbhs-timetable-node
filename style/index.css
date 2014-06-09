@@ -309,7 +309,7 @@ td {
 }
 
 @media screen and (max-device-width: 1000px), screen and (max-width: 1000px) {
-	#left-pane {
+	#left-pane, #right-pane {
 		width: 50%;
 	}
 	
@@ -327,10 +327,6 @@ td {
 }
 
 @media screen and (max-device-width: 800px), screen and (max-width: 800px) {
-	#left-pane {
-		width: 50%;
-	}
-	
 	#countdown-label {
 		font-size: 5.5em;
 	}
@@ -359,7 +355,7 @@ td {
 }
 
 @media screen and (max-device-width: 550px), screen and (max-width: 550px) {
-	#left-pane {
+	#left-pane, #right-pane {
 		width: 100%;
 	}
 	
@@ -381,7 +377,7 @@ td {
 		font-size: 2.5em;
 	}
 	
-	#left-pane, #top-pane {
+	#left-pane, #top-pane, #right-pane {
 		font-size: 0.8em;
 	}
 	
