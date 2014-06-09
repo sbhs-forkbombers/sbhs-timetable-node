@@ -128,7 +128,7 @@ function handleBells(bells) {
 			console.error('No bells for more than five days in a row, SBHS might be down!');
 			return;
 		}
-		document.getElementById('period-label').innerHTML = 'One sec...';
+		document.getElementById('period-label').innerHTML = 'One sec…';
 		reloadBelltimes();
 		return;
 	}

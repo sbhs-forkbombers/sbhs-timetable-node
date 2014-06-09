@@ -313,6 +313,14 @@ function onRequest(req, res) {
 	} else if (uri.pathname == '/browserconfig.xml') {
 		httpHeaders(res, 200, 'text/xml');
 		fs.createReadStream('w8tile/browserconfig.xml').pipe(res);
+	} else if (uri.pathname == '/win8') {
+		/* STOP error :( */
+		httpHeaders(res, 500, 'text/html');
+		fs.createReadStream('static/500.8.html').pipe(res);
+	}  else if (uri.pathname == '/EFLAT') {
+		/* Force a 500 error */
+		httpHeaders(res, 500, 'text/html');
+		fs.createReadStream('static/500.html').pipe(res);
 	} else {
 		/* 404 everything else */
 		httpHeaders(res, 404, 'text/html');
