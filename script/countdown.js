@@ -186,7 +186,7 @@ function calculateUpcomingLesson() {
 		reloading = false;
 		return;
 	}
-	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15})) || (new Date()).getDay() > 5 || (new Date()).getDay() === 0) {
+	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15})) || getNextSchoolDay().valueOf() != new Date().valueOf()) {
 		now = getNextSchoolDay();
 	} else {
 		now = new Date();
