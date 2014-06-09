@@ -93,11 +93,11 @@
 }
 
 .pane {
-	-webkit-transition: all 1s ease;
+	/*-webkit-transition: all 1s ease;
 	-moz-transition: all 1s ease;
 	-ms-transition: all 1s ease;
 	-o-transition: all 1s ease;
-	transition: all 1s ease;
+	transition: all 1s ease;*/
 	height: 100%;
 	padding: 10px;
 	position: fixed;

@@ -36,8 +36,8 @@ function collapsePane(p) {
 	'use strict';
 	var el = $('#'+p+'-pane');
 	var cfg = {};
-	cfg[p] = '-200%';
-	el.velocity(cfg, 'ease');
+	cfg[p] = '-110%';
+	el.velocity(cfg, 1000, 'ease');
 	$('#'+p+'-pane-arrow').removeClass('expanded');
 	window[p+'Expanded'] = false;
 }
@@ -47,7 +47,7 @@ function expandPane(p) {
 	var el = $('#'+p+'-pane');
 	var cfg = {};
 	cfg[p] = 0;
-	el.velocity(cfg, 'ease');
+	el.velocity(cfg, 1000, 'ease');
 	window[p+'Expanded'] = true;
 	$('#'+p+'-pane-arrow').addClass('expanded');
 }
