@@ -229,7 +229,10 @@ function domReady() {
 		}
 		togglePane('right');
 	});
-
+	
+	setTimeout(function() {
+		$('#update').velocity('fadeOut');
+	}, 10000);
 }
 
 function loadComplete() {
