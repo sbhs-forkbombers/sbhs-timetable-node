@@ -378,8 +378,13 @@ setInterval(cleanSessions, 36000000); // clean expired sessions every hour
 
 if (fs.existsSync('sessions.json')) {
 	console.log('[core] Loading sessions...');
-	global.sessions = JSON.parse(fs.readFileSync('sessions.json'));
-	console.log('[core] Success!');
+	try {
+		global.sessions = JSON.parse(fs.readFileSync('sessions.json'));
+		console.log('[core] Success!');
+	}
+	catch (e) {
+		console.error('[core] Failed to load sessions.json:',e);
+	}
 }
 if (IPV6) {
 	ipv6server.listen(8080, '::');
