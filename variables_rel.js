@@ -1,5 +1,5 @@
 // variables for release mode
-REL_RV = '0.0.1';
+REL_RV = '1.90-beta';
 DEBUG = false;
 RELEASE = true;
 MINIFY = true;
