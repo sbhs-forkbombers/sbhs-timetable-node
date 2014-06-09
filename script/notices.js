@@ -54,7 +54,13 @@ function handleTopPane() {
 	$('.notice-row').click(function() {
 		/*jshint validthis: true*/
 		var id = this.id;
-		$('#n'+id+'-hidden').slideToggle();
+		var el = $('#n'+id+'-hidden');
+		if (el.hasClass('notice-hidden')) {
+			el.removeClass('notice-hidden').velocity('slideDown');
+		}
+		else {
+			el.velocity('slideUp').addClass('notice-hidden');
+		}
 	});
 }
 

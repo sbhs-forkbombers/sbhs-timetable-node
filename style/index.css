@@ -173,6 +173,52 @@
 	width: 99%;
 }
 
+#right-pane {
+	right: -200%;
+}
+
+#right-pane.expanded {
+	right: 0;
+}
+
+#right-pane table {
+	width: 100%;
+	text-align: center;
+	font-size: 1.5em;
+	font-weight: 100;
+	cursor: default;
+}
+
+#right-pane .bell {
+	font-size: 1em;
+}
+
+#right-pane .time {
+	font-size: 1em;
+}
+
+#right-pane .period {
+	font-weight: 400;
+}
+
+#right-pane .break {
+	font-weight: 100;
+	font-style: italic;
+}
+
+#right-pane-arrow {
+	border-right-color: white;
+	right: 0;
+	top: 75%;
+}
+
+#right-pane-arrow.expanded {
+	border-right-color: transparent;
+	border-left-color: white;
+	right: -25px;
+}
+
+
 .changed {
 	color: #ffbb33;
 }

@@ -128,7 +128,7 @@ function domReady() {
 	
 	$('#left-pane-arrow').click(function() {
 		if (topExpanded) {
-			$('#top-pane-arrow,#top-pane').toggleClass('expanded');
+			$('#top-pane-arrow,#top-pane').removeClass('expanded');
 			topExpanded = !topExpanded;
 		}
 		leftExpanded = !leftExpanded;
@@ -140,9 +140,23 @@ function domReady() {
 			$('#left-pane-arrow,#left-pane').removeClass('expanded');
 			leftExpanded = !leftExpanded;
 		}
+		if (rightExpanded) {
+			$('#right-pane-arrow,#right-pane').removeClass('expanded');
+			rightExpanded = !rightExpanded;
+		}
 		topExpanded = !topExpanded;
 		$('#top-pane-arrow,#top-pane').toggleClass('expanded');
 	});
+	
+	$('#right-pane-arrow').click(function() {
+		if (topExpanded) {
+			$('#top-pane-arrow,#top-pane').removeClass('expanded');
+			topExpanded = !topExpanded;
+		}
+		rightExpanded = !rightExpanded;
+		$('#right-pane-arrow,#right-pane').toggleClass('expanded');
+	});
+
 }
 
 function loadComplete() {
@@ -150,6 +164,7 @@ function loadComplete() {
 	reloading = false;
 	calculateUpcomingLesson();
 	updateCountdownLabel();
+	handleRightPane();
 	setInterval(updateCountdownLabel, 1000);
 }
 
@@ -186,7 +201,7 @@ function calculateUpcomingLesson() {
 		reloading = false;
 		return;
 	}
-	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15})) || getNextSchoolDay().valueOf() != new Date().valueOf()) {
+	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15})) || getNextSchoolDay().valueOf() != Date.today().valueOf()) {
 		now = getNextSchoolDay();
 	} else {
 		now = new Date();
@@ -271,6 +286,23 @@ function updateCountdownLabel() {
 	}
 	left = nextStart - now;
 	$('#countdown-label').text(prettifySecondsLeft(Math.floor(left/1000)));
+}
+
+function handleRightPane() {
+	'use strict';
+	var bells = belltimes.bells;
+	var res = '<table><tbody>';
+	for (var i in bells) {
+		var bell = bells[i].bell;
+		var rowClass = 'break';
+		if (/^\d$/.test(bell)) {
+			rowClass = 'period';
+			bell = 'Period ' + bell;
+		}
+		res += '<tr class="'+rowClass+'"><td class="bell">'+bell+'</td><td class="time">'+bells[i].time+'</td></tr>';
+	}
+	res += '</tbody></table>';
+	document.getElementById('right-pane').innerHTML = res;
 }
 
 document.addEventListener('readystatechange', domReady);
