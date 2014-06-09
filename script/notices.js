@@ -65,6 +65,7 @@ function handleTopPane() {
 			el.velocity('slideUp').addClass('notice-hidden');
 		}
 	});
+	
 }
 
 function handleNotices(err) {
@@ -81,6 +82,7 @@ function handleNotices(err) {
 	else if (!window.notices) {
 		$('#top-pane').html('<h1><a href="javascript:void(0)" onclick="loadNotices()">Reload</a></h1>');
 	}
+	updateSidebarStatus();
 }
 
 function loadNotices() {
@@ -92,10 +94,11 @@ function loadNotices() {
 	if (lsKey in window.localStorage) {
 		window.noticesCached = true;
 		window.notices = JSON.parse(window.localStorage[lsKey]);
+		updateSidebarStatus();
 		handleTopPane();
 	}
 	else if (!getLoggedIn()) {
-		window.notices = { 'notices': {} };
+		window.notices = { 'notices': { 'failure': true } };
 		return;
 	}
 	if (!getLoggedIn()) {

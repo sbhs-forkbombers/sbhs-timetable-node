@@ -112,17 +112,18 @@ function handleTimetable(e) {
 	}
 	updatePeriodLabel();
 	handleLeftPane();
+	updateSidebarStatus();
 }
 
 function loadTimetable() {
 	'use strict';
 	window.timetableCached = false;
-	console.log(belltimes.day+belltimes.weekType);
 	if ((belltimes.day+belltimes.weekType) in window.localStorage) {
 		window.timetableCached = true;
 		console.log('loading from localStorage');
 		window.todayNames = JSON.parse(window.localStorage[belltimes.day+belltimes.weekType]);
 		setTimeout(handleLeftPane, 0);
+		updateSidebarStatus();
 		$('#rtd-unavailable').html('Loading real-time data...');
 	}
 	else if (!getLoggedIn() && !window.todayNames) {

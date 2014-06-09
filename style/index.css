@@ -42,6 +42,7 @@
 #sidebar {
 	position: fixed;
 	right: 0;
+	padding-right: 2px;
 	top: 0;
 	text-align: right;
 	font-size: 0.9em;
@@ -312,6 +313,18 @@ td {
 .cached-notice {
 	text-align: center;
 	font-style: italic;
+}
+
+.ok {
+	color: #9C0;
+}
+
+.notok {
+	color: #C00;
+}
+
+.stale {
+	color: #F80;
 }
 
 @media screen and (max-device-width: 1000px), screen and (max-width: 1000px) {

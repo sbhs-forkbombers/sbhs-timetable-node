@@ -30,7 +30,57 @@ var timetable,
 	leftExpanded = false,
 	rightExpanded = false,
 	bottomExpanded = false,
-	miniMode = false;
+	miniMode = false,
+	bellsCached = false,
+	timetableCached = false,
+	noticesCached = false;
+
+function updateSidebarStatus() {
+	'use strict';
+	var belltimesOK = window.hasOwnProperty('belltimes'),
+		noticesOK = window.notices && window.notices.notices && !window.notices.notices.failure,
+		timetableOK = window.hasOwnProperty('todayNames'),
+		belltimesClass = 'ok',
+		belltimesText = 'OK',
+		timetableClass = 'notok',
+		timetableText = 'Not OK',
+		noticesClass = 'notok',
+		noticesText = 'Not OK';
+
+	if (!belltimesOK) {
+		belltimesText = 'Not OK';
+		belltimesClass = 'notok';
+	}
+	
+	if (timetableCached) {
+		timetableText = 'Cached';
+		timetableClass = 'stale';
+	}
+	else if (timetableOK) {
+		timetableText = 'OK';
+		timetableClass = 'ok';
+	}
+	
+	if (noticesCached) {
+		noticesText = 'Cached';
+		noticesClass = 'stale';
+	}
+	else if (noticesOK) {
+		noticesText = 'OK';
+		noticesClass = 'ok';
+	}
+	
+	var bells = document.getElementById('belltimes');
+	bells.className = belltimesClass;
+	bells.innerHTML = belltimesText;
+	var timetable = document.getElementById('timetable');
+	timetable.className = timetableClass;
+	timetable.innerHTML = timetableText;
+	var notices = document.getElementById('notices');
+	notices.className = noticesClass;
+	notices.innerHTML = noticesText;
+	
+}
 
 function collapsePane(p) {
 	'use strict';
@@ -189,6 +239,7 @@ function loadComplete() {
 	updateCountdownLabel();
 	handleRightPane();
 	setInterval(updateCountdownLabel, 1000);
+	updateSidebarStatus();
 }
 
 function prettifySecondsLeft(sec) {
