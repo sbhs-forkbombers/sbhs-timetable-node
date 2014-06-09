@@ -24,6 +24,9 @@ function handleLeftPane() {
 		timetable = todayNames.timetable,
 		prefix, subj, suffix, room, teacher, fullTeacher, subjName, final,
 		roomChanged, teacherChanged, cancelled = false;
+	if (window.timetableCached) {
+		html = '<div class="cached-notice">This data may be outdated</div>' + html;
+	}
 	for (var i = 1; i < 6; i++) {
 		if (!(i in timetable) || !timetable[i].room) {
 			html += '<tr class="free"><td>Free</td><td></td><td></td></tr>';
@@ -88,6 +91,7 @@ function getLoggedIn() {
 function handleTimetable(e) {
 	'use strict';
 	/* jshint validthis: true */
+	window.timetableCached = false;
 	var lsKey = belltimes.day + belltimes.weekType;
 	var res = JSON.parse(this.responseText);
 	if (res.timetable && !res.hasVariations) {
@@ -112,8 +116,10 @@ function handleTimetable(e) {
 
 function loadTimetable() {
 	'use strict';
+	window.timetableCached = false;
 	console.log(belltimes.day+belltimes.weekType);
 	if ((belltimes.day+belltimes.weekType) in window.localStorage) {
+		window.timetableCached = true;
 		console.log('loading from localStorage');
 		window.todayNames = JSON.parse(window.localStorage[belltimes.day+belltimes.weekType]);
 		setTimeout(handleLeftPane, 0);

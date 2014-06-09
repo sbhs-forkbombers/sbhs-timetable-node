@@ -19,9 +19,12 @@
 
 function handleTopPane() {
 	'use strict';
-	var entry, list, today = new Date(), res;
+	var entry, list, today = new Date(), res = '';
 	if (!window.notices) {
 		return;
+	}
+	if (window.noticesCached) {
+		res += '<div class="cached-notice">These notices might be old</div>';
 	}
 	var sorted = Object.keys(window.notices.notices).sort(function(a,b) {
 		if (a >  b) {
@@ -30,9 +33,9 @@ function handleTopPane() {
 		return 1;
 	});
 	if (window.notices.date !== null) {
-		res = '<h1 class="notices-header">Notices for ' + window.notices.date + ' (Week ' + window.notices.week + ')</h1><table><tbody>';
+		res += '<h1 class="notices-header">Notices for ' + window.notices.date + ' (Week ' + window.notices.week + ')</h1><table><tbody>';
 	} else {
-		res = '<h1 class="notices-header">Notices for ' + belltimes.date + ' (Week ' + belltimes.week + belltimes.weekType + ')</h1><table><tbody>';
+		res += '<h1 class="notices-header">Notices for ' + belltimes.date + ' (Week ' + belltimes.week + belltimes.weekType + ')</h1><table><tbody>';
 	}
 	for (var i in sorted) {
 		list = window.notices.notices[sorted[i]];
@@ -67,6 +70,7 @@ function handleTopPane() {
 function handleNotices(err) {
 	/*jshint validthis: true*/
 	'use strict';
+	window.noticesCached = false;
 	var lsKey = new Date().toDateString();
 	var res = JSON.parse(this.responseText);
 	if (res.notices) {
@@ -81,10 +85,12 @@ function handleNotices(err) {
 
 function loadNotices() {
 	'use strict';
+	window.noticesCached = false;
 	var lsKey = new Date().toDateString();
 	var date = getNextSchoolDay();
 	var ds = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
 	if (lsKey in window.localStorage) {
+		window.noticesCached = true;
 		window.notices = JSON.parse(window.localStorage[lsKey]);
 		handleTopPane();
 	}

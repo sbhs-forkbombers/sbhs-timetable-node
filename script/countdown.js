@@ -32,6 +32,36 @@ var timetable,
 	bottomExpanded = false,
 	miniMode = false;
 
+function collapsePane(p) {
+	'use strict';
+	var el = $('#'+p+'-pane');
+	var cfg = {};
+	cfg[p] = '-200%';
+	el.velocity(cfg, 'ease');
+	$('#'+p+'-pane-arrow').removeClass('expanded');
+	window[p+'Expanded'] = false;
+}
+
+function expandPane(p) {
+	'use strict';
+	var el = $('#'+p+'-pane');
+	var cfg = {};
+	cfg[p] = 0;
+	el.velocity(cfg, 'ease');
+	window[p+'Expanded'] = true;
+	$('#'+p+'-pane-arrow').addClass('expanded');
+}
+
+function togglePane(which) {
+	'use strict';
+	if (window[which+'Expanded']) {
+		collapsePane(which);
+	}
+	else {
+		expandPane(which);
+	}
+}
+
 /** calculate the day that school will be starting on - this may NOT use DateJS functions as it may be called before DateJS is loaded. */
 function calculateDay() {
 	'use strict';
@@ -128,33 +158,26 @@ function domReady() {
 	
 	$('#left-pane-arrow').click(function() {
 		if (topExpanded) {
-			$('#top-pane-arrow,#top-pane').removeClass('expanded');
-			topExpanded = !topExpanded;
+			collapsePane('top');
 		}
-		leftExpanded = !leftExpanded;
-		$('#left-pane-arrow,#left-pane').toggleClass('expanded');
+		togglePane('left');
 	});
 
 	$('#top-pane-arrow').click(function() {
 		if (leftExpanded) {
-			$('#left-pane-arrow,#left-pane').removeClass('expanded');
-			leftExpanded = !leftExpanded;
+			collapsePane('left');
 		}
 		if (rightExpanded) {
-			$('#right-pane-arrow,#right-pane').removeClass('expanded');
-			rightExpanded = !rightExpanded;
+			collapsePane('right');
 		}
-		topExpanded = !topExpanded;
-		$('#top-pane-arrow,#top-pane').toggleClass('expanded');
+		togglePane('top');
 	});
 	
 	$('#right-pane-arrow').click(function() {
 		if (topExpanded) {
-			$('#top-pane-arrow,#top-pane').removeClass('expanded');
-			topExpanded = !topExpanded;
+			collapsePane('top');
 		}
-		rightExpanded = !rightExpanded;
-		$('#right-pane-arrow,#right-pane').toggleClass('expanded');
+		togglePane('right');
 	});
 
 }

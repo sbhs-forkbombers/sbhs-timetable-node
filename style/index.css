@@ -303,6 +303,11 @@ td {
 	font-style: italic;
 }
 
+.cached-notice {
+	text-align: center;
+	font-style: italic;
+}
+
 @media screen and (max-device-width: 1000px), screen and (max-width: 1000px) {
 	#left-pane {
 		width: 50%;
