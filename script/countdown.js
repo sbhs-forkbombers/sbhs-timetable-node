@@ -39,7 +39,7 @@ function updateSidebarStatus() {
 	'use strict';
 	var tick = '<span class="ok">✓</span>',
 		cross = '<span class="notok">⤬</span>',
-		cached = '<span class="cached">!</span>',
+		cached = '<span class="stale">!</span>',
 		loading = '<span class="idk">…</span>';
 	var belltimesOK = window.hasOwnProperty('belltimes'),
 		noticesOK = window.notices && window.notices.notices && !window.notices.notices.failure,
@@ -242,14 +242,15 @@ function domReady() {
 		togglePane('right');
 	});
 	
-	$('#dropdown-arrow').click(function() {
-		if ($(this).hasClass('expanded')) {
+	$('#cached').click(function() {
+		var $arrow = $(document.getElementById('dropdown-arrow'));
+		if ($arrow.hasClass('expanded')) {
 			$('#verbose-hidden').velocity('slideUp');
-			$(this).removeClass('expanded');
+			$arrow.removeClass('expanded');
 		}
 		else {
 			$('#verbose-hidden').velocity('slideDown');
-			$(this).addClass('expanded'); // can't velocify this.
+			$arrow.addClass('expanded'); // can't velocify this.
 		}
 	});
 	

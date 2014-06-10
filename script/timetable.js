@@ -19,7 +19,7 @@
 
 function handleLeftPane() {
 	'use strict';
-	var pane = $('#left-pane'),
+	var pane = document.getElementById('left-pane'),
 		html = '<table><tbody><tr><td>Subject</td><td>Teacher</td><td>Room</td></tr>',
 		timetable = todayNames.timetable,
 		prefix, subj, suffix, room, teacher, fullTeacher, subjName, final,
@@ -45,19 +45,19 @@ function handleLeftPane() {
 				suffix = timetable[i].title.substr(-1);
 				subj = subj.slice(0,-1);
 			}
-			if (subj.length == 3 || (subj.length == 2 && suffix === '')) { // very tentative guess that this is an elective - char 1 should be prefix
+			if (subj.length == 3 || (subj.length == 2 && suffix === '') || /^[WXYZ]/.test(subj)) { // very tentative guess that this is an elective - char 1 should be prefix
 				prefix = subj[0];
 				subj = subj.substr(1);
 			}
 			if (timetable[i].changed) {
-				if (timetable[i].hasOwnProperty('hasCover')) {
+				if (timetable[i].hasOwnProperty('hasCover') && timetable[i].varies) { // don't show anything because I really don't get what the point of setting a casual but then not actually using aforementioned casual is.
 					if (!timetable[i].hasCover) {
 						cancelled = true;
 					}
 					else if (timetable[i].hasCasual) {
 						teacherChanged = true;
 						teacher = timetable[i].casual.toUpperCase();
-						fullTeacher = timetable[i].casualDisplay;
+						fullTeacher = timetable[i].casualDisplay.trim();
 					}
 				}
 				if (timetable[i].roomFrom) {
@@ -79,7 +79,7 @@ function handleLeftPane() {
 	else {
 		html += 'This info may change</div>';
 	}
-	pane.html(html);
+	pane.innerHTML = html;
 
 }
 

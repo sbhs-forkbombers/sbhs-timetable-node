@@ -341,6 +341,10 @@ td {
 	width: 100%;
 }
 
+#cached {
+	cursor: pointer;
+}
+
 #dropdown-arrow {
 	border: 7px solid transparent;
 	border-right-color: white;
@@ -350,7 +354,6 @@ td {
 	display: inline-block;
 	height: 0;
 	width: 0;
-	cursor: pointer;
 }
 
 #dropdown-arrow.expanded {
@@ -358,6 +361,10 @@ td {
 	border-top-color: white;
 	margin-left: 5px;
 	bottom: -7px;
+}
+
+#verbose-hidden {
+	display: none;
 }
 
 @media screen and (max-device-width: 1000px), screen and (max-width: 1000px) {
