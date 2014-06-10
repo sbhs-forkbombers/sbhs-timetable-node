@@ -30,13 +30,17 @@ var timetable,
 	leftExpanded = false,
 	rightExpanded = false,
 	bottomExpanded = false,
-	miniMode = false,
+	miniMode = window.innerWidth < 800,
 	bellsCached = false,
 	timetableCached = false,
 	noticesCached = false;
 
 function updateSidebarStatus() {
 	'use strict';
+	var tick = '<span class="ok">✓</span>',
+		cross = '<span class="notok">⤬</span>',
+		cached = '<span class="cached">!</span>',
+		loading = '<span class="idk">…</span>';
 	var belltimesOK = window.hasOwnProperty('belltimes'),
 		noticesOK = window.notices && window.notices.notices && !window.notices.notices.failure,
 		timetableOK = window.hasOwnProperty('todayNames'),
@@ -45,29 +49,36 @@ function updateSidebarStatus() {
 		timetableClass = 'notok',
 		timetableText = 'Not OK',
 		noticesClass = 'notok',
-		noticesText = 'Not OK';
+		noticesText = 'Not OK',
+		shortText = ['B: '+tick,'T: '+cross,'N: '+cross];
 
 	if (!belltimesOK) {
 		belltimesText = 'Not OK';
 		belltimesClass = 'notok';
+		shortText[0] = 'B: ' + cross;
 	}
 	
 	if (timetableCached) {
 		timetableText = 'Cached';
 		timetableClass = 'stale';
+		shortText[1] = 'T: ' + cached;
 	}
 	else if (timetableOK) {
 		timetableText = 'OK';
 		timetableClass = 'ok';
+		shortText[1] = 'T: ' + tick;
 	}
 	
 	if (noticesCached) {
 		noticesText = 'Cached';
 		noticesClass = 'stale';
+		shortText[2] = 'N: ' + cached;
 	}
 	else if (noticesOK) {
 		noticesText = 'OK';
 		noticesClass = 'ok';
+		shortText[2] = 'N: ' + tick;
+
 	}
 	
 	var bells = document.getElementById('belltimes');
@@ -79,6 +90,7 @@ function updateSidebarStatus() {
 	var notices = document.getElementById('notices');
 	notices.className = noticesClass;
 	notices.innerHTML = noticesText;
+	document.getElementById('shortdata-desc').innerHTML = shortText.join(' ');
 	
 }
 
@@ -230,9 +242,24 @@ function domReady() {
 		togglePane('right');
 	});
 	
+	$('#dropdown-arrow').click(function() {
+		if ($(this).hasClass('expanded')) {
+			$('#verbose-hidden').velocity('slideUp');
+			$(this).removeClass('expanded');
+		}
+		else {
+			$('#verbose-hidden').velocity('slideDown');
+			$(this).addClass('expanded'); // can't velocify this.
+		}
+	});
+	
 	setTimeout(function() {
 		$('#update').velocity('fadeOut');
 	}, 10000);
+	
+	if (miniMode) {
+		
+	}
 }
 
 function loadComplete() {
@@ -326,18 +353,38 @@ function updatePeriodLabel() {
 	} else if (name == 'School Starts' || name == 'School Ends') {
 		inLabel = 'in';
 	}
+	else {
+		if (/^\d$/.test(belltimes.bells[currentBellIndex-1].bell)) {
+			pNum = belltimes.bells[currentBellIndex-1].bell;
+		}
+	}
 	if (pNum && pNum in window.todayNames.timetable && window.todayNames.timetable[pNum].changed) {
 		pNum = window.todayNames.timetable[pNum];
 		roomChangedInfo = '';
 		if ('roomTo' in pNum) {
-			roomChangedInfo = name + ' is in room ' + pNum.roomTo + ' instead of ' + pNum.roomFrom + '. ';
+			if (!miniMode) {
+				roomChangedInfo = name + ' is in room ' + pNum.roomTo + ' instead of ' + pNum.roomFrom + '. ';
+			}
+			else {
+				roomChangedInfo = 'Room: ' + pNum.roomTo + ' ';
+			}
 		}
 		if ('hasCover' in pNum) {
 			if (pNum.hasCover && pNum.hasCasual) { // casual teacher
-				roomChangedInfo += 'You\'ll be having ' + pNum.casualDisplay + ' instead of your usual teacher.';
+				if (!miniMode) {
+					roomChangedInfo += 'You\'ll be having ' + pNum.casualDisplay + ' instead of your usual teacher.';
+				}
+				else {
+					roomChangedInfo += 'Casual: ' + pNum.casualDisplay;
+				}
 			}
 			else if (!pNum.hasCover) { // no teacher
-				roomChangedInfo += 'There\'s no teacher covering this class today (we think).';
+				if (!miniMode) {
+					roomChangedInfo += 'There\'s no teacher covering this class today (we think).';
+				}
+				else {
+					roomChangedInfo += 'No teacher (maybe)';
+				}
 			}
 		}
 	}

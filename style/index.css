@@ -341,6 +341,25 @@ td {
 	width: 100%;
 }
 
+#dropdown-arrow {
+	border: 7px solid transparent;
+	border-right-color: white;
+	position: relative;
+	opacity: 1;
+	right: 2px;
+	display: inline-block;
+	height: 0;
+	width: 0;
+	cursor: pointer;
+}
+
+#dropdown-arrow.expanded {
+	border-right-color: transparent;
+	border-top-color: white;
+	margin-left: 5px;
+	bottom: -7px;
+}
+
 @media screen and (max-device-width: 1000px), screen and (max-width: 1000px) {
 	#left-pane, #right-pane {
 		width: 50%;
