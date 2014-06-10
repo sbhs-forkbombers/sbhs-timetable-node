@@ -343,6 +343,8 @@ td {
 
 #cached {
 	cursor: pointer;
+	background-color: rgba(0,0,0,0.75);
+	border-bottom-left-radius: 10px;
 }
 
 #dropdown-arrow {
