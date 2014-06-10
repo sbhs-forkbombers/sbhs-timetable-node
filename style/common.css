@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* These styles are used on all pages */
 
 body {
 	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
@@ -36,6 +37,7 @@ a:hover {
 	color: #33B5E5;
 }
 
+/* Font smoothing weirdness for OS X */
 .ss {
 	-webkit-font-smoothing: subpixel-antialiased;
 	-moz-osx-font-smoothing: auto;

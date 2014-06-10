@@ -42,6 +42,7 @@ console.log('[core] Initialised in in ' + (Date.now() - all_start) + 'ms');
 
 require('./variables.js'); // set globals appropriate to status - dev (DEBUG = true) or release (DEBUG = false and GIT_RV set)
 if (!RELEASE) {
+	/* Set GIT_RV to current Git revision */
 	GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
 	var watcher = fs.watch('.git/refs/heads/master', { persistent: false }, function() {
 		'use strict';
@@ -51,16 +52,19 @@ if (!RELEASE) {
 fs.writeFile('.reload', '0');
 
 var jade_opts = {
+	/* Jade compile options */
 	pretty: DEBUG,
 	compileDebug: DEBUG
 };
 
 function serverError() {
+	/* Returns the 500 Internal Server Error page */
 	'use strict';
 	return fs.createReadStream('static/500.html');
 }
 
 function compile_jade(path) {
+	/* Compiles jade templates into HTML */
 	'use strict';
 	try {
 		var mopts = jade_opts;
@@ -74,6 +78,7 @@ function compile_jade(path) {
 }
 
 function cache_index() {
+	/* Compile and cache the index page */
 	'use strict';
 	console.log('[core] Caching index page... (hangup to re-cache)');
 	var jade_comp = Date.now();
@@ -86,6 +91,7 @@ function cache_index() {
 }
 
 function cleanSessions() {
+	/* Remove old (or otherwise) sessions from the store and save everything else to the filesystem */
 	'use strict';
 	var start = Date.now(),
 		cleaned = 0;
@@ -111,18 +117,21 @@ function cleanSessions() {
 }
 
 var reloadWatcher = fs.watch('.reload', { persistent: false }, function() {
+	/* Clean and re-cache when file modification is detected */
 	'use strict';
 	cache_index();
 	cleanSessions();
 });
 
 process.on('SIGHUP', function() {
+	/* Clean and re-cache if we receive a hangup */
 	'use strict';
 	cache_index();
 	cleanSessions();
 });
 
 process.on('SIGINT', function() {
+	/* Close the sockets and save sessions when we receive an interrupt */
 	'use strict';
 	unixserver.close(function() { global.unixDone = true; });
 	ipv4server.close(function() { global.ipv4Done = true; });
@@ -133,6 +142,7 @@ process.on('SIGINT', function() {
 
 
 function httpHeaders(res, response, contentType, dynamic, headers) {
+	/* Generate HTTP headers, including the response code, content type and any other headers */
 	'use strict';
 	var date;
 	dynamic = dynamic || false;
@@ -155,6 +165,7 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 }
 
 function getBelltimes(date, res) {
+	/* Get the belltimes from API and cache them */
 	'use strict';
 	if (date === null || date === undefined || !/\d\d\d\d-\d?\d-\d?\d/.test(date)) {
 		res.end(JSON.stringify({error: 'Invalid Date!'}));
@@ -182,6 +193,7 @@ function getBelltimes(date, res) {
 }
 
 function genSessionID(req) {
+	/* Generate a random session ID */
 	'use strict';
 	var ua = req.headers['user-agent'];
 	var buf = new Buffer(Date.now().toString() + ua + Math.floor(Math.random()*100));
@@ -189,6 +201,7 @@ function genSessionID(req) {
 }
 
 function getCookies(s) {
+	/* TODO: COOKIES */
 	'use strict';
 	var res = {};
 	s.split(';').forEach(function (ck) {
@@ -199,6 +212,7 @@ function getCookies(s) {
 }
 
 function onRequest(req, res) {
+	/* Respond to requests */
 	/* jshint validthis: true */
 	'use strict';
 	var start = Date.now(),
@@ -228,6 +242,8 @@ function onRequest(req, res) {
 	}
 
 	var target, uri = url.parse(req.url, true);
+	
+	/* Response block */
 	if (uri.pathname === '/') {
 		/* Main page */
 		httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
@@ -238,6 +254,7 @@ function onRequest(req, res) {
 		target = uri.pathname.slice(1);
 		fs.createReadStream(target).pipe(res);
 	} else if (uri.pathname == '/script/belltimes.js' && !RELEASE) {
+		/* Debug concatenated main script */
 		fs.createReadStream('script/belltimes.concat.js').pipe(res);
 	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* JavaScript */
@@ -281,6 +298,7 @@ function onRequest(req, res) {
 			res.end(JSON.stringify(obj));
 		});
 	} else if (uri.pathname == '/logout') {
+		/* Log out */
 		httpHeaders(res, 302, 'text/plain', true, { 'Location': '/' });
 		res.end('Redirecting...');
 		delete global.sessions[res.SESSID].accessToken;
@@ -296,11 +314,13 @@ function onRequest(req, res) {
 		httpHeaders(res, 200, 'text/html');
 		fs.createReadStream('static/faq.html').pipe(res);
 	} else if (uri.pathname == '/reset_access_token') {
+		/* Reset access token */
 		httpHeaders(res, 200, 'application/json');
 		delete global.sessions[res.SESSID].accessToken;
 		global.sessions[res.SESSID].accessTokenExpires = 0;
 		res.end(JSON.stringify(global.sessions[res.SESSID]));
 	} else if (uri.pathname == '/refresh_token') {
+		/* Refresh access token */
 		httpHeaders(res, 200, 'application/json');
 		if (global.sessions[res.SESSID].refreshToken) {
 			auth.refreshAuthToken(global.sessions[res.SESSID].refreshToken, res.SESSID, function() {
@@ -310,13 +330,14 @@ function onRequest(req, res) {
 			res.end('{"error": "not logged in"}');
 		}
 	} else if (uri.pathname == '/browserconfig.xml') {
+		/* Windows thingies, ignore this */
 		httpHeaders(res, 200, 'text/xml');
 		fs.createReadStream('w8tile/browserconfig.xml').pipe(res);
 	} else if (uri.pathname == '/win8') {
 		/* STOP error :( */
 		httpHeaders(res, 500, 'text/html');
 		fs.createReadStream('static/500.8.html').pipe(res);
-	}  else if (uri.pathname == '/EFLAT') {
+	}  else if (uri.pathname == '/EFLAT' && DEBUG) {
 		/* Force a 500 error */
 		httpHeaders(res, 500, 'text/html');
 		fs.createReadStream('static/500.html').pipe(res);
@@ -329,6 +350,7 @@ function onRequest(req, res) {
 }
 
 function requestSafeWrapper(req, res) {
+	/* Wrapper to return 500 if bad things happen */
 	/* jshint validthis: true */
 	'use strict';
 	try {
@@ -344,43 +366,58 @@ function requestSafeWrapper(req, res) {
 }
 
 function onListening() {
+	/* Listen for TCP sockets */
 	/* jshint validthis: true */
 	'use strict';
 	console.log('[' + this.name + '] Listening on http://' + this.address().address + ':' + this.address().port + '/');
 }
 
 function nxListening() {
+	/* Listen for Unix sockets */
 	/* jshint validthis: true */
 	'use strict';
 	console.log('[' + this.name + '] Listening on ' + this.path);
 }
+
+/* Startup message */
 if (RELEASE) {
 	console.log('[core] SBHS-Timetable-Node version ' + REL_RV + ' starting server...');
 } else {
 	console.log('[core] SBHS-Timetable-Node git revision ' + GIT_RV.substr(0,6) + ' starting server...');
 }
 
+/* index_cache defaults to 500, cache the index page */
 var index_cache = serverError;
-
 cache_index();
 
+/* Start the IPv4 server */
 ipv4server = http.createServer();
-ipv6server = http.createServer();
-unixserver = http.createServer();
-
 ipv4server.name = 'ipv4server';
-ipv6server.name = 'ipv6server';
-unixserver.name = 'unixserver';
-
 ipv4server.on('request', requestSafeWrapper);
-ipv6server.on('request', requestSafeWrapper);
-unixserver.on('request', requestSafeWrapper);
-
 ipv4server.on('listening', onListening);
-ipv6server.on('listening', onListening);
-unixserver.on('listening', nxListening);
-
 ipv4server.listen(8080, '0.0.0.0');
+
+/* Start the IPv6 server if it is enabled */
+if (IPV6) {
+	ipv6server = http.createServer();
+	ipv6server.name = 'ipv6server';
+	ipv6server.on('request', requestSafeWrapper);
+	ipv6server.on('listening', onListening);
+	ipv6server.listen(8080, '::');
+}
+
+/* Start the server on a Unix socket if we aren't running on Windows */
+/* All values for process.platform as of Node.js v0.10.28 support Unix sockets except Windows */
+if (process.platform !== 'win32') {
+	unixserver = http.createServer();
+	unixserver.name = 'unixserver';
+	unixserver.on('request', requestSafeWrapper);
+	unixserver.on('listening', nxListening);
+	unixserver.path = '/tmp/timetable.sock';
+	fs.chmod(unixserver.path, '777');
+	unixserver.listen(unixserver.path);
+}
+
 setInterval(cleanSessions, 36000000); // clean expired sessions every hour
 
 if (fs.existsSync('sessions.json')) {
@@ -392,12 +429,4 @@ if (fs.existsSync('sessions.json')) {
 	catch (e) {
 		console.error('[core] Failed to load sessions.json:',e);
 	}
-}
-if (IPV6) {
-	ipv6server.listen(8080, '::');
-}
-if (process.platform !== 'win32') {
-	unixserver.path = '/tmp/timetable.sock';
-	unixserver.listen(unixserver.path);
-	fs.chmod(unixserver.path, '777');
 }
