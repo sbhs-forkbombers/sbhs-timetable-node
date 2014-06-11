@@ -99,7 +99,7 @@ function collapsePane(p) {
 	var el = $('#'+p+'-pane');
 	var cfg = {};
 	cfg[p] = '-110%';
-	el.velocity(cfg, 1000, 'ease');
+	el.velocity('stop').velocity(cfg, 1000, 'ease');
 	$('#'+p+'-pane-arrow').removeClass('expanded');
 	window[p+'Expanded'] = false;
 }
@@ -109,7 +109,7 @@ function expandPane(p) {
 	var el = $('#'+p+'-pane');
 	var cfg = {};
 	cfg[p] = 0;
-	el.velocity(cfg, 1000, 'ease');
+	el.velocity('stop').velocity(cfg, 1000, 'ease');
 	window[p+'Expanded'] = true;
 	$('#'+p+'-pane-arrow').addClass('expanded');
 }
@@ -212,7 +212,7 @@ function domReady() {
 		setTimeout(loadComplete, 0);
 	}
 	if (getLoggedIn()) {
-		$('#login-status').html('Logged in. <a href="/logout">Logout</a>');
+		$('#login-status').html('<a href="/logout">Logout</a>');
 	}
 	else {
 		$('#login-status').html('<a href="/try_do_oauth">Login');
@@ -357,7 +357,7 @@ function updatePeriodLabel() {
 	else {
 		if (/^\d$/.test(belltimes.bells[currentBellIndex-1].bell)) {
 			pNum = belltimes.bells[currentBellIndex-1].bell;
-			inLabel = 'end in';
+			inLabel = 'ends in';
 			name = 'Period ' + pNum;
 		}
 	}
