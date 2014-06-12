@@ -266,7 +266,7 @@ function domReady() {
 			$('#collapse').css({'display': 'block'});
 		}
 		else {
-			$('#countdown-label').velocity({fontSize: '7em', width: 'inherit'}).css({position: 'relative', marginTop: 0})[0].setAttribute('style', '');
+			$('#countdown-label').velocity({fontSize: miniMode ? '5em' : '7em', width: 'inherit'}).css({position: 'relative', marginTop: 0})[0].setAttribute('style', '');
 			$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('fadeIn');
 			this.style.display = 'none';
 			$('#expand').css({'display': 'block'});

@@ -371,13 +371,16 @@ td {
 }
 
 #expand-toggle {
-	height: 30px;
-	width: 30px;
 	position: fixed;
 	left: 2px;
 	top: 2px;
 	z-index: 5;
 	cursor: pointer;
+}
+
+#expand-toggle img {
+	height: 30px;
+	width: 30px;
 }
 
 #collapse {
