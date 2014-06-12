@@ -97,8 +97,12 @@ function handleTimetable() {
 	'use strict';
 	/* jshint validthis: true */
 	window.timetableCached = false;
-	var lsKey = belltimes.day + belltimes.weekType;
 	var res = JSON.parse(this.responseText);
+	if (!window.belltimes) {
+		window.belltimes.day = res.today.split(' ')[0];
+		window.belltimes.week = res.today.split(' ')[1];
+	}
+	var lsKey = belltimes.day + belltimes.weekType;
 	if (res.timetable && !res.hasVariations) {
 		window.localStorage[lsKey] = this.responseText;
 	}
@@ -124,7 +128,11 @@ function loadTimetable() {
 	/* Get the timetable */
 	'use strict';
 	window.timetableCached = false;
-	if ((belltimes.day+belltimes.weekType) in window.localStorage) {
+	var day = false;
+	if (belltimes) {
+		day = belltimes.day+belltimes.weekType;
+	}
+	if (day && day in window.localStorage) {
 		window.timetableCached = true;
 		console.log('loading from localStorage');
 		window.todayNames = JSON.parse(window.localStorage[belltimes.day+belltimes.weekType]);
@@ -133,7 +141,6 @@ function loadTimetable() {
 		$('#rtd-unavailable').html('Loading real-time data...');
 	}
 	else if (!getLoggedIn() && !window.todayNames) {
-		console.log('umm');
 		window.todayNames = {timetable: {failure: true}};
 	}
 	if (!getLoggedIn()) {

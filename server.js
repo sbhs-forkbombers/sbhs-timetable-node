@@ -452,6 +452,9 @@ function onRequest(req, res) {
 		/* Force a 500 error (out of tune) */
 		httpHeaders(res, 500, 'text/html');
 		serverError().pipe(res);
+	} else if (uri.pathname == '/main.appcache') {
+		httpHeaders(res, 200, 'text/cache-manifest');
+		fs.createReadStream('static/app.appcache').pipe(res);
 	} else {
 		/* 404 everything else */
 		httpHeaders(res, 404, 'text/html');

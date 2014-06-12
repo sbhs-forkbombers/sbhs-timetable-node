@@ -149,6 +149,31 @@ module.exports = function(grunt) {
 		},
 		reload: {
 			why: 'is this necessary?'
+		},
+		manifest: {
+			create: {
+				src: [],// ['static/**', '!static/app.appcache'],
+				dest: 'static/app.appcache',
+				options: {
+					basePath: '.',
+					cache: [ // static cdn/font stuff
+						'http://fonts.googleapis.com/css?family=Roboto:400,100&subset=latin',
+						'http://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js',
+						'http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js',
+						'http://cdnjs.cloudflare.com/ajax/libs/velocity/0.0.9/jquery.velocity.min.js'
+					],
+					network: [
+						'/api/*',
+						'http://themes.googleusercontent.com/static/fonts/roboto/*',
+						'/script/*',
+						'/'
+					],
+					preferOnline: true,
+					//hash: true,
+					timestamp: true,
+				}
+			}
+
 		}
 	});
 
@@ -161,6 +186,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-manifest');
 
 	grunt.registerMultiTask('delete', 'delete stuff', function() {
 		if (process.platform !== 'win32') {
@@ -182,7 +208,7 @@ module.exports = function(grunt) {
 	});
 
 	grunt.registerTask('minify', ['uglify', 'cssmin']);
-	grunt.registerTask('release', ['jshint', 'concat', 'minify', 'copy']);
+	grunt.registerTask('release', ['jshint', 'concat', 'minify', 'manifest:create', 'copy']);
 	grunt.registerTask('test', ['jshint']);
-	grunt.registerTask('default', ['delete', 'concat', 'concurrent:develop', 'delete']);
+	grunt.registerTask('default', ['delete', 'concat', 'manifest:create', 'concurrent:develop', 'delete']);
 };
