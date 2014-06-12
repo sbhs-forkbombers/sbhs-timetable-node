@@ -245,11 +245,11 @@ function domReady() {
 	$('#cached').click(function() {
 		var $arrow = $(document.getElementById('dropdown-arrow'));
 		if ($arrow.hasClass('expanded')) {
-			$('#verbose-hidden').velocity('slideUp');
+			$('#verbose-hidden').velocity('stop').velocity('slideUp');
 			$arrow.removeClass('expanded');
 		}
 		else {
-			$('#verbose-hidden').velocity('slideDown');
+			$('#verbose-hidden').velocity('stop').velocity('slideDown');
 			$arrow.addClass('expanded'); // can't velocify this.
 		}
 	});
@@ -260,14 +260,14 @@ function domReady() {
 	
 	var toggleExpansion = function(e) {
 		if (this.id == 'expand') {
-			$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('fadeOut');
+			$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('stop').velocity('fadeOut');
 			$('#countdown-label').css({fontSize: '10em', top: '50%', left: 0, width: '100%'}).css({position: 'fixed', marginTop: '-1em'});
 			this.style.display = 'none';
 			$('#collapse').css({'display': 'block'});
 		}
 		else {
 			$('#countdown-label').velocity({fontSize: miniMode ? '5em' : '7em', width: 'inherit'}).css({position: 'relative', marginTop: 0})[0].setAttribute('style', '');
-			$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('fadeIn');
+			$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('stop').velocity('fadeIn');
 			this.style.display = 'none';
 			$('#expand').css({'display': 'block'});
 		}

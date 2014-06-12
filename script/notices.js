@@ -59,10 +59,10 @@ function handleTopPane() {
 		var id = this.id;
 		var el = $('#n'+id+'-hidden');
 		if (el.hasClass('notice-hidden')) {
-			el.removeClass('notice-hidden').velocity('slideDown');
+			el.velocity('stop').removeClass('notice-hidden').velocity('slideDown');
 		}
 		else {
-			el.velocity('slideUp').addClass('notice-hidden');
+			el.velocity('stop').velocity('slideUp').addClass('notice-hidden');
 		}
 	});
 	
