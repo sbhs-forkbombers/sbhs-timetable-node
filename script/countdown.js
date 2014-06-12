@@ -203,6 +203,25 @@ function handleBells(bells) {
 
 reloadBelltimes(); // do it ASAP
 
+function toggleExpansion(e) {
+	/* jshint validthis: true */
+	'use strict';
+	if (this.id == 'expand') {
+		$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('stop').velocity('fadeOut');
+		$('#countdown-label').css({fontSize: '10em', top: '50%', left: 0, width: '100%'}).css({position: 'fixed', marginTop: '-1em'});
+		this.style.display = 'none';
+		$('#collapse').css({'display': 'block'});
+		window.localStorage.expanded = true;
+	}
+	else {
+		$('#countdown-label').velocity({fontSize: miniMode ? '5em' : '7em', width: 'inherit'}).css({position: 'relative', marginTop: 0})[0].setAttribute('style', '');
+		$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('stop').velocity('fadeIn');
+		this.style.display = 'none';
+		$('#expand').css({'display': 'block'});
+		window.localStorage.expanded = false;
+	}
+}
+
 function domReady() {
 	'use strict';
 	if (document.readyState != 'complete') {
@@ -258,22 +277,11 @@ function domReady() {
 		$('#update').velocity('fadeOut');
 	}, 10000);
 	
-	var toggleExpansion = function(e) {
-		if (this.id == 'expand') {
-			$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('stop').velocity('fadeOut');
-			$('#countdown-label').css({fontSize: '10em', top: '50%', left: 0, width: '100%'}).css({position: 'fixed', marginTop: '-1em'});
-			this.style.display = 'none';
-			$('#collapse').css({'display': 'block'});
-		}
-		else {
-			$('#countdown-label').velocity({fontSize: miniMode ? '5em' : '7em', width: 'inherit'}).css({position: 'relative', marginTop: 0})[0].setAttribute('style', '');
-			$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('stop').velocity('fadeIn');
-			this.style.display = 'none';
-			$('#expand').css({'display': 'block'});
-		}
-	};
-	
 	$('#expand,#collapse').on('click', toggleExpansion);
+	
+	if (window.localStorage.expanded === 'true') {
+		$('#expand').click();
+	}
 }
 
 function loadComplete() {
