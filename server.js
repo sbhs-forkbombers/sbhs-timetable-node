@@ -160,6 +160,8 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 		// SIGHUP'ing the process will force every client to re-request resources.
 	}
 	headers['Content-Type'] = contentType + '; charset=UTF-8';
+	headers['X-Powered-By'] = 'NodeJS ' + process.version +'; PHP v5.4.3';
+	headers.Server = 'IIS; version 7.5; nginx; version 10.2.8; Mongrel; eHTTP; version 6.4; Fedora; Ubuntu; Debian';
 	res.writeHead(response, headers);
 	return res;
 }

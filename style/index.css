@@ -370,6 +370,23 @@ td {
 	display: none;
 }
 
+#expand-toggle {
+	position: fixed;
+	left: 2px;
+	top: 2px;
+	z-index: 5;
+	cursor: pointer;
+}
+
+#expand-toggle img {
+	height: 30px;
+	width: 30px;
+}
+
+#collapse {
+	display: none;
+}
+
 @media screen and (max-device-width: 1000px), screen and (max-width: 1000px) {
 	#left-pane, #right-pane {
 		width: 50%;

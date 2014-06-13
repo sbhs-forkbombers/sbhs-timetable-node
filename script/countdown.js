@@ -45,7 +45,7 @@ function updateSidebarStatus() {
 		loading = '<span class="idk">…</span>';
 	var belltimesOK = window.hasOwnProperty('belltimes'),
 		noticesOK = window.notices && window.notices.notices && !window.notices.notices.failure,
-		timetableOK = window.hasOwnProperty('todayNames'),
+		timetableOK = window.hasOwnProperty('todayNames') && todayNames.timetable && !todayNames.timetable.failure,
 		belltimesClass = 'ok',
 		belltimesText = 'OK',
 		timetableClass = 'notok',
@@ -102,7 +102,7 @@ function collapsePane(p) {
 	var el = $('#'+p+'-pane');
 	var cfg = {};
 	cfg[p] = '-110%';
-	el.velocity(cfg, 1000, 'ease');
+	el.velocity('stop').velocity(cfg, 1000, 'ease');
 	$('#'+p+'-pane-arrow').removeClass('expanded');
 	window[p+'Expanded'] = false;
 }
@@ -113,7 +113,7 @@ function expandPane(p) {
 	var el = $('#'+p+'-pane');
 	var cfg = {};
 	cfg[p] = 0;
-	el.velocity(cfg, 1000, 'ease');
+	el.velocity('stop').velocity(cfg, 1000, 'ease');
 	$('#'+p+'-pane-arrow').addClass('expanded');
 	window[p+'Expanded'] = true;
 }
@@ -210,6 +210,25 @@ function handleBells(bells) {
 
 reloadBelltimes(); // do it ASAP
 
+function toggleExpansion(e) {
+	/* jshint validthis: true */
+	'use strict';
+	if (this.id == 'expand') {
+		$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('stop').velocity('fadeOut');
+		$('#countdown-label').css({fontSize: '10em', top: '50%', left: 0, width: '100%'}).css({position: 'fixed', marginTop: '-1em'});
+		this.style.display = 'none';
+		$('#collapse').css({'display': 'block'});
+		window.localStorage.expanded = true;
+	}
+	else {
+		$('#countdown-label').velocity({fontSize: miniMode ? '5em' : '7em', width: 'inherit'}).css({position: 'relative', marginTop: 0})[0].setAttribute('style', '');
+		$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('stop').velocity('fadeIn');
+		this.style.display = 'none';
+		$('#expand').css({'display': 'block'});
+		window.localStorage.expanded = false;
+	}
+}
+
 function domReady() {
 	/* Onclicks and timeouts */
 	'use strict';
@@ -220,7 +239,7 @@ function domReady() {
 		setTimeout(loadComplete, 0);
 	}
 	if (getLoggedIn()) {
-		$('#login-status').html('Logged in. <a href="/logout">Logout</a>');
+		$('#login-status').html('<a href="/logout">Logout</a>');
 	}
 	else {
 		$('#login-status').html('<a href="/try_do_oauth">Login');
@@ -253,11 +272,11 @@ function domReady() {
 	$('#cached').click(function() {
 		var $arrow = $(document.getElementById('dropdown-arrow'));
 		if ($arrow.hasClass('expanded')) {
-			$('#verbose-hidden').velocity('slideUp');
+			$('#verbose-hidden').velocity('stop').velocity('slideUp');
 			$arrow.removeClass('expanded');
 		}
 		else {
-			$('#verbose-hidden').velocity('slideDown');
+			$('#verbose-hidden').velocity('stop').velocity('slideDown');
 			$arrow.addClass('expanded'); // can't velocify this.
 		}
 	});
@@ -266,8 +285,10 @@ function domReady() {
 		$('#update').velocity('fadeOut');
 	}, 10000);
 	
-	if (miniMode) {
-		
+	$('#expand,#collapse').on('click', toggleExpansion);
+	
+	if (window.localStorage.expanded === 'true') {
+		$('#expand').click();
 	}
 }
 
@@ -286,22 +307,22 @@ function prettifySecondsLeft(sec) {
 	/* Make the time look like time */
 	'use strict';
 	var secs, mins, hrs;
-	secs = '' + sec % 60;
+	secs = sec % 60;
 	sec -= sec % 60;
 	sec /= 60;
-	mins = '' + sec % 60;
+	mins = sec % 60;
 	sec -= sec % 60;
 	sec /= 60;
-	hrs = '' + sec;
-	if (secs.length == 1) {
+	hrs = sec;
+	if (secs < 10) {
 		secs = '0' + secs;
 	}
-	if (mins.length == 1) {
+	if (mins < 10) {
 		mins = '0' + mins;
 	}
-	if (hrs == '0') {
+	if (hrs === 0) {
 		hrs = '';
-	} else if (hrs.length == 1) {
+	} else if (hrs < 10) {
 		hrs = '0' + hrs;
 	}
 	return (hrs !== '' ? hrs + 'h ' : '') + mins + 'm ' + secs + 's';
@@ -369,11 +390,14 @@ function updatePeriodLabel() {
 	else {
 		if (/^\d$/.test(belltimes.bells[currentBellIndex-1].bell)) {
 			pNum = belltimes.bells[currentBellIndex-1].bell;
+			inLabel = 'ends in';
+			name = 'Period ' + pNum;
 		}
 	}
-	if (pNum && pNum in window.todayNames.timetable && window.todayNames.timetable[pNum].changed) {
+	
+	roomChangedInfo = '';
+	if (pNum && window.todayNames && pNum in window.todayNames.timetable && window.todayNames.timetable[pNum].changed) {
 		pNum = window.todayNames.timetable[pNum];
-		roomChangedInfo = '';
 		if ('roomTo' in pNum) {
 			if (!miniMode) {
 				roomChangedInfo = name + ' is in room ' + pNum.roomTo + ' instead of ' + pNum.roomFrom + '. ';
