@@ -18,6 +18,7 @@
  */
 
 function handleLeftPane() {
+	/* Fill out the left pane */
 	'use strict';
 	var pane = document.getElementById('left-pane'),
 		html = '<table><tbody><tr><td>Subject</td><td>Teacher</td><td>Room</td></tr>',
@@ -84,11 +85,13 @@ function handleLeftPane() {
 }
 
 function getLoggedIn() {
+	/* Are you logged in? */
 	'use strict';
 	return window.loggedIn;
 }
 
 function handleTimetable(e) {
+	/* Fill out the timetable */
 	'use strict';
 	/* jshint validthis: true */
 	window.timetableCached = false;
@@ -116,6 +119,7 @@ function handleTimetable(e) {
 }
 
 function loadTimetable() {
+	/* Get the timetable */
 	'use strict';
 	window.timetableCached = false;
 	if ((belltimes.day+belltimes.weekType) in window.localStorage) {
@@ -139,4 +143,3 @@ function loadTimetable() {
 	xhr.open('GET', '/api/today.json', true);
 	xhr.send();
 }
-

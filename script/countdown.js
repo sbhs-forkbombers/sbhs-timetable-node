@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+/* Variables */
 var timetable,
 	belltimes,
 	year,
@@ -36,6 +37,7 @@ var timetable,
 	noticesCached = false;
 
 function updateSidebarStatus() {
+	/* Show load state info for various API data */
 	'use strict';
 	var tick = '<span class="ok">✓</span>',
 		cross = '<span class="notok">⤬</span>',
@@ -95,6 +97,7 @@ function updateSidebarStatus() {
 }
 
 function collapsePane(p) {
+	/* Collapses a pane */
 	'use strict';
 	var el = $('#'+p+'-pane');
 	var cfg = {};
@@ -105,27 +108,28 @@ function collapsePane(p) {
 }
 
 function expandPane(p) {
+	/* Expands a pane */
 	'use strict';
 	var el = $('#'+p+'-pane');
 	var cfg = {};
 	cfg[p] = 0;
 	el.velocity(cfg, 1000, 'ease');
-	window[p+'Expanded'] = true;
 	$('#'+p+'-pane-arrow').addClass('expanded');
+	window[p+'Expanded'] = true;
 }
 
 function togglePane(which) {
 	'use strict';
 	if (window[which+'Expanded']) {
 		collapsePane(which);
-	}
-	else {
+	} else {
 		expandPane(which);
 	}
 }
 
 /** calculate the day that school will be starting on - this may NOT use DateJS functions as it may be called before DateJS is loaded. */
 function calculateDay() {
+	/* Calculate the day that schools starts on. */
 	'use strict';
 	var date = new Date(),
 		dayOffset = 0,
@@ -146,6 +150,7 @@ function calculateDay() {
 
 /** returns midnight ON the next school day */
 function getNextSchoolDay() {
+	/* Find the next school day (returns time as midnight) */
 	'use strict';
 	if (dateOffset == -1) {
 		calculateDay();
@@ -168,6 +173,7 @@ function getDateOffsetDate() {
 }
 
 function reloadBelltimes() {
+	/* Try to reload the belltimes */
 	'use strict';
 	reloading = true;
 	var d = getNextSchoolDay();
@@ -180,6 +186,7 @@ function reloadBelltimes() {
 }
 
 function handleBells(bells) {
+	/* Load the belltimes */
 	/* jshint validthis: true */
 	'use strict';
 	belltimes = JSON.parse(this.responseText);
@@ -204,6 +211,7 @@ function handleBells(bells) {
 reloadBelltimes(); // do it ASAP
 
 function domReady() {
+	/* Onclicks and timeouts */
 	'use strict';
 	if (document.readyState != 'complete') {
 		return;
@@ -264,6 +272,7 @@ function domReady() {
 }
 
 function loadComplete() {
+	/* Do when DOM loaded */
 	'use strict';
 	reloading = false;
 	calculateUpcomingLesson();
@@ -274,6 +283,7 @@ function loadComplete() {
 }
 
 function prettifySecondsLeft(sec) {
+	/* Make the time look like time */
 	'use strict';
 	var secs, mins, hrs;
 	secs = '' + sec % 60;
@@ -298,6 +308,7 @@ function prettifySecondsLeft(sec) {
 }
 
 function calculateUpcomingLesson() {
+	/* Find the next lesson */
 	'use strict';
 	reloading = true;
 	var i, lastOK = 0, bell, bdate, nextBell, now;
@@ -330,6 +341,7 @@ function calculateUpcomingLesson() {
 }
 
 function updatePeriodLabel() {
+	/* Update the period label */
 	'use strict';
 	var name = belltimes.bells[currentBellIndex].bell,
 		inLabel = 'starts in', pNum, roomChangedInfo, hasCover, hasCasual;
@@ -395,6 +407,7 @@ function updatePeriodLabel() {
 }
 
 function updateCountdownLabel() {
+	/* Update the countdown */
 	'use strict';
 	if (reloading) {
 		return;
@@ -414,6 +427,7 @@ function updateCountdownLabel() {
 }
 
 function handleRightPane() {
+	/* Fill out the right pane */
 	'use strict';
 	var bells = belltimes.bells;
 	var res = '<table><tbody>';
