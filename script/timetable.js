@@ -140,6 +140,6 @@ function loadTimetable() {
 	}
 	var xhr = new XMLHttpRequest();
 	xhr.onload = handleTimetable;
-	xhr.open('GET', '/api/today.json', true);
+	xhr.open('GET', '/api/today.json?stupid_proxy_caching_is_stupid', true);
 	xhr.send();
 }
