@@ -51,10 +51,12 @@ var secret = config.secret,
 sessions = {}; // global
 
 /* SSL/TLS */
-var options = {
-  key: fs.readFileSync(privateKeyFile),
-  cert: fs.readFileSync(certificateFile)
-};
+if (SPDY || HTTP2) {
+	var options = {
+		key: fs.readFileSync(privateKeyFile),
+		cert: fs.readFileSync(certificateFile)
+	};
+}
 
 console.log('[core] Initialised in in ' + (Date.now() - all_start) + 'ms');
 
@@ -174,7 +176,7 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 		date = new Date();
 		date.setYear(date.getFullYear() + 1);
 		headers.Expires = date.toGMTString();
-		//	headers.ETag = GIT_RV+'_'+forcedETagUpdateCounter;	// TODO better ETags. This *will* work in production because new git revisions will be the only way updates occur. 
+		//	headers.ETag = GIT_RV+'_'+forcedETagUpdateCounter;	// TODO better ETags. This *will* work in production because new git revisions will be the only way updates occur.
 		// SIGHUP'ing the process will force every client to re-request resources.
 	}
 	headers['Content-Type'] = contentType + '; charset=UTF-8';
@@ -262,7 +264,7 @@ function onRequest(req, res) {
 	}
 
 	var target, uri = url.parse(req.url, true);
-	
+
 	/* Response block */
 	if (uri.pathname === '/') {
 		/* Main page */
@@ -446,9 +448,9 @@ if (SPDY || HTTPS) {
 	i4tlsserver.on('request', requestSafeWrapper);
 	i4tlsserver.on('listening', onListening);
 	i4tlsserver.listen(4430, '0.0.0.0');
-	
+
 	/* Start the IPv6 TLS/SPDY server if it is enabled */
-	if (IPV6) { 
+	if (IPV6) {
 		i6tlsserver = https.createServer(options);
 		i6tlsserver.name = 'tlsipv6server';
 		i6tlsserver.on('request', requestSafeWrapper);
@@ -465,7 +467,7 @@ if (HTTP2) {
 	i4h2server.on('request', requestSafeWrapper);
 	i4h2server.on('listening', onListening);
 	i4h2server.listen(4432, '0.0.0.0');
-	
+
 	/* Start the IPv6 HTTP/2.0 server if it is enabled */
 	if (IPV6) {
 		i6h2server = http2.createServer(options);
@@ -474,7 +476,7 @@ if (HTTP2) {
 		i6h2server.on('listening', onListening);
 		i6h2server.listen(4432, '::');
 	}
-}   
+}
 
 setInterval(cleanSessions, 36000000); // clean expired sessions every hour
 
@@ -485,6 +487,6 @@ if (fs.existsSync('sessions.json')) {
 		console.log('[core] Success!');
 	}
 	catch (e) {
-		console.error('[core] Failed to load sessions.json:',e);
+		console.error('[core] Failed to load sessions.json:', e);
 	}
 }
