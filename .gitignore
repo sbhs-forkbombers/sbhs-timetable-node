@@ -8,3 +8,5 @@ sessions.json
 .reload
 .DS_Store
 .Trashes
+*.key
+*.pem

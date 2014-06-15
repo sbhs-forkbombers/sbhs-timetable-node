@@ -29,14 +29,32 @@ var http = require('http'),
 	config = require('./config.js'),
 	request = require('request');
 
+if (SPDY) {
+	var https = require('spdy');
+} else if (HTTPS) {
+	var https = require('https');
+}
+
+if (HTTP2) {
+	var http2 = require('http2');
+}
+
 /* Variables */
 var secret = config.secret,
 	clientID = config.clientID,
 	redirectURI = config.redirectURI,
+	privateKeyFile = config.privateKeyFile,
+	certificateFile = config.certificateFile,
 	forcedETagUpdateCounter = 0,
 	cachedBells = {},
-	index_cache, ipv4server, ipv6server, unixserver;
+	index_cache, ipv4server, ipv6server, unixserver, i4tlsserver, i6tlsserver, i4h2server, i6h2server;
 sessions = {}; // global
+
+/* SSL/TLS */
+var options = {
+  key: fs.readFileSync(privateKeyFile),
+  cert: fs.readFileSync(certificateFile)
+};
 
 console.log('[core] Initialised in in ' + (Date.now() - all_start) + 'ms');
 
@@ -416,9 +434,47 @@ if (process.platform !== 'win32') {
 	unixserver.on('request', requestSafeWrapper);
 	unixserver.on('listening', nxListening);
 	unixserver.path = '/tmp/timetable.sock';
-	fs.chmod(unixserver.path, '777');
 	unixserver.listen(unixserver.path);
+	fs.chmod(unixserver.path, '777');
 }
+
+/* TLS servers */
+if (SPDY || HTTPS) {
+	/* Start the IPv4 TLS/SPDY server */
+	i4tlsserver = https.createServer(options);
+	i4tlsserver.name = 'tlsipv4server';
+	i4tlsserver.on('request', requestSafeWrapper);
+	i4tlsserver.on('listening', onListening);
+	i4tlsserver.listen(4430, '0.0.0.0');
+	
+	/* Start the IPv6 TLS/SPDY server if it is enabled */
+	if (IPV6) { 
+		i6tlsserver = https.createServer(options);
+		i6tlsserver.name = 'tlsipv6server';
+		i6tlsserver.on('request', requestSafeWrapper);
+		i6tlsserver.on('listening', onListening);
+		i6tlsserver.listen(4430, '::');
+	}
+}
+
+/* HTTP/2.0 servers */
+if (HTTP2) {
+/* Start the IPv4 HTTP/2.0 server */
+	i4h2server = http2.createServer(options);
+	i4h2server.name = 'http2ipv4server';
+	i4h2server.on('request', requestSafeWrapper);
+	i4h2server.on('listening', onListening);
+	i4h2server.listen(4432, '0.0.0.0');
+	
+	/* Start the IPv6 HTTP/2.0 server if it is enabled */
+	if (IPV6) {
+		i6h2server = http2.createServer(options);
+		i6h2server.name = 'http2ipv6server';
+		i6h2server.on('request', requestSafeWrapper);
+		i6h2server.on('listening', onListening);
+		i6h2server.listen(4432, '::');
+	}
+}   
 
 setInterval(cleanSessions, 36000000); // clean expired sessions every hour
 

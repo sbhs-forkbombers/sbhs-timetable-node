@@ -1,5 +1,5 @@
 /* SBHS-Timetable-Node: Countdown and timetable all at once (NodeJS app).
- * Copyright (C) 2014 James Ye,  Simon Shields
+ * Copyright (C) 2014 James Ye, Simon Shields
  *
  * This file is part of SBHS-Timetable-Node.
  *
@@ -335,7 +335,7 @@ td {
 }
 
 #update {
-	position: absolute;
+	position: fixed;
 	bottom: 0;
 	text-align: center;
 	z-index: -1;

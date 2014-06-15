@@ -1,5 +1,5 @@
 /* SBHS-Timetable-Node: Countdown and timetable all at once (NodeJS app).
- * Copyright (C) 2014 James Ye,  Simon Shields
+ * Copyright (C) 2014 James Ye, Simon Shields
  *
  * This file is part of SBHS-Timetable-Node.
  *
@@ -39,10 +39,12 @@ var timetable,
 function updateSidebarStatus() {
 	/* Show load state info for various API data */
 	'use strict';
+	/* Loading state symbols */
 	var tick = '<span class="ok">✓</span>',
 		cross = '<span class="notok">⤬</span>',
 		cached = '<span class="stale">!</span>',
 		loading = '<span class="idk">…</span>';
+	/* Local variables */
 	var belltimesOK = window.hasOwnProperty('belltimes'),
 		noticesOK = window.notices && window.notices.notices && !window.notices.notices.failure,
 		timetableOK = window.hasOwnProperty('todayNames') && todayNames.timetable && !todayNames.timetable.failure,
@@ -64,8 +66,7 @@ function updateSidebarStatus() {
 		timetableText = 'Cached';
 		timetableClass = 'stale';
 		shortText[1] = 'T: ' + cached;
-	}
-	else if (timetableOK) {
+	} else if (timetableOK) {
 		timetableText = 'OK';
 		timetableClass = 'ok';
 		shortText[1] = 'T: ' + tick;
@@ -75,25 +76,25 @@ function updateSidebarStatus() {
 		noticesText = 'Cached';
 		noticesClass = 'stale';
 		shortText[2] = 'N: ' + cached;
-	}
-	else if (noticesOK) {
+	} else if (noticesOK) {
 		noticesText = 'OK';
 		noticesClass = 'ok';
 		shortText[2] = 'N: ' + tick;
-
 	}
 	
 	var bells = document.getElementById('belltimes');
 	bells.className = belltimesClass;
 	bells.innerHTML = belltimesText;
+	
 	var timetable = document.getElementById('timetable');
 	timetable.className = timetableClass;
 	timetable.innerHTML = timetableText;
+	
 	var notices = document.getElementById('notices');
 	notices.className = noticesClass;
 	notices.innerHTML = noticesText;
-	document.getElementById('shortdata-desc').innerHTML = shortText.join(' ');
 	
+	document.getElementById('shortdata-desc').innerHTML = shortText.join(' ');	
 }
 
 function collapsePane(p) {
@@ -119,6 +120,7 @@ function expandPane(p) {
 }
 
 function togglePane(which) {
+	/* Toggles expand state of a pane */
 	'use strict';
 	if (window[which+'Expanded']) {
 		collapsePane(which);
@@ -127,7 +129,6 @@ function togglePane(which) {
 	}
 }
 
-/** calculate the day that school will be starting on - this may NOT use DateJS functions as it may be called before DateJS is loaded. */
 function calculateDay() {
 	/* Calculate the day that schools starts on. */
 	'use strict';
