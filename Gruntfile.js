@@ -16,7 +16,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+var config = require('./config.js'),
+	privateKeyFile = config.privateKeyFile,
+	certificateFile = config.certificateFile;
 module.exports = function(grunt) {
 	'use strict';
 	grunt.initConfig({
@@ -84,7 +86,7 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				expand: true,
-				src: ['dynamic/**', 'static/**', 'server.js', 'lib/**', 'config.js'],
+				src: ['dynamic/**', 'static/**', 'server.js', 'lib/**', 'config.js', privateKeyFile, certificateFile],
 				dest: 'build/',
 			},
 			vars: {
@@ -147,7 +149,7 @@ module.exports = function(grunt) {
 			why: 'is this necessary?'
 		}
 	});
-	
+
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-run');
 	grunt.loadNpmTasks('grunt-nodemon');
@@ -157,7 +159,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-concat');
-	
+
 	grunt.registerMultiTask('delete', 'delete stuff', function() {
 		if (process.platform !== 'win32' && require('fs').existsSync('/tmp/timetable.sock')) {
 			require('fs').unlinkSync('/tmp/timetable.sock');
