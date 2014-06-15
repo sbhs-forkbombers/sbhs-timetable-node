@@ -285,7 +285,7 @@ function onRequest(req, res) {
 		fs.createReadStream(target).pipe(res);
 	} else if (uri.pathname == '/api/belltimes') {
 		/* Belltimes wrapper */
-		httpHeaders(res, 200, 'application/json');
+		httpHeaders(res, 200, 'application/json', true);
 		getBelltimes(uri.query.date, res);
 	} else if (uri.pathname == '/favicon.ico') {
 		/* favicon */
@@ -308,15 +308,15 @@ function onRequest(req, res) {
 		auth.getAuthCode(res, res.SESSID);
 	} else if (uri.pathname == '/login') {
 		/* OAuth2 handler */
-		auth.getAuthToken(res, uri, null);
+		auth.getAuthToken(res, uri, null, true);
 	} else if (uri.pathname == '/session_debug' && DEBUG) {
 		/* Session info */
-		httpHeaders(res, 200, 'application/json');
+		httpHeaders(res, 200, 'application/json', true);
 		res.end(JSON.stringify(global.sessions[res.SESSID]));
 	} else if (uri.pathname.match('/api/.*[.]json') && apis.isAPI(uri.pathname.slice(5))) {
 		/* API calls */
 		apis.get(uri.pathname.slice(5), uri.query, res.SESSID, function(obj) {
-			httpHeaders(res, 200, 'application/json');
+			httpHeaders(res, 200, 'application/json', true);
 			res.end(JSON.stringify(obj));
 		});
 	} else if (uri.pathname == '/logout') {
@@ -337,13 +337,13 @@ function onRequest(req, res) {
 		fs.createReadStream('static/faq.html').pipe(res);
 	} else if (uri.pathname == '/reset_access_token') {
 		/* Reset access token */
-		httpHeaders(res, 200, 'application/json');
+		httpHeaders(res, 200, 'application/json', true);
 		delete global.sessions[res.SESSID].accessToken;
 		global.sessions[res.SESSID].accessTokenExpires = 0;
 		res.end(JSON.stringify(global.sessions[res.SESSID]));
 	} else if (uri.pathname == '/refresh_token') {
 		/* Refresh access token */
-		httpHeaders(res, 200, 'application/json');
+		httpHeaders(res, 200, 'application/json', true);
 		if (global.sessions[res.SESSID].refreshToken) {
 			auth.refreshAuthToken(global.sessions[res.SESSID].refreshToken, res.SESSID, function() {
 				res.end(JSON.stringify(global.sessions[res.SESSID]));
