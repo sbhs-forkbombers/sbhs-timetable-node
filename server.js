@@ -412,20 +412,62 @@ if (RELEASE) {
 var index_cache = serverError;
 cache_index();
 
-/* Start the IPv4 server */
-ipv4server = http.createServer();
-ipv4server.name = 'ipv4server';
-ipv4server.on('request', requestSafeWrapper);
-ipv4server.on('listening', onListening);
-ipv4server.listen(8080, '0.0.0.0');
+/* Start HTTP servers. */
+/* NOHTTP defines that no HTTP servers will be started. You will need a program that can forward requests to the Unix socket. */
+if (!NOHTTP) {
+	/* Start the IPv4 server */
+	ipv4server = http.createServer();
+	ipv4server.name = 'ipv4server';
+	ipv4server.on('request', requestSafeWrapper);
+	ipv4server.on('listening', onListening);
+	ipv4server.listen(8080, '0.0.0.0');
 
-/* Start the IPv6 server if it is enabled */
-if (IPV6) {
-	ipv6server = http.createServer();
-	ipv6server.name = 'ipv6server';
-	ipv6server.on('request', requestSafeWrapper);
-	ipv6server.on('listening', onListening);
-	ipv6server.listen(8080, '::');
+	/* Start the IPv6 server if it is enabled */
+	if (IPV6) {
+		ipv6server = http.createServer();
+		ipv6server.name = 'ipv6server';
+		ipv6server.on('request', requestSafeWrapper);
+		ipv6server.on('listening', onListening);
+		ipv6server.listen(8080, '::');
+	}
+
+	/* TLS servers */
+	if (SPDY || HTTPS) {
+		/* Start the IPv4 TLS/SPDY server */
+		i4tlsserver = https.createServer(options);
+		i4tlsserver.name = 'tlsipv4server';
+		i4tlsserver.on('request', requestSafeWrapper);
+		i4tlsserver.on('listening', onListening);
+		i4tlsserver.listen(4430, '0.0.0.0');
+
+		/* Start the IPv6 TLS/SPDY server if it is enabled */
+		if (IPV6) {
+			i6tlsserver = https.createServer(options);
+			i6tlsserver.name = 'tlsipv6server';
+			i6tlsserver.on('request', requestSafeWrapper);
+			i6tlsserver.on('listening', onListening);
+			i6tlsserver.listen(4430, '::');
+		}
+	}
+
+	/* HTTP/2.0 servers */
+	if (HTTP2) {
+		/* Start the IPv4 HTTP/2.0 server */
+		i4h2server = http2.createServer(options);
+		i4h2server.name = 'http2ipv4server';
+		i4h2server.on('request', requestSafeWrapper);
+		i4h2server.on('listening', onListening);
+		i4h2server.listen(4432, '0.0.0.0');
+
+		/* Start the IPv6 HTTP/2.0 server if it is enabled */
+		if (IPV6) {
+			i6h2server = http2.createServer(options);
+			i6h2server.name = 'http2ipv6server';
+			i6h2server.on('request', requestSafeWrapper);
+			i6h2server.on('listening', onListening);
+			i6h2server.listen(4432, '::');
+		}
+	}
 }
 
 /* Start the server on a Unix socket if we aren't running on Windows */
@@ -438,44 +480,6 @@ if (process.platform !== 'win32') {
 	unixserver.path = '/tmp/timetable.sock';
 	unixserver.listen(unixserver.path);
 	fs.chmod(unixserver.path, '777');
-}
-
-/* TLS servers */
-if (SPDY || HTTPS) {
-	/* Start the IPv4 TLS/SPDY server */
-	i4tlsserver = https.createServer(options);
-	i4tlsserver.name = 'tlsipv4server';
-	i4tlsserver.on('request', requestSafeWrapper);
-	i4tlsserver.on('listening', onListening);
-	i4tlsserver.listen(4430, '0.0.0.0');
-
-	/* Start the IPv6 TLS/SPDY server if it is enabled */
-	if (IPV6) {
-		i6tlsserver = https.createServer(options);
-		i6tlsserver.name = 'tlsipv6server';
-		i6tlsserver.on('request', requestSafeWrapper);
-		i6tlsserver.on('listening', onListening);
-		i6tlsserver.listen(4430, '::');
-	}
-}
-
-/* HTTP/2.0 servers */
-if (HTTP2) {
-/* Start the IPv4 HTTP/2.0 server */
-	i4h2server = http2.createServer(options);
-	i4h2server.name = 'http2ipv4server';
-	i4h2server.on('request', requestSafeWrapper);
-	i4h2server.on('listening', onListening);
-	i4h2server.listen(4432, '0.0.0.0');
-
-	/* Start the IPv6 HTTP/2.0 server if it is enabled */
-	if (IPV6) {
-		i6h2server = http2.createServer(options);
-		i6h2server.name = 'http2ipv6server';
-		i6h2server.on('request', requestSafeWrapper);
-		i6h2server.on('listening', onListening);
-		i6h2server.listen(4432, '::');
-	}
 }
 
 setInterval(cleanSessions, 36000000); // clean expired sessions every hour

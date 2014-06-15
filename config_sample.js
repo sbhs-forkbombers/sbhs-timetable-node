@@ -11,3 +11,5 @@ SPDY = false;
 HTTPS = false;
 
 HTTP2 = false;
+/* Listen only on a Unix socket */
+NOHTTP = false;
