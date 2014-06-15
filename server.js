@@ -16,7 +16,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+/*globals SPDY, HTTPS, HTTP2, IPV6, DEBUG, RELEASE, GIT_RV, REL_RV, NOHTTP, sessions*/
+/* jslint -W098, -W020 */
 var all_start = Date.now();
 console.log('[core] Loading...');
 /* Requires */
@@ -171,7 +172,9 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 		headers['Set-Cookie'] = 'SESSID='+res.SESSID+'; Max-Age=36000';
 	}
 	if (dynamic || DEBUG) { // disable caching
-		headers['Cache-Control'] = 'no-cache';
+		headers['Cache-Control'] = 'no-cache, must-revalidate';
+		headers.Pragma = 'no-cache';
+		headers.Expires = 'Sat, 26 Jul 1997 05:00:00 GMT';
 	} else if (!dynamic) {
 		date = new Date();
 		date.setYear(date.getFullYear() + 1);
@@ -223,7 +226,6 @@ function genSessionID(req) {
 }
 
 function getCookies(s) {
-	/* TODO: COOKIES */
 	'use strict';
 	var res = {};
 	s.split(';').forEach(function (ck) {

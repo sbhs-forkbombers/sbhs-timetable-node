@@ -8,5 +8,5 @@
 	"curly": true,
 	"quotmark": "single",
 	"trailing": true,
-	"predef": [ "$", "yepnope", "Modernizr" ]
+	"predef": [ "$", "sessions" ]
 }
