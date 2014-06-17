@@ -180,8 +180,6 @@ function httpHeaders(res, response, contentType, dynamic, tag, headers) {
 		date = new Date();
 		date.setYear(date.getFullYear() + 1);
 		headers.Expires = date.toGMTString();
-		//	headers.ETag = GIT_RV+'_'+forcedETagUpdateCounter;	// TODO better ETags. This *will* work in production because new git revisions will be the only way updates occur.
-		// SIGHUP'ing the process will force every client to re-request resources.
 	}
 
 	if (tag !== null && tag !== undefined) {
@@ -194,14 +192,24 @@ function httpHeaders(res, response, contentType, dynamic, tag, headers) {
 	return res;
 }
 
-function getBelltimes(date, res) {
+function getBelltimes(date, res, req) {
 	/* Get the belltimes from API and cache them */
 	'use strict';
-	if (date === null || date === undefined || !/\d\d\d\d-\d?\d-\d?\d/.test(date)) {
+	if (typeof date !== 'string' || !/\d\d\d\d-\d?\d-\d?\d/.test(date)) {
+		httpHeaders(res, 200, 'application/json', true);
 		res.end(JSON.stringify({error: 'Invalid Date!'}));
 	}
+	date = date.replace('-0', '-');
 	if (date in cachedBells) {
-		res.end(cachedBells[date]);
+		if ('if-none-match' in req.headers) {
+			if (req.headers['if-none-match'] === cachedBells[date].hash) {
+				res.writeHead(304);
+				res.end();
+				return;
+			}
+		}
+		httpHeaders(res, 200, 'application/json', true, cachedBells[date].hash);
+		res.end(cachedBells[date].json);
 	} else {
 		request('http://student.sbhs.net.au/api/timetable/bells.json?date='+date,
 			function(err, r, b) {
@@ -215,7 +223,8 @@ function getBelltimes(date, res) {
 					}
 					return;
 				}
-				cachedBells[date] = b;
+				cachedBells[date] = { 'json': b, 'hash': etag.syncText(b) };
+				httpHeaders(res, 200, 'application/json', true, cachedBells[date].hash);
 				res.end(b);
 			}
 		);
@@ -241,15 +250,33 @@ function getCookies(s) {
 }
 
 function checkFile(file, req, unchanged, changed) {
+	'use strict';
 	var reqHash = '';
 	if ('if-none-match' in req.headers) {
 		reqHash = req.headers['if-none-match'];
 	}
-	etag(file, function(err, hash) {
+	etag.file(file, function(err, hash) {
 		if (err !== null) {
 			changed(null); // meh
 		}
 		else if (reqHash !== hash) {
+			changed(hash);
+		}
+		else {
+			unchanged(hash);
+		}
+	});
+}
+
+function checkText(text, req, unchanged, changed) {
+	'use strict';
+	var reqHash = '';
+	if ('if-none-match' in req.headers) {
+		reqHash = req.headers['if-none-match'];
+	}
+	etag.text(text, function(hash) {
+		console.log('hash:', hash, 'i-n-m:', reqHash);
+		if (reqHash !== hash) {
 			changed(hash);
 		}
 		else {
@@ -269,10 +296,15 @@ function onRequest(req, res) {
 		httpHeaders(res, 200, contentType, false, hash);
 		fs.createReadStream(filePath).pipe(res);
 	};
+	var dynChanged = function(hash) {
+		console.log('Dynamic 200 OK for ' + contentType + ' ETag is ' + hash);
+		httpHeaders(res, 200, contentType, true, hash);
+		res.end(target);
+	};
 	var unchanged = function(hash) {
 		res.writeHead(304);
 		res.end();
-	}
+	};
 	if ('cookie' in req.headers) {
 		var cookies = getCookies(req.headers.cookie);
 		if ('SESSID' in cookies) {
@@ -296,8 +328,20 @@ function onRequest(req, res) {
 	/* Response block */
 	if (uri.pathname === '/') {
 		/* Main page */
-		httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
-		res.end(index_cache.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined));
+		// TODO cache two different versions of index for logged-in and not logged in.
+		target = index_cache;
+		if (typeof target === 'function') {
+			httpHeaders(res, 500, 'text/html', true);
+			target().pipe(res);
+		}
+		else {
+			console.log('Dynamicness!');
+			contentType = 'text/html';
+			target = target.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined);
+			checkText(target, req, unchanged, dynChanged);
+		}
+		//httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
+		//res.end(index_cache.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined));
 	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* Style sheets */
 		contentType = 'text/css';
@@ -311,7 +355,7 @@ function onRequest(req, res) {
 	} else if (uri.pathname == '/api/belltimes') {
 		/* Belltimes wrapper */
 		httpHeaders(res, 200, 'application/json', true);
-		getBelltimes(uri.query.date, res);
+		getBelltimes(uri.query.date, res, req);
 	} else if (uri.pathname == '/favicon.ico') {
 		/* favicon */
 		contentType = 'image/x-icon';
@@ -344,8 +388,9 @@ function onRequest(req, res) {
 	} else if (uri.pathname.match('/api/.*[.]json') && apis.isAPI(uri.pathname.slice(5))) {
 		/* API calls */
 		apis.get(uri.pathname.slice(5), uri.query, res.SESSID, function(obj) {
-			httpHeaders(res, 200, 'application/json', true);
-			res.end(JSON.stringify(obj));
+			contentType = 'application/json';
+			target = JSON.stringify(obj);
+			checkText(target, req, unchanged, dynChanged);
 		});
 	} else if (uri.pathname == '/logout') {
 		/* Log out */
