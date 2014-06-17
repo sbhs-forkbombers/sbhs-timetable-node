@@ -82,7 +82,7 @@ var jade_opts = {
 function serverError() {
 	/* Returns the 500 Internal Server Error page */
 	'use strict';
-	return fs.createReadStream('static/500.html');
+	return (Math.random() < 0.5 ? fs.createReadStream('static/500.html') : fs.createReadStream('static/500.8.html'));
 }
 
 function compile_jade(path) {
@@ -275,7 +275,6 @@ function checkText(text, req, unchanged, changed) {
 		reqHash = req.headers['if-none-match'];
 	}
 	etag.text(text, function(hash) {
-		console.log('hash:', hash, 'i-n-m:', reqHash);
 		if (reqHash !== hash) {
 			changed(hash);
 		}
@@ -297,7 +296,6 @@ function onRequest(req, res) {
 		fs.createReadStream(filePath).pipe(res);
 	};
 	var dynChanged = function(hash) {
-		console.log('Dynamic 200 OK for ' + contentType + ' ETag is ' + hash);
 		httpHeaders(res, 200, contentType, true, hash);
 		res.end(target);
 	};
@@ -335,7 +333,6 @@ function onRequest(req, res) {
 			target().pipe(res);
 		}
 		else {
-			console.log('Dynamicness!');
 			contentType = 'text/html';
 			target = target.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined);
 			checkText(target, req, unchanged, dynChanged);
@@ -438,7 +435,7 @@ function onRequest(req, res) {
 	} else if (uri.pathname == '/EFLAT' && DEBUG) {
 		/* Force a 500 error (out of tune) */
 		httpHeaders(res, 500, 'text/html');
-		fs.createReadStream('static/500.html').pipe(res);
+		serverError().pipe(res);
 	} else if (uri.pathname.match('/octicons/.*') && fs.existsSync(uri.pathname.slice(1))) {
 		contentType = 'application/x-octet-stream';
 		if (uri.pathname.substr(-4) == '.css') {
@@ -571,7 +568,7 @@ if (process.platform !== 'win32') {
 	fs.chmod(unixserver.path, '777');
 }
 
-setInterval(cleanSessions, 36000000); // clean expired sessions every hour
+setInterval(cleanSessions, 900000); // clean expired sessions every 15 minutes
 
 if (fs.existsSync('sessions.json')) {
 	console.log('[core] Loading sessions...');
