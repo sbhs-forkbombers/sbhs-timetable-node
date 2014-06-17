@@ -28,6 +28,7 @@ var http = require('http'),
 	auth = require('./lib/auth.js'),
 	apis = require('./lib/api.js'),
 	config = require('./config.js'),
+	etag = require('./lib/etag.js'),
 	request = require('request');
 
 if (SPDY) {
@@ -162,7 +163,7 @@ process.on('SIGINT', function() {
 });
 
 
-function httpHeaders(res, response, contentType, dynamic, headers) {
+function httpHeaders(res, response, contentType, dynamic, tag, headers) {
 	/* Generate HTTP headers, including the response code, content type and any other headers */
 	'use strict';
 	var date;
@@ -181,6 +182,10 @@ function httpHeaders(res, response, contentType, dynamic, headers) {
 		headers.Expires = date.toGMTString();
 		//	headers.ETag = GIT_RV+'_'+forcedETagUpdateCounter;	// TODO better ETags. This *will* work in production because new git revisions will be the only way updates occur.
 		// SIGHUP'ing the process will force every client to re-request resources.
+	}
+
+	if (tag !== null && tag !== undefined) {
+		headers.ETag = tag;
 	}
 	headers['Content-Type'] = contentType + '; charset=UTF-8';
 	headers['X-Powered-By'] = 'NodeJS ' + process.version +'; PHP v5.4.3';
@@ -235,18 +240,39 @@ function getCookies(s) {
 	return res;
 }
 
+function checkFile(file, req, unchanged, changed) {
+	var reqHash = '';
+	if ('if-none-match' in req.headers) {
+		reqHash = req.headers['if-none-match'];
+	}
+	etag(file, function(err, hash) {
+		if (err !== null) {
+			changed(null); // meh
+		}
+		else if (reqHash !== hash) {
+			changed(hash);
+		}
+		else {
+			unchanged(hash);
+		}
+	});
+}
+
 function onRequest(req, res) {
 	/* Respond to requests */
 	/* jshint validthis: true */
 	'use strict';
 	var start = Date.now(),
-		genSession;
-	if (req.headers['if-none-match'] == GIT_RV+'_'+forcedETagUpdateCounter && !DEBUG) {
+		contentType = 'text/plain',
+		filePath = 'static/404.html';
+	var changed = function(hash) {
+		httpHeaders(res, 200, contentType, false, hash);
+		fs.createReadStream(filePath).pipe(res);
+	};
+	var unchanged = function(hash) {
 		res.writeHead(304);
 		res.end();
-		return;
 	}
-	genSession = true;
 	if ('cookie' in req.headers) {
 		var cookies = getCookies(req.headers.cookie);
 		if ('SESSID' in cookies) {
@@ -274,33 +300,33 @@ function onRequest(req, res) {
 		res.end(index_cache.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined));
 	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* Style sheets */
-		httpHeaders(res, 200, 'text/css');
-		target = uri.pathname.slice(1);
-		fs.createReadStream(target).pipe(res);
-	} else if (uri.pathname == '/script/belltimes.js' && !RELEASE) {
-		/* Debug concatenated main script */
-		fs.createReadStream('script/belltimes.concat.js').pipe(res);
+		contentType = 'text/css';
+		filePath = uri.pathname.slice(1);
+		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* JavaScript */
-		httpHeaders(res, 200, 'application/javascript');
-		target = uri.pathname.slice(1);
-		fs.createReadStream(target).pipe(res);
+		filePath = uri.pathname.slice(1);
+		contentType = 'application/javascript';
+		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname == '/api/belltimes') {
 		/* Belltimes wrapper */
 		httpHeaders(res, 200, 'application/json', true);
 		getBelltimes(uri.query.date, res);
 	} else if (uri.pathname == '/favicon.ico') {
 		/* favicon */
-		httpHeaders(res, 200, 'image/x-icon');
-		fs.createReadStream('static/favicon.ico').pipe(res);
+		contentType = 'image/x-icon';
+		filePath = 'static/favicon.ico';
+		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname == '/static/icon-hires.png') {
 		/* hires icon */
-		httpHeaders(res, 200, 'image/png');
-		fs.createReadStream('static/icon-hires.png').pipe(res);
+		contentType = 'image/png';
+		filePath = 'static/icon-hires.png';
+		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname == '/COPYING') {
 		/* license */
-		httpHeaders(res, 200, 'text/plain');
-		fs.createReadStream('COPYING').pipe(res);
+		contentType = 'text/plain';
+		filePath = 'COPYING';
+		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname.match('^/[.]ht.*')) {
 		/* Disallow pattern */
 		httpHeaders(res, 403, 'text/html');
@@ -323,7 +349,7 @@ function onRequest(req, res) {
 		});
 	} else if (uri.pathname == '/logout') {
 		/* Log out */
-		httpHeaders(res, 302, 'text/plain', true, { 'Location': '/' });
+		httpHeaders(res, 302, 'text/plain', true, null, { 'Location': '/' });
 		res.end('Redirecting...');
 		delete global.sessions[res.SESSID].accessToken;
 		delete global.sessions[res.SESSID].refreshToken;
@@ -331,12 +357,14 @@ function onRequest(req, res) {
 		delete global.sessions[res.SESSID].refreshTokenExpires;
 	} else if (uri.pathname == '/wat.html') {
 		/* Landing page */
-		httpHeaders(res, 200, 'text/html');
-		fs.createReadStream('static/wat.html').pipe(res);
+		filePath = 'static/wat.html';
+		contentType = 'text/html';
+		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname == '/faq.html') {
 		/* FAQs */
-		httpHeaders(res, 200, 'text/html');
-		fs.createReadStream('static/faq.html').pipe(res);
+		filePath = 'static/faq.html';
+		contentType = 'text/html';
+		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname == '/reset_access_token') {
 		/* Reset access token */
 		httpHeaders(res, 200, 'application/json', true);
@@ -355,8 +383,9 @@ function onRequest(req, res) {
 		}
 	} else if (uri.pathname == '/browserconfig.xml') {
 		/* Windows thingies, ignore this */
-		httpHeaders(res, 200, 'text/xml');
-		fs.createReadStream('w8tile/browserconfig.xml').pipe(res);
+		filePath = 'w8tile/browserconfig.xml';
+		contentType = 'text/xml';
+		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname == '/win8') {
 		/* STOP error :( */
 		httpHeaders(res, 500, 'text/html');
@@ -366,7 +395,7 @@ function onRequest(req, res) {
 		httpHeaders(res, 500, 'text/html');
 		fs.createReadStream('static/500.html').pipe(res);
 	} else if (uri.pathname.match('/octicons/.*') && fs.existsSync(uri.pathname.slice(1))) {
-		var contentType = 'application/x-octet-stream';
+		contentType = 'application/x-octet-stream';
 		if (uri.pathname.substr(-4) == '.css') {
 			contentType = 'text/css';
 		}
@@ -376,8 +405,8 @@ function onRequest(req, res) {
 		else if (uri.pathname.substr(-4) == '.txt') {
 			contentType = 'text/plain';
 		}
-		httpHeaders(res, 200, contentType);
-		fs.createReadStream(uri.pathname.slice(1)).pipe(res);
+		filePath = uri.pathname.slice(1);
+		checkFile(filePath, req, unchanged, changed);
 	} else {
 		/* 404 everything else */
 		httpHeaders(res, 404, 'text/html');
