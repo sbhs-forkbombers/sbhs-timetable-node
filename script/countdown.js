@@ -61,7 +61,7 @@ function updateSidebarStatus() {
 		belltimesClass = 'notok';
 		shortText[0] = 'B: ' + cross;
 	}
-	
+
 	if (timetableCached) {
 		timetableText = 'Cached';
 		timetableClass = 'stale';
@@ -71,7 +71,7 @@ function updateSidebarStatus() {
 		timetableClass = 'ok';
 		shortText[1] = 'T: ' + tick;
 	}
-	
+
 	if (noticesCached) {
 		noticesText = 'Cached';
 		noticesClass = 'stale';
@@ -81,20 +81,20 @@ function updateSidebarStatus() {
 		noticesClass = 'ok';
 		shortText[2] = 'N: ' + tick;
 	}
-	
+
 	var bells = document.getElementById('belltimes');
 	bells.className = belltimesClass;
 	bells.innerHTML = belltimesText;
-	
+
 	var timetable = document.getElementById('timetable');
 	timetable.className = timetableClass;
 	timetable.innerHTML = timetableText;
-	
+
 	var notices = document.getElementById('notices');
 	notices.className = noticesClass;
 	notices.innerHTML = noticesText;
-	
-	document.getElementById('shortdata-desc').innerHTML = shortText.join(' ');	
+
+	document.getElementById('shortdata-desc').innerHTML = shortText.join(' ');
 }
 
 function collapsePane(p) {
@@ -245,7 +245,7 @@ function domReady() {
 	else {
 		$('#login-status').html('<a href="/try_do_oauth">Login');
 	}
-	
+
 	$('#left-pane-arrow').click(function() {
 		if (topExpanded) {
 			collapsePane('top');
@@ -262,14 +262,14 @@ function domReady() {
 		}
 		togglePane('top');
 	});
-	
+
 	$('#right-pane-arrow').click(function() {
 		if (topExpanded) {
 			collapsePane('top');
 		}
 		togglePane('right');
 	});
-	
+
 	$('#cached').click(function() {
 		var $arrow = $(document.getElementById('dropdown-arrow'));
 		if ($arrow.hasClass('expanded')) {
@@ -281,13 +281,13 @@ function domReady() {
 			$arrow.addClass('expanded'); // can't velocify this.
 		}
 	});
-	
+
 	setTimeout(function() {
 		$('#update').velocity('fadeOut');
 	}, 10000);
-	
+
 	$('#expand,#collapse').on('click', toggleExpansion);
-	
+
 	if (window.localStorage.expanded === 'true') {
 		$('#expand').click();
 	}
@@ -379,7 +379,7 @@ function updatePeriodLabel() {
 	} else if (name == 'Transition') {
 		pNum = belltimes.bells[currentBellIndex-1].bell;
 		if (pNum in window.todayNames.timetable) {
-			name = window.todayNames.timetable[belltimes.bells[currentBellIndex-1].bell].fullName;
+			name = window.todayNames.timetable[pNum].fullName;
 		}
 		else {
 			name = 'Period ' + belltimes.bells[currentBellIndex - 1].bell;
@@ -393,9 +393,12 @@ function updatePeriodLabel() {
 			pNum = belltimes.bells[currentBellIndex-1].bell;
 			inLabel = 'ends in';
 			name = 'Period ' + pNum;
+			if (pNum in window.todayNames.timetable) {
+				name = window.todayNames.timetable[pNum].fullName;
+			}
 		}
 	}
-	
+
 	roomChangedInfo = '';
 	if (pNum && window.todayNames && pNum in window.todayNames.timetable && window.todayNames.timetable[pNum].changed) {
 		pNum = window.todayNames.timetable[pNum];
