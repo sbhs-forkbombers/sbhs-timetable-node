@@ -86,7 +86,7 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				expand: true,
-				src: ['dynamic/**', 'static/**', 'server.js', 'lib/**', 'config.js', privateKeyFile, certificateFile],
+				src: ['octicons/**', 'dynamic/**', 'static/**', 'server.js', 'lib/**', 'config.js', privateKeyFile , certificateFile],
 				dest: 'build/',
 			},
 			vars: {
@@ -133,7 +133,7 @@ module.exports = function(grunt) {
 				tasks: ['concat']
 			},
 			content: {
-				files: ['style/*.css', 'dynamic/*.jade'],
+				files: ['style/*.css', 'dynamic/*.jade', 'octicons/*.css'],
 				tasks: ['reload']
 			}
 		},

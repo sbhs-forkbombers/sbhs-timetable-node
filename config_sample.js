@@ -2,8 +2,8 @@ module.exports = {
 	'secret': 'ItsASecretToEverybody',
 	'clientID': 'NotWhatYoureLookingFor',
 	'redirectURI': 'https://en.wikipedia.org/wiki/Main_Page',
-	'privateKeyFile': 'server.key',
-	'certificateFile': 'server.pem'
+	'privateKeyFile': 'COPYING',
+	'certificateFile': 'COPYING'
 };
 IPV6 = false;
 /* Either SPDY _OR_ HTTPS can be true, NOT BOTH */

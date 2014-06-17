@@ -29,7 +29,8 @@ var http = require('http'),
 	apis = require('./lib/api.js'),
 	config = require('./config.js'),
 	etag = require('./lib/etag.js'),
-	request = require('request');
+	request = require('request'),
+	uuid = require('node-uuid');
 
 if (SPDY) {
 	var https = require('spdy');
@@ -234,9 +235,7 @@ function getBelltimes(date, res, req) {
 function genSessionID(req) {
 	/* Generate a random session ID */
 	'use strict';
-	var ua = req.headers['user-agent'];
-	var buf = new Buffer(Date.now().toString() + ua + Math.floor(Math.random()*100));
-	return buf.toString('hex');
+	return uuid.v4();
 }
 
 function getCookies(s) {
