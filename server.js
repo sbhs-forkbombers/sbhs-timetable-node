@@ -83,7 +83,7 @@ var jade_opts = {
 function serverError() {
 	/* Returns the 500 Internal Server Error page */
 	'use strict';
-	return (Math.random() < 0.5 ? fs.createReadStream('static/500.html') : fs.createReadStream('static/500.8.html'));
+	return (Math.random() < 0.9 ? fs.createReadStream('static/500.html') : fs.createReadStream('static/500.8.html'));
 }
 
 function compile_jade(path) {

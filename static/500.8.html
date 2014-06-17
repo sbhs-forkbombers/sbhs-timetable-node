@@ -3,20 +3,27 @@
 	<head>
 		<style>
 			body {
-				font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
-				background-color: black;
+				font-family: "Segoe UI", "Open Sans", Helvetica, sans-serif;
+				font-weight: 300;
+				background-color: #2067b2;
 				color: white;
 			}
 			a, a:hover {
 				color: white;
 			}
+			div {
+				position: fixed;
+				left: 225px;
+				width: 100%;
+			}
 		</style>
-		<link href="//fonts.googleapis.com/css?family=Roboto:400,100&subset=latin" rel="stylesheet" type="text/css" />
-        <meta charset="UTF-8" />
+		<link href="//fonts.googleapis.com/css?family=Open+Sans:300&subset=latin" rel="stylesheet" type="text/css" />
+		<meta charset="UTF-8" />
 		<title>500 Internal Server Error</title>
 	</head>
-	<body style="font-family:'Segoe UI',Roboto;color:white;background-color:#2067B2;">
-		<h1 style="font-weight:100;font-size:140px;position:fixed;left:225px;top:20px;">:(</h1>
-		<div style="position:fixed;font-size:30px;font-weight:100;width:100%;top:315px;left:225px;">We ran into a problem. <a href="/">Go home</a>, or <a href="#" onclick="location.reload()">try again later</a>.</div>
+	<body>
+		<div style="font-size:140px;top:100px;">:(</div>
+		<div style="font-size:30px;top:315px;">We ran into a problem. <a href="/">Go home</a>, or <a href="#" onclick="location.reload()">try again later</a>.</div>
+		<div style="font-size:14px;top:400px;">If you'd like to know more, you can search online later for this error: INTERNAL_SERVER_ERROR</div>
 	</body>
 </html>
