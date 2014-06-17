@@ -374,7 +374,7 @@ td {
 	position: fixed;
 	left: 2px;
 	top: 2px;
-	z-index: 5;
+	z-index: 1;
 	cursor: pointer;
 }
 
@@ -391,15 +391,15 @@ td {
 	#left-pane, #right-pane {
 		width: 50%;
 	}
-	
+
 	#period-label {
 		font-size: 4.5em;
 	}
-	
+
 	#countdown-label {
 		font-size: 6em;
 	}
-	
+
 	.really-annoying {
 		font-size: 2.85em;
 	}
@@ -409,11 +409,11 @@ td {
 	#countdown-label {
 		font-size: 5.5em;
 	}
-	
+
 	#period-label {
 		font-size: 4em;
 	}
-	
+
 	.really-annoying {
 		font-size: 2.6em;
 	}
@@ -423,11 +423,11 @@ td {
 	#countdown-label {
 		font-size: 4.5em;
 	}
-	
+
 	#period-label {
 		font-size: 3.5em;
 	}
-	
+
 	#content {
 		top: 60px;
 	}
@@ -437,11 +437,11 @@ td {
 	#left-pane, #right-pane {
 		width: 100%;
 	}
-	
+
 	.notice-target {
 		width: 70px;
 	}
-	
+
 	.really-annoying {
 		font-size: 2.4em;
 	}
@@ -451,15 +451,15 @@ td {
 	#countdown-label {
 		font-size: 3.2em;
 	}
-	
+
 	#period-label {
 		font-size: 2.5em;
 	}
-	
+
 	#left-pane, #top-pane, #right-pane {
 		font-size: 0.8em;
 	}
-	
+
 	.really-annoying {
 		font-size: 2em;
 	}

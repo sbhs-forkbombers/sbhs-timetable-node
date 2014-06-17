@@ -361,10 +361,23 @@ function onRequest(req, res) {
 		/* STOP error :( */
 		httpHeaders(res, 500, 'text/html');
 		fs.createReadStream('static/500.8.html').pipe(res);
-	}  else if (uri.pathname == '/EFLAT' && DEBUG) {
-		/* Force a 500 error */
+	} else if (uri.pathname == '/EFLAT' && DEBUG) {
+		/* Force a 500 error (out of tune) */
 		httpHeaders(res, 500, 'text/html');
 		fs.createReadStream('static/500.html').pipe(res);
+	} else if (uri.pathname.match('/octicons/.*') && fs.existsSync(uri.pathname.slice(1))) {
+		var contentType = 'application/x-octet-stream';
+		if (uri.pathname.substr(-4) == '.css') {
+			contentType = 'text/css';
+		}
+		else if (uri.pathname.substr(-5) == '.woff') {
+			contentType = 'application/font-woff';
+		}
+		else if (uri.pathname.substr(-4) == '.txt') {
+			contentType = 'text/plain';
+		}
+		httpHeaders(res, 200, contentType);
+		fs.createReadStream(uri.pathname.slice(1)).pipe(res);
 	} else {
 		/* 404 everything else */
 		httpHeaders(res, 404, 'text/html');

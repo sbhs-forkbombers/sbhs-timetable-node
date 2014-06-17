@@ -40,9 +40,9 @@ function updateSidebarStatus() {
 	/* Show load state info for various API data */
 	'use strict';
 	/* Loading state symbols */
-	var tick = '<span class="ok">✓</span>',
-		cross = '<span class="notok">⤬</span>',
-		cached = '<span class="stale">!</span>',
+	var tick = '<span class="octicon octicon-check ok"></span>',
+		cross = '<span class="octicon octicon-x notok"></span>',
+		cached = '<span class="octicon octicon-alert stale"></span>',
 		loading = '<span class="idk">…</span>';
 	/* Local variables */
 	var belltimesOK = window.hasOwnProperty('belltimes'),
@@ -240,10 +240,10 @@ function domReady() {
 		setTimeout(loadComplete, 0);
 	}
 	if (getLoggedIn()) {
-		$('#login-status').html('<a href="/logout">Logout</a>');
+		$('#login-status').html('<a href="/logout" title="Log out" class="octicon octicon-sign-out"></a>');
 	}
 	else {
-		$('#login-status').html('<a href="/try_do_oauth">Login');
+		$('#login-status').html('<a href="/try_do_oauth" title="Log in" class="octicon octicon-sign-in"></a>');
 	}
 
 	$('#left-pane-arrow').click(function() {

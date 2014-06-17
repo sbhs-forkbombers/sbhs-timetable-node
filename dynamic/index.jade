@@ -22,6 +22,7 @@ html
 		title SBHS Timetable #{page}
 		style
 			include ../style/index.css
+			include ../octicons/octicons.css
 		meta(name="application-name",content="SBHS Timetable")
 		meta(name="mobile-web-app-capable",content="yes")
 		meta(name="apple-mobile-web-app-capable",content="yes")
@@ -43,9 +44,10 @@ html
 		yield
 		div.ss.changed#top-line-notice
 		div.ss#sidebar
-			div.sidebar-item#login-status
 			div.sidebar-item#next
-			div.sidebar-item#cached
+			span.sidebar-item#login-status
+			|&nbsp;&nbsp;
+			span.sidebar-item#cached
 				span#shortdata
 					span#shortdata-desc B: ? T: ? N: ?
 					span#dropdown-arrow
@@ -79,5 +81,7 @@ html
 		div#update We intend to move this to the front page in the next couple of weeks. How exciting!
 		div#expand-toggle
 			//- Using actual images is to mainstream. These images can be found at static/expand.png and static/collapse.png
-			img#expand(src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8BAMAAADI0sRBAAAAD1BMVEX///////////8AAAD///9h0jmkAAAAA3RSTlMAEFDb34d7AAAASUlEQVQ4y2NgMEYCBgzogNkFCWBKK+OXNhlgaTweM8GqaVR6yEpjj+ZRMBgBOE/ij2nnUekhL80MK35xSCMX4INY2hi3x0BAAADMnluHhOtETAAAAABJRU5ErkJggg==")
-			img#collapse(src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8AgMAAABHkjHhAAAADFBMVEX///////8AAAD///8FAGTCAAAAAnRSTlMAQABPjKgAAABRSURBVCjPY2AAAq1VKxiQgf7/H8OWvwoI1iPx9/8HAUr5T9D4D1D5vxpQ7F+1gGH4AbDHVsG5bOBw+Afna6Px9anOf4Vivz5SHAxHvhYkEQEAPYKo5chi7SMAAAAASUVORK5CYII=")
+			div#expand.mega-octicon.octicon-screen-full
+			//-(src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8BAMAAADI0sRBAAAAD1BMVEX///////////8AAAD///9h0jmkAAAAA3RSTlMAEFDb34d7AAAASUlEQVQ4y2NgMEYCBgzogNkFCWBKK+OXNhlgaTweM8GqaVR6yEpjj+ZRMBgBOE/ij2nnUekhL80MK35xSCMX4INY2hi3x0BAAADMnluHhOtETAAAAABJRU5ErkJggg==")
+			div#collapse.mega-octicon.octicon-screen-normal
+			//-(src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8AgMAAABHkjHhAAAADFBMVEX///////8AAAD///8FAGTCAAAAAnRSTlMAQABPjKgAAABRSURBVCjPY2AAAq1VKxiQgf7/H8OWvwoI1iPx9/8HAUr5T9D4D1D5vxpQ7F+1gGH4AbDHVsG5bOBw+Afna6Px9anOf4Vivz5SHAxHvhYkEQEAPYKo5chi7SMAAAAASUVORK5CYII=")
