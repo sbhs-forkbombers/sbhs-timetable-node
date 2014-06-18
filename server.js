@@ -373,10 +373,26 @@ function onRequest(req, res) {
 		fs.createReadStream('static/403.html').pipe(res);
 	} else if (uri.pathname == '/try_do_oauth') {
 		/* OAuth2 attempt */
+		if ('app' in uri.query) {
+			sessions[res.SESSID].nord = true;
+		}
 		auth.getAuthCode(res, res.SESSID);
 	} else if (uri.pathname == '/login') {
 		/* OAuth2 handler */
-		auth.getAuthToken(res, uri, null, true);
+		if (sessions[res.SESSID].nord) {
+			auth.getAuthToken(res, uri, function() {
+				httpHeaders(res, 302, '', true, null, { 'Location': '/mobile_loading?sessionID='+encodeURIComponent(res.SESSID) });
+				res.end();
+				//httpHeaders(res, 200, 'application/json', true);
+				//res.end(JSON.stringify(global.sessions[res.SESSID]));
+			}, false);
+		}
+		else {
+			auth.getAuthToken(res, uri, null, true);
+		}
+	} else if (uri.pathname == '/mobile_loading') {
+		httpHeaders(res, 200, 'text/html', true, null);
+		fs.createReadStream('static/appLoading.html').pipe(res);
 	} else if (uri.pathname == '/session_debug' && DEBUG) {
 		/* Session info */
 		httpHeaders(res, 200, 'application/json', true);
