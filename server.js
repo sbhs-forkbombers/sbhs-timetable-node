@@ -281,7 +281,7 @@ function onRequest(req, res) {
 	}
 
 	var target, uri = url.parse(req.url, true);
-
+	uri.pathname = uri.pathname.replace('/../', '/'); // hahaha NO
 	/* Response block */
 	if (uri.pathname === '/') {
 		/* Main page */
@@ -310,7 +310,6 @@ function onRequest(req, res) {
 		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname == '/api/belltimes') {
 		/* Belltimes wrapper */
-		//getBelltimes(uri.query.date, res, req);
 		apis.get('belltimes', uri.query, res.SESSID, function(obj) {
 			httpHeaders(res, 200, 'text/html', true, obj.etag);
 			res.end(obj.json);
