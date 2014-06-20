@@ -457,16 +457,20 @@ function updateCountdownLabel() {
 function handleRightPane() {
 	/* Fill out the right pane */
 	'use strict';
-	var bells = belltimes.bells;
+	var bells = belltimes.bells, rowClass, bell, timeClass;
 	var res = '<table><tbody>';
 	for (var i in bells) {
-		var bell = bells[i].bell;
-		var rowClass = 'break';
+		bell = bells[i].bell;
+		timeClass = 'bell';
+		rowClass = 'break';
 		if (/^\d$/.test(bell)) {
 			rowClass = 'period';
 			bell = 'Period ' + bell;
 		}
-		res += '<tr class="'+rowClass+'"><td class="bell">'+bell+'</td><td class="time">'+bells[i].time+'</td></tr>';
+		if (bells[i].different) {
+				timeClass += ' changed" title="normally ' + bells[i].normally;
+		}
+		res += '<tr class="'+rowClass+'"><td class="bell">'+bell+'</td><td class="'+timeClass+'">'+bells[i].time+'</td></tr>';
 	}
 	res += '</tbody></table>';
 	document.getElementById('right-pane').innerHTML = res;

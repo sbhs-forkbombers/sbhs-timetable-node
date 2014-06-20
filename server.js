@@ -49,7 +49,6 @@ var secret = config.secret,
 	privateKeyFile = config.privateKeyFile,
 	certificateFile = config.certificateFile,
 	forcedETagUpdateCounter = 0,
-	cachedBells = {},
 	index_cache, ipv4server, ipv6server, unixserver, i4tlsserver, i6tlsserver, i4h2server, i6h2server;
 sessions = {}; // global
 
@@ -193,45 +192,6 @@ function httpHeaders(res, response, contentType, dynamic, tag, headers) {
 	return res;
 }
 
-function getBelltimes(date, res, req) {
-	/* Get the belltimes from API and cache them */
-	'use strict';
-	if (typeof date !== 'string' || !/\d\d\d\d-\d?\d-\d?\d/.test(date)) {
-		httpHeaders(res, 200, 'application/json', true);
-		res.end(JSON.stringify({error: 'Invalid Date!'}));
-	}
-	date = date.replace('-0', '-');
-	if (date in cachedBells) {
-		if ('if-none-match' in req.headers) {
-			if (req.headers['if-none-match'] === cachedBells[date].hash) {
-				res.writeHead(304);
-				res.end();
-				return;
-			}
-		}
-		httpHeaders(res, 200, 'application/json', true, cachedBells[date].hash);
-		res.end(cachedBells[date].json);
-	} else {
-		request('http://student.sbhs.net.au/api/timetable/bells.json?date='+date,
-			function(err, r, b) {
-				if (err || r.statusCode != 200) {
-					if (err) {
-						console.error('failed to get bells for',date,' err='+err);
-						res.end('{"error": "internal", "statusCode": 500}');
-					} else {
-						console.error('Got a ' + r.statusCode + ' from SBHS for the belltimes for ' + date);
-						res.end('{"error": "remote", "statusCode":'+r.statusCode+'}');
-					}
-					return;
-				}
-				cachedBells[date] = { 'json': b, 'hash': etag.syncText(b) };
-				httpHeaders(res, 200, 'application/json', true, cachedBells[date].hash);
-				res.end(b);
-			}
-		);
-	}
-}
-
 function genSessionID(req) {
 	/* Generate a random session ID */
 	'use strict';
@@ -350,8 +310,11 @@ function onRequest(req, res) {
 		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname == '/api/belltimes') {
 		/* Belltimes wrapper */
-		httpHeaders(res, 200, 'application/json', true);
-		getBelltimes(uri.query.date, res, req);
+		//getBelltimes(uri.query.date, res, req);
+		apis.get('belltimes', uri.query, res.SESSID, function(obj) {
+			httpHeaders(res, 200, 'text/html', true, obj.etag);
+			res.end(obj.json);
+		});
 	} else if (uri.pathname == '/favicon.ico') {
 		/* favicon */
 		contentType = 'image/x-icon';
@@ -375,11 +338,14 @@ function onRequest(req, res) {
 		/* OAuth2 attempt */
 		if ('app' in uri.query) {
 			sessions[res.SESSID].nord = true;
+			console.log('Won\'t redirect...');
 		}
 		auth.getAuthCode(res, res.SESSID);
 	} else if (uri.pathname == '/login') {
 		/* OAuth2 handler */
+		console.log(require('util').inspect(sessions[res.SESSID]));
 		if (sessions[res.SESSID].nord) {
+			console.log('Sending to /mobile_loading!');
 			auth.getAuthToken(res, uri, function() {
 				httpHeaders(res, 302, '', true, null, { 'Location': '/mobile_loading?sessionID='+encodeURIComponent(res.SESSID) });
 				res.end();
