@@ -230,6 +230,10 @@ function toggleExpansion(e) {
 	}
 }
 
+function fadeOutUpdate() {
+	$('#update').velocity('fadeOut');
+}
+
 function domReady() {
 	/* Onclicks and timeouts */
 	'use strict';
@@ -282,9 +286,7 @@ function domReady() {
 		}
 	});
 
-	setTimeout(function() {
-		$('#update').velocity('fadeOut');
-	}, 10000);
+	setTimeout(fadeOutUpdate, 10000);
 
 	$('#expand,#collapse').on('click', toggleExpansion);
 

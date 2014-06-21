@@ -30,7 +30,8 @@ var http = require('http'),
 	config = require('./config.js'),
 	etag = require('./lib/etag.js'),
 	request = require('request'),
-	uuid = require('node-uuid');
+	uuid = require('node-uuid'),
+	zlib = require('zlib');
 
 if (SPDY) {
 	var https = require('spdy');
@@ -136,6 +137,46 @@ function cleanSessions() {
 	console.log('[core] Cleaned ' + cleaned + ' sessions');
 	fs.writeFileSync('sessions.json', JSON.stringify(global.sessions));
 	console.log('[core] Wrote ' + Object.keys(global.sessions).length + ' sessions to disk');
+}
+
+function compressText(req, text, res, cb) {
+	'use strict';
+	if (typeof cb !== 'function') {
+		return;
+	}
+	if ('accept-encoding' in req.headers) {
+		var encs = req.headers['accept-encoding'].replace(/q=\d\.\d/, '').split(/, ?/);
+		if (encs.indexOf('gzip') != -1) {
+			console.log('[compress] using gzip compression');
+			res.setHeader('Content-Encoding', 'gzip');
+			zlib.gzip(text, cb);
+			return;
+		}
+		else if (encs.indexOf('deflate') != -1) {
+			console.log('[compress] using deflate compression');
+			res.setHeader('Content-Encoding', 'deflate');
+			zlib.deflate(text, cb);
+			return;
+		}
+	}
+	cb(text);
+}
+
+function pipeCompress(req, file, res) {
+	if ('accept-encoding' in req.headers) {
+		var encs = req.headers['accept-encoding'].replace(/q=\d\.\d/, '').split(/, ?/);
+		if (encs.indexOf('gzip') != -1) {
+			console.log('[compress] using gzip compression');
+			res.setHeader('Content-Encoding', 'gzip');
+			return fs.createReadStream(file).pipe(zlib.createGzip());
+		}
+		else if (encs.indexOf('deflate') != -1) {
+			console.log('[compress] using deflate compression');
+			res.setHeader('Content-Encoding', 'deflate');
+			return fs.createReadStream(file).pipe(zlib.createDeflate());
+		}
+	}
+	return fs.createReadStream(file);
 }
 
 var reloadWatcher = fs.watch('.reload', { persistent: false }, function() {
@@ -251,12 +292,19 @@ function onRequest(req, res) {
 		contentType = 'text/plain',
 		filePath = 'static/404.html';
 	var changed = function(hash) {
+		var pipe = pipeCompress(req, filePath, res);
 		httpHeaders(res, 200, contentType, false, hash);
-		fs.createReadStream(filePath).pipe(res);
+		pipe.pipe(res);
 	};
 	var dynChanged = function(hash) {
-		httpHeaders(res, 200, contentType, true, hash);
-		res.end(target);
+		compressText(req, target, res, function(a,r) {
+			if (a) {
+				res.setHeader('Content-Encoding', '');
+				r = target;
+			}
+			httpHeaders(res, 200, contentType, true, hash);
+			res.end(r);
+		});
 	};
 	var unchanged = function(hash) {
 		res.writeHead(304);
@@ -361,7 +409,9 @@ function onRequest(req, res) {
 	} else if (uri.pathname == '/session_debug' && DEBUG) {
 		/* Session info */
 		httpHeaders(res, 200, 'application/json', true);
-		res.end(JSON.stringify(global.sessions[res.SESSID]));
+		var obj = {};
+		obj[res.SESSID] = global.sessions[res.SESSID];
+		res.end(JSON.stringify(obj));
 	} else if (uri.pathname.match('/api/.*[.]json') && apis.isAPI(uri.pathname.slice(5))) {
 		/* API calls */
 		apis.get(uri.pathname.slice(5), uri.query, res.SESSID, function(obj) {
