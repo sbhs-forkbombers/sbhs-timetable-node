@@ -163,6 +163,7 @@ function compressText(req, text, res, cb) {
 }
 
 function pipeCompress(req, file, res) {
+	'use strict';
 	if ('accept-encoding' in req.headers) {
 		var encs = req.headers['accept-encoding'].replace(/q=\d\.\d/, '').split(/, ?/);
 		if (encs.indexOf('gzip') != -1) {

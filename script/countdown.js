@@ -231,6 +231,7 @@ function toggleExpansion(e) {
 }
 
 function fadeOutUpdate() {
+	'use strict';
 	$('#update').velocity('fadeOut');
 }
 
