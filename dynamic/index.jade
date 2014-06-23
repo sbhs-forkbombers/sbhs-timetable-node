@@ -30,9 +30,10 @@ html
 		link(rel="icon",sizes="196x196",href="../static/icon-hires.png")
 		link(rel="apple-touch-icon",sizes="196x196",href="../static/icon-hires.png")
 		script
-			include ../script/jquery.min.js
+			include ../srv/jquery.min.js
+		script
+			include ../srv/jquery.velocity.min.js
 		script(async,defer,src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
-		script(async,defer,src="//cdnjs.cloudflare.com/ajax/libs/velocity/0.0.9/jquery.velocity.min.js")
 		script(async,src="/script/belltimes.concat.js?cachingsucks")
 	body
 		div#content
@@ -55,13 +56,13 @@ html
 					br
 					span#verbose-hidden
 						|Bells:
-						span#belltimes.idk …
+						span#belltimes.idk ...
 						br
 						|Timetable:
-						span#timetable.idk …
+						span#timetable.idk ...
 						br
 						|Notices:
-						span#notices.idk …
+						span#notices.idk ...
 			div.sidebar-item.animated.changed#rtd-unavailable
 		div.really-annoying#tl BETA
 		div.really-annoying#br BETA
