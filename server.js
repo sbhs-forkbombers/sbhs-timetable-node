@@ -309,6 +309,7 @@ function onRequest(req, res) {
 
 	var target, uri = url.parse(req.url, true);
 	uri.pathname = uri.pathname.replace('/../', '/'); // hahaha NO
+	console.log(require('util').inspect(req.headers));
 	/* Response block */
 	if (uri.pathname === '/') {
 		/* Main page */
@@ -319,7 +320,7 @@ function onRequest(req, res) {
 			target().pipe(res);
 		} else {
 			contentType = 'text/html';
-			target = target.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined).replace('\'%%%OFFLINE%%%\'', 'caching' in uri.query);
+			target = target.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined);
 			checkText(target, req, unchanged, dynChanged);
 		}
 		//httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
@@ -458,9 +459,12 @@ function onRequest(req, res) {
 		httpHeaders(res, 500, 'text/html');
 		serverError().pipe(res);
 	} else if (uri.pathname == '/main.appcache') {
+		
 		filePath = 'static/app.appcache';
 		contentType = 'text/cache-manifest';
-		checkFile(filePath, req, unchanged, changed);
+		//checkFile(filePath, req, unchanged, changed);
+		httpHeaders(res, 200, contentType, true, null, {'Last-Modified': new Date().toGMTString() });
+		fs.createReadStream(filePath).pipe(res);
 	} else if (uri.pathname.match('/octicons/.*') && fs.existsSync(uri.pathname.slice(1))) {
 		contentType = 'application/x-octet-stream';
 		if (uri.pathname.substr(-4) == '.css') {

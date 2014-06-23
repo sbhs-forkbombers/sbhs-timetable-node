@@ -34,7 +34,7 @@ var timetable,
 	rightExpanded = false,
 	bottomExpanded = false,
 	miniMode = window.innerWidth < 800,
-	bellsCached = false,
+	bellsCached = window.bellsCached,
 	timetableCached = false,
 	noticesCached = false;
 
@@ -60,6 +60,13 @@ function updateSidebarStatus() {
 
 	if (!belltimesOK) {
 		belltimesText = 'Unavailable';
+	}
+	if (bellsCached) {
+		belltimesText = 'Cached';
+		belltimesClass = 'stale';
+		shortText[0] = 'B: ' + cached;
+	} else if (!belltimesOK) {
+		belltimesText = 'Not OK';
 		belltimesClass = 'notok';
 		shortText[0] = 'B: ' + cross;
 	}
@@ -301,6 +308,9 @@ function domReady() {
 	if (window.localStorage.expanded === 'true') {
 		$('#expand').click();
 	}
+	if (!window.ONLINE) {
+		$('#top-line-notice').html('You\'re offline. Belltimes may be inaccurate, and other features may not function correctly.');
+	}
 }
 
 function loadComplete() {
@@ -455,7 +465,9 @@ function updatePeriodLabel() {
 	}
 	$('#period-label').text(name);
 	$('#in-label').text(inLabel);
-	$('#top-line-notice').text(roomChangedInfo);
+	if (window.ONLINE) {
+		$('#top-line-notice').text(roomChangedInfo);
+	}
 }
 
 function updateCountdownLabel() {

@@ -100,7 +100,7 @@ module.exports = function(grunt) {
 		},
 		concat: {
 			dist: {
-				src: ['script/*.js', '!script/belltimes.concat.js'],
+				src: ['script/*.js', '!script/belltimes.concat.js', '!script/*line.js'],
 				dest: 'script/belltimes.concat.js'
 			}
 		},
@@ -171,6 +171,9 @@ module.exports = function(grunt) {
 						'/api/today.json',
 						'/api/notices.json',
 						
+					],
+					fallback: [
+						'/script/online.js /script/offline.js'
 					],
 //					preferOnline: true,
 					//hash: true,
