@@ -106,6 +106,13 @@ function handleTimetable() {
 	if (res.timetable && !res.hasVariations) {
 		window.localStorage[lsKey] = this.responseText;
 	}
+	else if (res.hasVariations) {
+		var temp = res;
+		for (var i in temp.timetable) {
+			temp.timetable[i].changed = false;
+		}
+		window.localStorage[lsKey] = JSON.stringify(temp);
+	}
 	else if (!res.timetable) {
 		$('#rtd-unavailable').html('Real-time data inaccessible');
 		return; // we don't want to do that... TODO refresh access token and stuff
@@ -130,6 +137,7 @@ function loadTimetable() {
 	window.timetableCached = false;
 	var day = false;
 	if (belltimes) {
+		console.log('got day');
 		day = belltimes.day+belltimes.weekType;
 	}
 	if (day && day in window.localStorage) {

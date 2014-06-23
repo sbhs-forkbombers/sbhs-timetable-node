@@ -47,7 +47,7 @@ module.exports = function(grunt) {
 			}
 		},
 		jshint: {
-			files: ['script/*.js', 'server.js', 'lib/*.js'],
+			files: ['script/*.js', 'server.js', 'lib/*.js', '!script/*.min.js', '!script/*.concat.js'],
 			options: {
 				jshintrc: true,
 				reporter: require('jshint-stylish'),
@@ -157,18 +157,22 @@ module.exports = function(grunt) {
 				options: {
 					basePath: '.',
 					cache: [ // static cdn/font stuff
-						'http://fonts.googleapis.com/css?family=Roboto:400,100&subset=latin',
 						'http://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js',
 						'http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js',
-						'http://cdnjs.cloudflare.com/ajax/libs/velocity/0.0.9/jquery.velocity.min.js'
+						'http://cdnjs.cloudflare.com/ajax/libs/velocity/0.0.9/jquery.velocity.min.js',
+						'/script/belltimes.concat.js',
+						'/octicons/octicons.woff',
+						'/style/octicons.css',
+						'/octicons/RobotoRegular.woff',
+						'/octicons/RobotoThin.woff'
 					],
 					network: [
-						'/api/*',
-						'http://themes.googleusercontent.com/static/fonts/roboto/*',
-						'/script/*',
-						'/'
+						'/api/belltimes',
+						'/api/today.json',
+						'/api/notices.json',
+						
 					],
-					preferOnline: true,
+//					preferOnline: true,
 					//hash: true,
 					timestamp: true,
 				}

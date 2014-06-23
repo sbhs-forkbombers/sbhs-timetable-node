@@ -198,7 +198,7 @@ function httpHeaders(res, response, contentType, dynamic, tag, headers) {
 	if (!('Set-Cookie' in headers) && 'SESSID' in res) {
 		headers['Set-Cookie'] = 'SESSID='+res.SESSID+'; Max-Age=36000';
 	}
-	if (dynamic || DEBUG) { // disable caching
+	if (dynamic /*|| DEBUG*/) { // disable caching
 		headers['Cache-Control'] = 'no-cache, must-revalidate';
 		headers.Pragma = 'no-cache';
 		headers.Expires = 'Sat, 26 Jul 1997 05:00:00 GMT';
@@ -283,7 +283,7 @@ function onRequest(req, res) {
 				res.setHeader('Content-Encoding', '');
 				r = target;
 			}
-			httpHeaders(res, 200, contentType, true, hash);
+			httpHeaders(res, 200, contentType, false, hash);
 			res.end(r);
 		});
 	};
@@ -314,12 +314,12 @@ function onRequest(req, res) {
 		/* Main page */
 		// TODO cache two different versions of index for logged-in and not logged in.
 		target = index_cache;
-		if (typeof target === 'function') {
+		if (typeof target !== 'string') {
 			httpHeaders(res, 500, 'text/html', true);
 			target().pipe(res);
 		} else {
 			contentType = 'text/html';
-			target = target.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined);
+			target = target.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined).replace('\'%%%OFFLINE%%%\'', 'caching' in uri.query);
 			checkText(target, req, unchanged, dynChanged);
 		}
 		//httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
@@ -340,7 +340,12 @@ function onRequest(req, res) {
 	} else if (uri.pathname == '/api/belltimes') {
 		/* Belltimes wrapper */
 		apis.get('belltimes', uri.query, res.SESSID, function(obj) {
-			httpHeaders(res, 200, 'text/html', true, obj.etag);
+			if (obj.etag == req.headers['if-none-match']) {
+				res.writeHead(304);
+				res.end();
+				return;
+			}
+			httpHeaders(res, 200, 'application/json', true, obj.etag);
 			res.end(obj.json);
 		});
 	} else if (uri.pathname.match('/static/.*[.]jpg|jpeg$') && fs.existsSync(uri.pathname.slice(1))) {
@@ -453,8 +458,22 @@ function onRequest(req, res) {
 		httpHeaders(res, 500, 'text/html');
 		serverError().pipe(res);
 	} else if (uri.pathname == '/main.appcache') {
-		httpHeaders(res, 200, 'text/cache-manifest');
-		fs.createReadStream('static/app.appcache').pipe(res);
+		filePath = 'static/app.appcache';
+		contentType = 'text/cache-manifest';
+		checkFile(filePath, req, unchanged, changed);
+	} else if (uri.pathname.match('/octicons/.*') && fs.existsSync(uri.pathname.slice(1))) {
+		contentType = 'application/x-octet-stream';
+		if (uri.pathname.substr(-4) == '.css') {
+			contentType = 'text/css';
+		}
+		else if (uri.pathname.substr(-5) == '.woff') {
+			contentType = 'application/font-woff';
+		}
+		else if (uri.pathname.substr(-4) == '.txt') {
+			contentType = 'text/plain';
+		}
+		filePath = uri.pathname.slice(1);
+		checkFile(filePath, req, unchanged, changed);
 	} else {
 		/* 404 everything else */
 		httpHeaders(res, 404, 'text/html');

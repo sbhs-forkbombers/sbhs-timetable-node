@@ -87,6 +87,20 @@ function handleNotices(err) {
 	updateSidebarStatus();
 }
 
+function clearOldNotices() {
+	'use strict';
+	console.log('clearing old notices');
+	var cleared = 0;
+	var today = new Date().toDateString();
+	for (var i in window.localStorage) {
+		if (/\w{3} \w{3} \d{2} \d{4}/.test(i) && i != today) {
+			delete window.localStorage[i];
+			cleared++;
+		}	
+	}
+	console.log('cleared ' + cleared);
+}
+
 function loadNotices() {
 	'use strict';
 	window.noticesCached = false;
@@ -110,4 +124,5 @@ function loadNotices() {
 	xhr.onload = handleNotices;
 	xhr.open('GET', '/api/notices.json?date='+ds, true);
 	xhr.send();
+	setTimeout(clearOldNotices, 3000);
 }
