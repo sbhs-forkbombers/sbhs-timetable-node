@@ -29,7 +29,8 @@ html
 		meta(name="apple-mobile-web-app-status-bar-style",content="black")
 		link(rel="icon",sizes="196x196",href="../static/icon-hires.png")
 		link(rel="apple-touch-icon",sizes="196x196",href="../static/icon-hires.png")
-		script(async,src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js")
+		script
+			include ../script/jquery.min.js
 		script(async,defer,src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
 		script(async,defer,src="//cdnjs.cloudflare.com/ajax/libs/velocity/0.0.9/jquery.velocity.min.js")
 		script(async,src="/script/belltimes.concat.js?cachingsucks")
