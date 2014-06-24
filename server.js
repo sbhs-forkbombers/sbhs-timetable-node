@@ -203,9 +203,9 @@ function httpHeaders(res, response, contentType, dynamic, tag, headers) {
 		headers.Pragma = 'no-cache';
 		headers.Expires = 'Sat, 26 Jul 1997 05:00:00 GMT';
 	} else if (!dynamic) {
-		date = new Date();
+		/*date = new Date();
 		date.setYear(date.getFullYear() + 1);
-		headers.Expires = date.toGMTString();
+		headers.Expires = date.toGMTString();*/
 	}
 
 	if (tag !== null && tag !== undefined) {
@@ -309,7 +309,6 @@ function onRequest(req, res) {
 
 	var target, uri = url.parse(req.url, true);
 	uri.pathname = uri.pathname.replace('/../', '/'); // hahaha NO
-	console.log(require('util').inspect(req.headers));
 	/* Response block */
 	if (uri.pathname === '/') {
 		/* Main page */
@@ -459,7 +458,6 @@ function onRequest(req, res) {
 		httpHeaders(res, 500, 'text/html');
 		serverError().pipe(res);
 	} else if (uri.pathname == '/main.appcache') {
-		
 		filePath = 'static/app.appcache';
 		contentType = 'text/cache-manifest';
 		//checkFile(filePath, req, unchanged, changed);
