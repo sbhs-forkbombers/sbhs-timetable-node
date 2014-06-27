@@ -54,7 +54,7 @@
 	top: 0;
 	left: 0;
 	width: 100%;
-	text-align: center
+	text-align: center;
 }
 
 .really-annoying {
@@ -62,17 +62,17 @@
 	font-size: 3em;
 	font-weight: 100;
 	z-index: -1;
-	color: #cc0000
+	color: #b0120a;
 }
 
 #tl {
 	top: 0;
-	left: 0
+	left: 0;
 }
 
 #br {
 	bottom: 0;
-	right: 0
+	right: 0;
 }
 
 .arrow {
@@ -228,7 +228,7 @@
 
 
 .changed {
-	color: #ffbb33;
+	color: #ffc107;
 }
 
 .cancelled {
@@ -256,7 +256,7 @@
 }
 
 .meeting .notice-data {
-	background-color: #C00;
+	background-color: #e51c23;
 	border: 0;
 }
 
@@ -298,7 +298,7 @@ td {
 .changeable-status {
 	padding-top: 20px;
 	font-size: 1.3em;
-	color: #ffbb33;
+	color: #ffc107;
 	font-style: italic;
 	text-align: center;
 }
@@ -317,15 +317,15 @@ td {
 }
 
 .ok {
-	color: #9C0;
+	color: #259b24;
 }
 
 .notok {
-	color: #C00;
+	color: #e51c23;
 }
 
 .stale {
-	color: #F80;
+	color: #ffc107;
 }
 
 #feedback {
