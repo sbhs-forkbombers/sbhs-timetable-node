@@ -19,7 +19,8 @@
 /*globals handleBells,loadTimetable,loadNotices,loadComplete,domReady,getLoggedIn,todayNames*/
 
 /* Variables */
-var timetable,
+var HOLDAY = true,
+	timetable,
 	belltimes,
 	year,
 	dateOffset = -1,
@@ -187,12 +188,19 @@ function reloadBelltimes() {
 	//$.getJSON('/api/belltimes?date=' + getNextSchoolDay().toString('yyyy-MM-d'), handleBells);
 }
 
+reloadBelltimes();
+
 function handleBells(bells) {
 	/* Load the belltimes */
 	/* jshint validthis: true */
 	'use strict';
 	belltimes = JSON.parse(this.responseText);
 	if (belltimes.status === 'Error') {
+		if (window.HOLIDAYS) {
+			manualOverride = 6;
+			loadComplete();
+			return;
+		}
 		manualOverride++;
 		if (manualOverride > 5) {
 			document.getElementById('period-label').innerHTML = 'WAT?!?';
@@ -210,9 +218,7 @@ function handleBells(bells) {
 	}
 }
 
-reloadBelltimes(); // do it ASAP
-
-function toggleExpansion(e) {
+function toggleExpansion() {
 	/* jshint validthis: true */
 	'use strict';
 	if (this.id == 'expand') {
@@ -242,7 +248,7 @@ function domReady() {
 	if (document.readyState != 'complete') {
 		return;
 	}
-	if (belltimes !== null && belltimes !== undefined) {
+	if ((belltimes !== null && belltimes !== undefined) || window.HOLIDAYS) {
 		setTimeout(loadComplete, 0);
 	}
 	if (getLoggedIn()) {
@@ -301,11 +307,25 @@ function loadComplete() {
 	/* Do when DOM loaded */
 	'use strict';
 	reloading = false;
-	calculateUpcomingLesson();
-	updateCountdownLabel();
-	handleRightPane();
-	setInterval(updateCountdownLabel, 1000);
+	if (!window.HOLIDAYS) {
+		calculateUpcomingLesson();
+		updateCountdownLabel();
+		handleRightPane();
+		setInterval(updateCountdownLabel, 1000);
+	}
+	else {
+		console.log('activating swag mode');
+		setTimeout(loadTimetable, 0);
+		$('#period-label,#countdown-label').css({'display': 'none'});
+		$('#in-label').addClass('animated').html('lol strong gaming');
+		setInterval(function() {
+			snazzify(document.getElementById('in-label'));
+		}, 500);
+		$('#sidebar,#expand,#collapse,.arrow').addClass('animated').css({'opacity': 0});
+		$('#left-pane-arrow').css({'opacity': ''});
+	}
 	updateSidebarStatus();
+	
 }
 
 function prettifySecondsLeft(sec) {

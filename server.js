@@ -49,6 +49,7 @@ var secret = config.secret,
 	redirectURI = config.redirectURI,
 	privateKeyFile = config.privateKeyFile,
 	certificateFile = config.certificateFile,
+	HOLIDAYS = config.holidays,
 	forcedETagUpdateCounter = 0,
 	index_cache, ipv4server, ipv6server, unixserver, i4tlsserver, i6tlsserver, i4h2server, i6h2server;
 sessions = {}; // global
@@ -106,7 +107,7 @@ function cache_index() {
 	console.log('[core] Caching index page... (hangup to re-cache)');
 	var jade_comp = Date.now();
 	var idx = compile_jade('dynamic/index.jade');
-	index_cache = idx({title: ''});
+	index_cache = idx({title: '', holidays: HOLIDAYS});
 	if (index_cache == serverError) {
 		console.warn('WARNING: Encountered an error while caching index page. Fix errors, and then hangup to reload.');
 	}
@@ -477,6 +478,13 @@ function onRequest(req, res) {
 		}
 		else if (uri.pathname.substr(-4) == '.txt') {
 			contentType = 'text/plain';
+		}
+		filePath = uri.pathname.slice(1);
+		checkFile(filePath, req, unchanged, changed);
+	} else if (uri.pathname.match('/res/.*') && fs.existsSync(uri.pathname.slice(1))) {
+		contentType = 'application/x-octet-stream';
+		if (uri.pathname.substr(-4) == '.jpg') {
+			contentType = 'image/jpeg';
 		}
 		filePath = uri.pathname.slice(1);
 		checkFile(filePath, req, unchanged, changed);

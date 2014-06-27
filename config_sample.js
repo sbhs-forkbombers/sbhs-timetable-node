@@ -3,7 +3,8 @@ module.exports = {
 	'clientID': 'NotWhatYoureLookingFor',
 	'redirectURI': 'https://en.wikipedia.org/wiki/Main_Page',
 	'privateKeyFile': 'COPYING',
-	'certificateFile': 'COPYING'
+	'certificateFile': 'COPYING',
+	'holidays': false
 };
 IPV6 = false;
 /* Either SPDY _OR_ HTTPS can be true, NOT BOTH */

@@ -35,6 +35,21 @@ html
 			include ../srv/jquery.velocity.min.js
 		script(async,defer,src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
 		script(async,src="/script/belltimes.concat.js?cachingsucks")
+		if holidays
+			style
+				include ../style/holidays.css
+			script.
+				window.HOLIDAYS = true;
+				function snazzify(el) {
+					var r = Math.floor(Math.random()*255);
+					var g = Math.floor(Math.random()*255);
+					var b = Math.floor(Math.random()*255);
+					el.style.color = 'rgb('+r+','+g+','+b+')';
+				}
+		else
+			script.
+				window.HOLIDAYS = false;
+		
 	body
 		div#content
 			div#period-name

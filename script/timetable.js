@@ -113,8 +113,8 @@ function handleTimetable(e) {
 	if (currentBellIndex == -1) {
 		calculateUpcomingLesson();
 	}
-	updatePeriodLabel();
 	handleLeftPane();
+	updatePeriodLabel();
 	updateSidebarStatus();
 }
 

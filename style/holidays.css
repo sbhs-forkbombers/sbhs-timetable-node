@@ -1,0 +1,10 @@
+body {
+	background-image: url(/res/HOLIDAYS.jpg);
+	font-color: black;
+}
+
+#left-pane {
+	background-image: url(/res/HOLIDAYS.jpg);
+	color: #ff80ab;
+	background-position: 0 350px;
+}
