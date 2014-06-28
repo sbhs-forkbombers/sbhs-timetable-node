@@ -19,8 +19,7 @@
 /*globals handleBells,loadTimetable,loadNotices,loadComplete,domReady,getLoggedIn,todayNames*/
 
 /* Variables */
-var HOLDAY = true,
-	timetable,
+var timetable,
 	belltimes,
 	year,
 	dateOffset = -1,

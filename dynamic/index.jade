@@ -95,10 +95,12 @@ html
 		div.arrow#right-pane-arrow
 		div#feedback
 			a(href="https://docs.google.com/forms/d/18VjH5GM80Xl0C1KBRpCrwTXUCiK8G2sg9Z6lDuNA7vk/viewform?usp=send_form",title="feedback") Feedback
-		div#update We intend to move this to the front page in the next couple of weeks. How exciting!
+		div#update Welcome to SBHS Timetable v2.0! Now with waaaay less typing.
+			a(href="/try_do_oauth",title="Login") Login and take a look at the left-hand pane!
 		div#expand-toggle
 			//- Using actual images is to mainstream. These images can be found at static/expand.png and static/collapse.png
 			div#expand.mega-octicon.octicon-screen-full
-			//-(src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8BAMAAADI0sRBAAAAD1BMVEX///////////8AAAD///9h0jmkAAAAA3RSTlMAEFDb34d7AAAASUlEQVQ4y2NgMEYCBgzogNkFCWBKK+OXNhlgaTweM8GqaVR6yEpjj+ZRMBgBOE/ij2nnUekhL80MK35xSCMX4INY2hi3x0BAAADMnluHhOtETAAAAABJRU5ErkJggg==")
 			div#collapse.mega-octicon.octicon-screen-normal
-			//-(src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAA8AgMAAABHkjHhAAAADFBMVEX///////8AAAD///8FAGTCAAAAAnRSTlMAQABPjKgAAABRSURBVCjPY2AAAq1VKxiQgf7/H8OWvwoI1iPx9/8HAUr5T9D4D1D5vxpQ7F+1gGH4AbDHVsG5bOBw+Afna6Px9anOf4Vivz5SHAxHvhYkEQEAPYKo5chi7SMAAAAASUVORK5CYII=")
+		if holidays && false
+			audio(autoplay,loop)
+				source(src="https://d2g9v1gts353nd.cloudfront.net/tumblr_lis9otqLNE1qca9pxo1.mp3",type="audio/mpeg")
