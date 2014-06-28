@@ -10,3 +10,4 @@ sessions.json
 .Trashes
 *.key
 *.pem
+*.appcache

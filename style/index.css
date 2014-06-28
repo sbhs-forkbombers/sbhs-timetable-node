@@ -24,7 +24,7 @@
 	left: 0;
 	width: 100%;
 	text-align: center;
-	font-weight: 100;
+	font-family: "Roboto Thin", "Segoe UI", "Helvetica Neue", sans-serif;
 }
 
 #period-label {
@@ -33,7 +33,7 @@
 
 #in-label {
 	font-size: 1em;
-	font-weight: 400;
+	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
 }
 
 #countdown-label {
@@ -60,7 +60,7 @@
 .really-annoying {
 	position: fixed;
 	font-size: 3em;
-	font-weight: 100;
+	font-family: "Roboto Thin", "Segoe UI", "Helvetica Neue", sans-serif;
 	z-index: -1;
 	color: #b0120a;
 }
@@ -146,7 +146,7 @@
 	width: 100%;
 	text-align: center;
 	font-size: 2em;
-	font-weight: 100;
+	font-family: "Roboto Thin", "Segoe UI", "Helvetica Neue", sans-serif;
 	cursor: default;
 }
 
@@ -192,7 +192,7 @@
 	width: 100%;
 	text-align: center;
 	font-size: 1.5em;
-	font-weight: 100;
+	font-family: "Roboto Thin", "Segoe UI", "Helvetica Neue", sans-serif;
 	cursor: default;
 	padding-bottom: 20px;
 }
@@ -206,11 +206,11 @@
 }
 
 #right-pane .period {
-	font-weight: 400;
+	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
 }
 
 #right-pane .break {
-	font-weight: 100;
+	font-family: "Roboto Thin", "Segoe UI", "Helvetica Neue", sans-serif;
 	font-style: italic;
 }
 
