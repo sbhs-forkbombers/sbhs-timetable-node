@@ -1,10 +1,10 @@
 body {
-	background-image: url(/res/HOLIDAYS.jpg);
+	background-image: url(http://www2.gnustomp.com/sbhs-timetable-node/HOLIDAYS.jpg);
 	font-color: black;
 }
 
 #left-pane {
-	background-image: url(/res/HOLIDAYS.jpg);
+	background-image: url(http://www2.gnustomp.com/sbhs-timetable-node/HOLIDAYS.jpg);
 	color: #ff80ab;
 	background-position: 0 350px;
 }

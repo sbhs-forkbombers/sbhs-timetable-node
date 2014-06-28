@@ -1,10 +1,10 @@
 /* comment out anything that isn't needed, it'll be removed by the CSS minifier. */
 @font-face {
-  font-family: 'octicons';
-  src: url(/octicons/octicons.woff) format('woff'),
-       url(/octicons/octicons.ttf) format('truetype');
-  font-weight: normal;
-  font-style: normal;
+	font-family: 'octicons';
+	src: url(http://www2.gnustomp.com/octicons/octicons.woff) format('woff'),
+		url(http://www2.gnustomp.com/octicons/octicons.ttf) format('truetype');
+	font-weight: normal;
+	font-style: normal;
 }
 
 /*
@@ -14,21 +14,21 @@
 
 */
 .octicon {
-  font: normal normal 16px octicons;
-  line-height: 1;
-  display: inline-block;
-  text-decoration: none;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	font: normal normal 16px octicons;
+	line-height: 1;
+	display: inline-block;
+	text-decoration: none;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .mega-octicon {
-  font: normal normal 32px octicons;
-  line-height: 1;
-  display: inline-block;
-  text-decoration: none;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	font: normal normal 32px octicons;
+	line-height: 1;
+	display: inline-block;
+	text-decoration: none;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 .octicon-alert:before { content: '\f02d'}
