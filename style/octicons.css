@@ -1,8 +1,8 @@
 /* comment out anything that isn't needed, it'll be removed by the CSS minifier. */
 @font-face {
 	font-family: 'octicons';
-	src: url(http://www2.gnustomp.com/octicons/octicons.woff) format('woff'),
-		url(http://www2.gnustomp.com/octicons/octicons.ttf) format('truetype');
+	src: url(http://cdn.gnustomp.com/~redleaf59/octicons/octicons.woff) format('woff'),
+		url(http://cdn.gnustomp.com/~redleaf59/octicons/octicons.ttf) format('truetype');
 	font-weight: normal;
 	font-style: normal;
 }
