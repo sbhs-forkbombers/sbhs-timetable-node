@@ -86,7 +86,7 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				expand: true,
-				src: ['octicons/**', 'dynamic/**', 'static/**', 'server.js', 'lib/**', 'config.js', privateKeyFile , certificateFile],
+				src: ['octicons/**', 'dynamic/**', 'static/**', 'server.js', 'srv/**', 'lib/**', 'config.js', privateKeyFile , certificateFile],
 				dest: 'build/',
 			},
 			vars: {
