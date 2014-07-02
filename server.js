@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*globals SPDY, HTTPS, HTTP2, IPV6, DEBUG, RELEASE, GIT_RV, REL_RV, NOHTTP, sessions*/
+/*globals DEBUG, RELEASE, GIT_RV, REL_RV, sessions*/
 /* jslint -W098, -W020 */
 var all_start = Date.now();
 console.log('[core] Loading...');
@@ -28,43 +28,22 @@ var http = require('http'),
 	auth = require('./lib/auth.js'),
 	apis = require('./lib/api.js'),
 	config = require('./config.js'),
+	variables = require('./variables.js'),
 	etag = require('./lib/etag.js'),
 	request = require('request'),
 	uuid = require('node-uuid'),
 	zlib = require('zlib');
 
-if (SPDY) {
-	var https = require('spdy');
-} else if (HTTPS) {
-	var https = require('https');
-}
-
-if (HTTP2) {
-	var http2 = require('http2');
-}
-
 /* Variables */
 var secret = config.secret,
 	clientID = config.clientID,
 	redirectURI = config.redirectURI,
-	privateKeyFile = config.privateKeyFile,
-	certificateFile = config.certificateFile,
 	HOLIDAYS = config.holidays,
-	forcedETagUpdateCounter = 0,
-	index_cache, ipv4server, ipv6server, unixserver, i4tlsserver, i6tlsserver, i4h2server, i6h2server;
+	IPV6 = config.ipv6,
+	NOHTTP = config.nohttp,
+	index_cache, ipv4, ipv6, socket;
 sessions = {}; // global
 
-/* SSL/TLS */
-if (SPDY || HTTP2) {
-	var options = {
-		key: fs.readFileSync(privateKeyFile),
-		cert: fs.readFileSync(certificateFile)
-	};
-}
-
-console.log('[core] Initialised in in ' + (Date.now() - all_start) + 'ms');
-
-require('./variables.js'); // set globals appropriate to status - dev (DEBUG = true) or release (DEBUG = false and GIT_RV set)
 if (!RELEASE) {
 	/* Set GIT_RV to current Git revision */
 	GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
@@ -74,6 +53,8 @@ if (!RELEASE) {
 	});
 }
 fs.writeFile('.reload', '0');
+
+console.log('[core] Initialised in in ' + (Date.now() - all_start) + 'ms');
 
 var jade_opts = {
 	/* Jade compile options */
@@ -198,9 +179,11 @@ process.on('SIGHUP', function() {
 process.on('SIGINT', function() {
 	/* Close the sockets and save sessions when we receive an interrupt */
 	'use strict';
-	unixserver.close(function() { global.unixDone = true; });
-	ipv4server.close(function() { global.ipv4Done = true; });
-	ipv6server.close(function() { global.ipv6Done = true; });
+	socket.close(function() { global.socketDone = true; });
+	if (!NOHTTP) {
+		ipv4.close(function() { global.ipv4Done = true; });
+		ipv6.close(function() { global.ipv6Done = true; });
+	}
 	fs.writeFileSync('sessions.json', JSON.stringify(global.sessions));
 	console.log('Saved sessions.');
 });
@@ -348,6 +331,9 @@ function onRequest(req, res) {
 		}
 		//httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
 		//res.end(index_cache.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined));
+	} else if (uri.pathname.match('.*config[.]js.*') && fs.existsSync('config_sample.js')) {
+		httpHeaders(res, 403, 'text/plain');
+		fs.createReadStream('config_sample.js').pipe(res);
 	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* Style sheets */
 		contentType = 'text/css';
@@ -541,70 +527,34 @@ cache_index();
 /* NOHTTP defines that no HTTP servers will be started. You will need a program that can forward requests to the Unix socket. */
 if (!NOHTTP) {
 	/* Start the IPv4 server */
-	ipv4server = http.createServer();
-	ipv4server.name = 'ipv4server';
-	ipv4server.on('request', requestSafeWrapper);
-	ipv4server.on('listening', onListening);
-	ipv4server.listen(8080, '0.0.0.0');
+	ipv4 = http.createServer();
+	ipv4.name = 'ipv4';
+	ipv4.on('request', requestSafeWrapper);
+	ipv4.on('listening', onListening);
+	ipv4.listen(8080, '0.0.0.0');
 
 	/* Start the IPv6 server if it is enabled */
 	if (IPV6) {
-		ipv6server = http.createServer();
-		ipv6server.name = 'ipv6server';
-		ipv6server.on('request', requestSafeWrapper);
-		ipv6server.on('listening', onListening);
-		ipv6server.listen(8080, '::');
-	}
-
-	/* TLS servers */
-	if (SPDY || HTTPS) {
-		/* Start the IPv4 TLS/SPDY server */
-		i4tlsserver = https.createServer(options);
-		i4tlsserver.name = 'tlsipv4server';
-		i4tlsserver.on('request', requestSafeWrapper);
-		i4tlsserver.on('listening', onListening);
-		i4tlsserver.listen(4430, '0.0.0.0');
-
-		/* Start the IPv6 TLS/SPDY server if it is enabled */
-		if (IPV6) {
-			i6tlsserver = https.createServer(options);
-			i6tlsserver.name = 'tlsipv6server';
-			i6tlsserver.on('request', requestSafeWrapper);
-			i6tlsserver.on('listening', onListening);
-			i6tlsserver.listen(4430, '::');
-		}
-	}
-
-	/* HTTP/2.0 servers */
-	if (HTTP2) {
-		/* Start the IPv4 HTTP/2.0 server */
-		i4h2server = http2.createServer(options);
-		i4h2server.name = 'http2ipv4server';
-		i4h2server.on('request', requestSafeWrapper);
-		i4h2server.on('listening', onListening);
-		i4h2server.listen(4432, '0.0.0.0');
-
-		/* Start the IPv6 HTTP/2.0 server if it is enabled */
-		if (IPV6) {
-			i6h2server = http2.createServer(options);
-			i6h2server.name = 'http2ipv6server';
-			i6h2server.on('request', requestSafeWrapper);
-			i6h2server.on('listening', onListening);
-			i6h2server.listen(4432, '::');
-		}
+		ipv6 = http.createServer();
+		ipv6.name = 'ipv6';
+		ipv6.on('request', requestSafeWrapper);
+		ipv6.on('listening', onListening);
+		ipv6.listen(8080, '::');
 	}
 }
 
 /* Start the server on a Unix socket if we aren't running on Windows */
-/* All values for process.platform as of Node.js v0.10.28 support Unix sockets except Windows */
+/* All values for process.platform as of Node.js v0.10.29 support Unix sockets except Windows */
 if (process.platform !== 'win32') {
-	unixserver = http.createServer();
-	unixserver.name = 'unixserver';
-	unixserver.on('request', requestSafeWrapper);
-	unixserver.on('listening', nxListening);
-	unixserver.path = '/tmp/timetable.sock';
-	unixserver.listen(unixserver.path);
-	fs.chmod(unixserver.path, '777');
+	socket = http.createServer();
+	socket.name = 'socket';
+	socket.on('request', requestSafeWrapper);
+	socket.on('listening', nxListening);
+	socket.path = '/tmp/sbhstimetable.socket';
+	socket.listen(socket.path);
+	fs.chmod(socket.path, '777');
+} else if (NOHTTP) {
+	console.log('[warn] NOHTTP is true, but host platform is Windows! Site cannot be accessed!');
 }
 
 setInterval(cleanSessions, 900000); // clean expired sessions every 15 minutes

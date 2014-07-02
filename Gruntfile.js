@@ -16,9 +16,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-var config = require('./config.js'),
-	privateKeyFile = config.privateKeyFile,
-	certificateFile = config.certificateFile;
 module.exports = function(grunt) {
 	'use strict';
 	grunt.initConfig({
@@ -86,7 +83,7 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				expand: true,
-				src: ['octicons/**', 'dynamic/**', 'static/**', 'server.js', 'srv/**', 'lib/**', 'config.js', privateKeyFile , certificateFile],
+				src: ['octicons/**', 'dynamic/**', 'static/**', 'server.js', 'srv/**', 'lib/**', 'config.js', 'config_sample.js'],
 				dest: 'build/',
 			},
 			vars: {
@@ -116,6 +113,9 @@ module.exports = function(grunt) {
 						nm.on('restart', function() {
 							if (require('fs').existsSync('/tmp/timetable.sock')) {
 								require('fs').unlinkSync('/tmp/timetable.sock');
+							}
+							if (require('fs').existsSync('/tmp/sbhstimetable.socket')) {
+								require('fs').unlinkSync('/tmp/sbhstimetable.socket');
 							}
 							grunt.task.run('concat');
 							console.log();
@@ -161,12 +161,16 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 
 	grunt.registerMultiTask('delete', 'delete stuff', function() {
-		if (process.platform !== 'win32' && require('fs').existsSync('/tmp/timetable.sock')) {
-			require('fs').unlinkSync('/tmp/timetable.sock');
-			grunt.log.writeln(this.target + ': deleted /tmp/timetable.sock');
-		}
-		else {
-			grunt.log.writeln(this.target + ': nothing happened');
+		if (process.platform !== 'win32') {
+			if (require('fs').existsSync('/tmp/timetable.sock')) {
+				require('fs').unlinkSync('/tmp/timetable.sock');
+				grunt.log.writeln(this.target + ': deleted /tmp/timetable.sock');
+			} else if (require('fs').existsSync('/tmp/sbhstimetable.socket')) {
+				require('fs').unlinkSync('/tmp/sbhstimetable.socket');
+				grunt.log.writeln(this.target + ': deleted /tmp/sbhstimetable.socket');
+			} else {
+				grunt.log.writeln(this.target + ': nothing happened');
+			}
 		}
 	});
 
@@ -177,5 +181,6 @@ module.exports = function(grunt) {
 
 	grunt.registerTask('minify', ['uglify', 'cssmin']);
 	grunt.registerTask('release', ['jshint', 'concat', 'minify', 'copy']);
+	grunt.registerTask('test', ['jshint']);
 	grunt.registerTask('default', ['delete', 'concat', 'concurrent:develop', 'delete']);
 };

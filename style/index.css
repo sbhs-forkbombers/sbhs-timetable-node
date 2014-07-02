@@ -447,7 +447,7 @@ td {
 	}
 }
 
-@media screen and (max-device-width: 450px), screen and (max-width: 450px) { /* phones/small windows */
+@media screen and (max-device-width: 450px), screen and (max-width: 450px) {
 	#countdown-label {
 		font-size: 3.2em;
 	}
