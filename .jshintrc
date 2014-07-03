@@ -7,6 +7,5 @@
 	"curly": true,
 	"bitwise": true,
 	"quotmark": "single",
-	"trailing": true,
-	"predef": [ "$" ]
+	"trailing": true
 }

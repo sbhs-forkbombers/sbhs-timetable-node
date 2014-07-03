@@ -497,7 +497,7 @@ if (RELEASE) {
 }
 
 /* index_cache defaults to 500, cache the index page */
-var index_cache = serverError;
+index_cache = serverError;
 cache_index();
 
 /* Start HTTP servers. */
