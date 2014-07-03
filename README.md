@@ -15,6 +15,8 @@ You'll need [Node.js](http://nodejs.org), npm and Git (obviously).
 4. Install `grunt-cli` globally (if it's not already): `npm install -g grunt-cli` (may need to be superuser).
 5. Unleash the nodeiness: `grunt`
 
+Note that this does not work if it's not in a git repo, i.e. you downloaded a zip instead of cloning the repo. In that case, you can still run it by executing `server.js` directly, but this is entirely unsupported.
+
 ### Running the stable release version.
 
 Do steps 1-4 from above. Then:
