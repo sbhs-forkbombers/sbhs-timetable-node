@@ -16,12 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+var fs = require('fs');
+
 module.exports = function(grunt) {
 	'use strict';
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
-		GIT_RV: require('fs').readFileSync('.git/refs/heads/master').toString().trim(),
-		GIT_RV_SHORT: require('fs').readFileSync('.git/refs/heads/master').toString().trim().substr(0,6),
+		GIT_RV: fs.readFileSync('.git/refs/heads/master').toString().trim(),
+		GIT_RV_SHORT: fs.readFileSync('.git/refs/heads/master').toString().trim().substr(0,6),
 		uglify: {
 			options: {
 				banner: '/*! <%= pkg.name %> rev. <%= GIT_RV_SHORT %> License: https://www.gnu.org/licenses/agpl-3.0.html (C) 2014.' +
@@ -90,7 +92,7 @@ module.exports = function(grunt) {
 				src: 'variables_rel.js',
 				dest: 'build/variables.js',
 				options: {
-					process: function(content, srcpath) {
+					process: function(content) {
 						return content + '\nGIT_RV = \'' + grunt.config.get('GIT_RV') + '\';\n';
 					}
 				}
@@ -111,11 +113,11 @@ module.exports = function(grunt) {
 				options: {
 					callback: function(nm) {
 						nm.on('restart', function() {
-							if (require('fs').existsSync('/tmp/timetable.sock')) {
-								require('fs').unlinkSync('/tmp/timetable.sock');
+							if (fs.existsSync('/tmp/timetable.sock')) {
+								fs.unlinkSync('/tmp/timetable.sock');
 							}
-							if (require('fs').existsSync('/tmp/sbhstimetable.socket')) {
-								require('fs').unlinkSync('/tmp/sbhstimetable.socket');
+							if (fs.existsSync('/tmp/sbhstimetable.socket')) {
+								fs.unlinkSync('/tmp/sbhstimetable.socket');
 							}
 							grunt.task.run('concat');
 							console.log();
@@ -162,11 +164,11 @@ module.exports = function(grunt) {
 
 	grunt.registerMultiTask('delete', 'delete stuff', function() {
 		if (process.platform !== 'win32') {
-			if (require('fs').existsSync('/tmp/timetable.sock')) {
-				require('fs').unlinkSync('/tmp/timetable.sock');
+			if (fs.existsSync('/tmp/timetable.sock')) {
+				fs.unlinkSync('/tmp/timetable.sock');
 				grunt.log.writeln(this.target + ': deleted /tmp/timetable.sock');
-			} else if (require('fs').existsSync('/tmp/sbhstimetable.socket')) {
-				require('fs').unlinkSync('/tmp/sbhstimetable.socket');
+			} else if (fs.existsSync('/tmp/sbhstimetable.socket')) {
+				fs.unlinkSync('/tmp/sbhstimetable.socket');
 				grunt.log.writeln(this.target + ': deleted /tmp/sbhstimetable.socket');
 			} else {
 				grunt.log.writeln(this.target + ': nothing happened');
@@ -175,7 +177,7 @@ module.exports = function(grunt) {
 	});
 
 	grunt.registerMultiTask('reload', 'tell a process to reload', function() {
-		require('fs').writeFile('.reload', '1');
+		fs.writeFile('.reload', '1');
 		grunt.log.writeln('reloaded process.');
 	});
 

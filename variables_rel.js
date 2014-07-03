@@ -1,5 +1,7 @@
-// variables for release mode
-REL_RV = '1.91-beta';
-DEBUG = false;
-RELEASE = true;
-MINIFY = true;
+/* variables for release mode */
+module.exports = {
+	REL_RV: '1.92-rc',
+	DEBUG: false,
+	RELEASE: true,
+	MINIFY: true
+};

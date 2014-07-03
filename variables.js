@@ -1,4 +1,7 @@
-// variables for debugging mode
-RELEASE = false;
-DEBUG = true;
-MINIFY = false;
+/* variables for debugging mode */
+module.exports = {
+	REL_RV: '1.92-git',
+	RELEASE: false,
+	DEBUG: true,
+	MINIFY: false
+};

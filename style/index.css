@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* These styles are only used on the main page */
 
+/* These styles are only used on the front page */
 #content {
 	position: absolute;
 	top: 20px;
@@ -345,7 +345,6 @@ td {
 #cached {
 	cursor: pointer;
 	background-color: rgba(0,0,0,0.75);
-	border-bottom-left-radius: 10px;
 }
 
 #dropdown-arrow {

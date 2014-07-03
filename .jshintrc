@@ -4,9 +4,9 @@
 	"node": true,
 	"strict": true,
 	"indent": 4,
-	"latedef": "nofunc",
 	"curly": true,
+	"bitwise": true,
 	"quotmark": "single",
 	"trailing": true,
-	"predef": [ "$", "sessions" ]
+	"predef": [ "$" ]
 }

@@ -16,6 +16,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* global belltimes, todayNames, currentBellIndex, calculateUpcomingLesson, updatePeriodLabel, updateSidebarStatus */
+/* jshint -W098 */
 
 function handleLeftPane() {
 	/* Fill out the left pane */
@@ -90,7 +92,7 @@ function getLoggedIn() {
 	return window.loggedIn;
 }
 
-function handleTimetable(e) {
+function handleTimetable() {
 	/* Fill out the timetable */
 	'use strict';
 	/* jshint validthis: true */

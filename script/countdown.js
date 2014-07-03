@@ -16,7 +16,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*globals handleBells,loadTimetable,loadNotices,loadComplete,domReady,getLoggedIn,todayNames*/
+/* globals handleBells, loadTimetable, loadNotices, loadComplete, domReady, getLoggedIn, todayNames, snazzify */
+/* jshint -W098 */
 
 /* Variables */
 var timetable,
@@ -52,13 +53,13 @@ function updateSidebarStatus() {
 		belltimesClass = 'ok',
 		belltimesText = 'OK',
 		timetableClass = 'notok',
-		timetableText = 'Not OK',
+		timetableText = 'Unavailable',
 		noticesClass = 'notok',
-		noticesText = 'Not OK',
+		noticesText = 'Unavailable',
 		shortText = ['B: '+tick,'T: '+cross,'N: '+cross];
 
 	if (!belltimesOK) {
-		belltimesText = 'Not OK';
+		belltimesText = 'Unavailable';
 		belltimesClass = 'notok';
 		shortText[0] = 'B: ' + cross;
 	}
@@ -324,7 +325,7 @@ function loadComplete() {
 		$('#left-pane-arrow').css({'opacity': ''});
 	}
 	updateSidebarStatus();
-	
+
 }
 
 function prettifySecondsLeft(sec) {

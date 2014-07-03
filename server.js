@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*globals DEBUG, RELEASE, GIT_RV, REL_RV, sessions*/
-/* jslint -W098, -W020 */
+/*globals sessions*/
+
 var all_start = Date.now();
 console.log('[core] Loading...');
 /* Requires */
@@ -30,27 +30,26 @@ var http = require('http'),
 	config = require('./config.js'),
 	variables = require('./variables.js'),
 	etag = require('./lib/etag.js'),
-	request = require('request'),
 	uuid = require('node-uuid'),
 	zlib = require('zlib');
 
 /* Variables */
-var secret = config.secret,
-	clientID = config.clientID,
-	redirectURI = config.redirectURI,
-	HOLIDAYS = config.holidays,
+var HOLIDAYS = config.holidays,
 	IPV6 = config.ipv6,
 	NOHTTP = config.nohttp,
+	RELEASE = variables.RELEASE,
+	REL_RV = variables.REL_RV,
+	DEBUG = variables.DEBUG,
 	index_cache, ipv4, ipv6, socket;
-sessions = {}; // global
+global.sessions = {}; // global
 
 if (!RELEASE) {
 	/* Set GIT_RV to current Git revision */
-	GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
-	var watcher = fs.watch('.git/refs/heads/master', { persistent: false }, function() {
-		'use strict';
-		GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim();
-	});
+	if (fs.existsSync('.git/refs/heads/master')) {
+		var GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim().substr(0,6);
+	} else {
+		var GIT_RV = REL_RV; // If the git revision can't be found (e.g. repo wasn't cloned) we use the git release version
+	}
 }
 fs.writeFile('.reload', '0');
 
@@ -76,7 +75,7 @@ function compile_jade(path) {
 		mopts.filename = path;
 		return jade.compile(fs.readFileSync(path), mopts);
 	} catch (e) {
-		console.error('!!! Failed to compile jade "'+path+'"!!! Stack trace:');
+		console.error('[emerg] Failed to compile jade "'+path+'"!!! Stack trace:');
 		console.error(e.stack);
 		return serverError;
 	}
@@ -90,7 +89,7 @@ function cache_index() {
 	var idx = compile_jade('dynamic/index.jade');
 	index_cache = idx({title: '', holidays: HOLIDAYS});
 	if (index_cache == serverError) {
-		console.warn('WARNING: Encountered an error while caching index page. Fix errors, and then hangup to reload.');
+		console.error('[emerg] Encountered an error while caching index page. Fix errors, and then hangup to reload.');
 	}
 	console.log('[core] Index page cached in ' + (Date.now() - jade_comp) + 'ms');
 }
@@ -98,21 +97,24 @@ function cache_index() {
 function cleanSessions() {
 	/* Remove old (or otherwise) sessions from the store and save everything else to the filesystem */
 	'use strict';
-	var start = Date.now(),
-		cleaned = 0;
+	var cleaned = 0;
 	for (var i in global.sessions) {
-		console.log('[debug] Considering session for expiry. Length:',Object.keys(global.sessions[i]).length,' Expiry:',global.sessions[i].expires,'time left:',Math.floor((global.sessions[i].expires - Date.now())/1000), 'seconds');
+		if (DEBUG) {
+			console.log('[debug] Considering session for expiry. Length:',Object.keys(global.sessions[i]).length,' Expiry:',global.sessions[i].expires,'time left:',Math.floor((global.sessions[i].expires - Date.now())/1000), 'seconds');
+		}
 		if (global.sessions[i].expires < Date.now()) {
 			delete global.sessions[i];
 			cleaned++;
-			console.log('[debug] 10/10 would clean again');
-		}
-		else if (Object.keys(global.sessions[i]).length < 2) { // not storing anything in the session, so it's just eating memory.
+			if (DEBUG) {
+				console.log('[debug] 10/10 would clean again');
+			}
+		} else if (Object.keys(global.sessions[i]).length < 2) { // not storing anything in the session, so it's just eating memory.
 			delete global.sessions[i];
 			cleaned++;
-			console.log('[debug] 10/10 would clean again');
-		}
-		else {
+			if (DEBUG) {
+			console.log('[debug] 11/10 would clean again');
+			}
+		} else if (DEBUG) {
 			console.log('[debug] 0/10 would not recommend');
 		}
 	}
@@ -129,13 +131,17 @@ function compressText(req, text, res, cb) {
 	if ('accept-encoding' in req.headers) {
 		var encs = req.headers['accept-encoding'].replace(/q=\d\.\d/, '').split(/, ?/);
 		if (encs.indexOf('gzip') != -1) {
-			console.log('[compress] using gzip compression');
+			if (DEBUG) {
+				console.log('[compress] using gzip compression');
+			}
 			res.setHeader('Content-Encoding', 'gzip');
 			zlib.gzip(text, cb);
 			return;
 		}
 		else if (encs.indexOf('deflate') != -1) {
-			console.log('[compress] using deflate compression');
+			if (DEBUG) {
+				console.log('[compress] using deflate compression');
+			}
 			res.setHeader('Content-Encoding', 'deflate');
 			zlib.deflate(text, cb);
 			return;
@@ -146,28 +152,22 @@ function compressText(req, text, res, cb) {
 
 function pipeCompress(req, file, res) {
 	'use strict';
+	var result = fs.createReadStream(file);
 	if ('accept-encoding' in req.headers) {
 		var encs = req.headers['accept-encoding'].replace(/q=\d\.\d/, '').split(/, ?/);
 		if (encs.indexOf('gzip') != -1) {
 			console.log('[compress] using gzip compression');
 			res.setHeader('Content-Encoding', 'gzip');
-			return fs.createReadStream(file).pipe(zlib.createGzip());
+			result = result.pipe(zlib.createGzip());
 		}
 		else if (encs.indexOf('deflate') != -1) {
 			console.log('[compress] using deflate compression');
 			res.setHeader('Content-Encoding', 'deflate');
-			return fs.createReadStream(file).pipe(zlib.createDeflate());
+			result = result.pipe(zlib.createDeflate());
 		}
 	}
-	return fs.createReadStream(file);
+	return result;
 }
-
-var reloadWatcher = fs.watch('.reload', { persistent: false }, function() {
-	/* Clean and re-cache when file modification is detected */
-	'use strict';
-	cache_index();
-	cleanSessions();
-});
 
 process.on('SIGHUP', function() {
 	/* Clean and re-cache if we receive a hangup */
@@ -212,13 +212,12 @@ function httpHeaders(res, response, contentType, dynamic, tag, headers) {
 		headers.ETag = tag;
 	}
 	headers['Content-Type'] = contentType + '; charset=UTF-8';
-	headers['X-Powered-By'] = 'NodeJS ' + process.version +'; PHP v5.4.3';
-	headers.Server = 'IIS; version 7.5; nginx; version 10.2.8; Mongrel; eHTTP; version 6.4; Fedora; Ubuntu; Debian';
+	headers['X-Powered-By'] = 'Node.js ' + process.version;
 	res.writeHead(response, headers);
 	return res;
 }
 
-function genSessionID(req) {
+function genSessionID() {
 	/* Generate a random session ID */
 	'use strict';
 	return uuid.v4();
@@ -243,11 +242,9 @@ function checkFile(file, req, unchanged, changed) {
 	etag.file(file, function(err, hash) {
 		if (err !== null) {
 			changed(null); // meh
-		}
-		else if (reqHash !== hash) {
+		} else if (reqHash !== hash) {
 			changed(hash);
-		}
-		else {
+		} else {
 			unchanged(hash);
 		}
 	});
@@ -262,8 +259,7 @@ function checkText(text, req, unchanged, changed) {
 	etag.text(text, function(hash) {
 		if (reqHash !== hash) {
 			changed(hash);
-		}
-		else {
+		} else {
 			unchanged(hash);
 		}
 	});
@@ -274,7 +270,7 @@ function onRequest(req, res) {
 	/* jshint validthis: true */
 	'use strict';
 	var start = Date.now(),
-		contentType = 'text/plain',
+		contentType = 'text/html',
 		filePath = 'static/404.html';
 	var changed = function(hash) {
 		var pipe = pipeCompress(req, filePath, res);
@@ -302,14 +298,12 @@ function onRequest(req, res) {
 			if (sessions[res.SESSID] === undefined || sessions[res.SESSID] === null) {
 				sessions[res.SESSID] = { expires: Date.now() + (1000 * 60 * 60 * 24 * 90) };
 			}
-		}
-		else {
-			res.SESSID = genSessionID(req);
+		} else {
+			res.SESSID = genSessionID();
 			sessions[res.SESSID] = { expires: Date.now() + (1000 * 60 * 60 * 24 * 90) };
 		}
-	}
-	else {
-		res.SESSID = genSessionID(req);
+	} else {
+		res.SESSID = genSessionID();
 		sessions[res.SESSID] = { expires: Date.now() + (1000 * 60 * 60 * 24 * 90) };
 	}
 
@@ -323,8 +317,7 @@ function onRequest(req, res) {
 		if (typeof target === 'function') {
 			httpHeaders(res, 500, 'text/html', true);
 			target().pipe(res);
-		}
-		else {
+		} else {
 			contentType = 'text/html';
 			target = target.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined);
 			checkText(target, req, unchanged, dynChanged);
@@ -341,8 +334,8 @@ function onRequest(req, res) {
 		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* JavaScript */
-		filePath = uri.pathname.slice(1);
 		contentType = 'application/javascript';
+		filePath = uri.pathname.slice(1);
 		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname == '/api/belltimes') {
 		/* Belltimes wrapper */
@@ -350,6 +343,11 @@ function onRequest(req, res) {
 			httpHeaders(res, 200, 'text/html', true, obj.etag);
 			res.end(obj.json);
 		});
+	} else if (uri.pathname.match('/static/.*[.]jpg|jpeg$') && fs.existsSync(uri.pathname.slice(1))) {
+		/* jpegs */
+		contentType = 'image/jpeg';
+		filePath = uri.pathname.slice(1);
+		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname == '/favicon.ico') {
 		/* favicon */
 		contentType = 'image/x-icon';
@@ -454,26 +452,6 @@ function onRequest(req, res) {
 		/* Force a 500 error (out of tune) */
 		httpHeaders(res, 500, 'text/html');
 		serverError().pipe(res);
-	} else if (uri.pathname.match('/octicons/.*') && fs.existsSync(uri.pathname.slice(1))) {
-		contentType = 'application/x-octet-stream';
-		if (uri.pathname.substr(-4) == '.css') {
-			contentType = 'text/css';
-		}
-		else if (uri.pathname.substr(-5) == '.woff') {
-			contentType = 'application/font-woff';
-		}
-		else if (uri.pathname.substr(-4) == '.txt') {
-			contentType = 'text/plain';
-		}
-		filePath = uri.pathname.slice(1);
-		checkFile(filePath, req, unchanged, changed);
-	} else if (uri.pathname.match('/res/.*') && fs.existsSync(uri.pathname.slice(1))) {
-		contentType = 'application/x-octet-stream';
-		if (uri.pathname.substr(-4) == '.jpg') {
-			contentType = 'image/jpeg';
-		}
-		filePath = uri.pathname.slice(1);
-		checkFile(filePath, req, unchanged, changed);
 	} else {
 		/* 404 everything else */
 		httpHeaders(res, 404, 'text/html');
@@ -488,8 +466,7 @@ function requestSafeWrapper(req, res) {
 	'use strict';
 	try {
 		onRequest.call(this, req, res);
-	}
-	catch (e) {
+	} catch (e) {
 		console.log('ERROR HANDLING REQUEST: ' + req.url);
 		console.log(e);
 		console.log(e.stack);
@@ -505,7 +482,7 @@ function onListening() {
 	console.log('[' + this.name + '] Listening on http://' + this.address().address + ':' + this.address().port + '/');
 }
 
-function nxListening() {
+function onUnixListening() {
 	/* Listen for Unix sockets */
 	/* jshint validthis: true */
 	'use strict';
@@ -516,7 +493,7 @@ function nxListening() {
 if (RELEASE) {
 	console.log('[core] SBHS-Timetable-Node version ' + REL_RV + ' starting server...');
 } else {
-	console.log('[core] SBHS-Timetable-Node git revision ' + GIT_RV.substr(0,6) + ' starting server...');
+	console.log('[core] SBHS-Timetable-Node revision ' + GIT_RV + ' starting server...');
 }
 
 /* index_cache defaults to 500, cache the index page */
@@ -549,12 +526,12 @@ if (process.platform !== 'win32') {
 	socket = http.createServer();
 	socket.name = 'socket';
 	socket.on('request', requestSafeWrapper);
-	socket.on('listening', nxListening);
+	socket.on('listening', onUnixListening);
 	socket.path = '/tmp/sbhstimetable.socket';
 	socket.listen(socket.path);
 	fs.chmod(socket.path, '777');
 } else if (NOHTTP) {
-	console.log('[warn] NOHTTP is true, but host platform is Windows! Site cannot be accessed!');
+	console.warn('[warn] NOHTTP is true, but host platform is Windows! App cannot be accessed in any way!');
 }
 
 setInterval(cleanSessions, 900000); // clean expired sessions every 15 minutes
@@ -564,8 +541,7 @@ if (fs.existsSync('sessions.json')) {
 	try {
 		global.sessions = JSON.parse(fs.readFileSync('sessions.json'));
 		console.log('[core] Success!');
-	}
-	catch (e) {
-		console.error('[core] Failed to load sessions.json:', e);
+	} catch (e) {
+		console.warn('[warn] Failed to load sessions.json:', e);
 	}
 }
