@@ -2,6 +2,7 @@
 	"devel": true,
 	"browser": true,
 	"node": true,
+	"jquery": true,
 	"strict": true,
 	"indent": 4,
 	"curly": true,

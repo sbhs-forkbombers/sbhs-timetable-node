@@ -287,7 +287,7 @@ function onRequest(req, res) {
 			res.end(r);
 		});
 	};
-	var unchanged = function(hash) {
+	var unchanged = function() {
 		res.writeHead(304);
 		res.end();
 	};

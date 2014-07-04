@@ -1,5 +1,5 @@
 module.exports = {
-	/* These values must be obtained from My SBHS Apps */
+	/* API settings. These values must be obtained from My SBHS Apps. */
 	/* App ID */
 	'clientID': 'NotWhatYoureLookingFor',
 	/* App Secret */
