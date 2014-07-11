@@ -317,7 +317,7 @@ function loadComplete() {
 		console.log('activating swag mode');
 		setTimeout(loadTimetable, 0);
 		$('#period-label,#countdown-label').css({'display': 'none'});
-		$('#in-label').addClass('animated').html('lol strong gaming');
+		$('#in-label').html('lol strong gaming');
 		setInterval(function() {
 			snazzify(document.getElementById('in-label'));
 		}, 500);
