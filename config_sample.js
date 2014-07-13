@@ -13,5 +13,6 @@ module.exports = {
 	/* Don't listen on TCP. If you don't know what this is, ignore it. */
 	'nohttp': false,
 	/* Holiday mode. It's a surprise. */
-	'holidays': false
+	'holidays': false,
+	'unixsock': false
 };
