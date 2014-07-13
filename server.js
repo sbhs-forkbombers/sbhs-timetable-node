@@ -40,7 +40,7 @@ var HOLIDAYS = config.holidays,
 	RELEASE = variables.RELEASE,
 	REL_RV = variables.REL_RV,
 	DEBUG = variables.DEBUG,
-	UNIXSOCK = config.unixsock,
+	SOCKET = config.socket,
 	index_cache, ipv4, ipv6, socket;
 global.sessions = {};
 
@@ -533,7 +533,7 @@ if (!NOHTTP) {
 
 /* Start the server on a Unix socket if we aren't running on Windows */
 /* All values for process.platform as of Node.js v0.10.29 support Unix sockets except Windows */
-if (process.platform !== 'win32' && UNIXSOCK) {
+if (process.platform !== 'win32' && SOCKET) {
 	socket = http.createServer();
 	socket.name = 'socket';
 	socket.on('request', requestSafeWrapper);
@@ -541,8 +541,10 @@ if (process.platform !== 'win32' && UNIXSOCK) {
 	socket.path = '/tmp/sbhstimetable.socket';
 	socket.listen(socket.path);
 	fs.chmod(socket.path, '777');
-} else if (NOHTTP && (process.platform === 'win32' || !UNIXSOCK)) {
-	console.warn('[core_warn] NOHTTP is true, but no unix socket created! App cannot be accessed in any way!');
+} else if (process.platform == 'win32' && NOHTTP) {
+	console.warn('[core_warn] NOHTTP is true, but host platform is Windows! App cannot be accessed in any way!');
+} else if (!SOCKET) {
+	console.warn('[core_warn] NOHTTP is true, but socket not activated! Disable NOHTTP or set `socket` to true in config.js');
 }
 
 setInterval(cleanSessions, 900000); // clean expired sessions every 15 minutes
