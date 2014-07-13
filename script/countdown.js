@@ -303,6 +303,13 @@ function domReady() {
 	}
 }
 
+function snazzify(el) {
+	var r = Math.floor(Math.random()*255);
+	var g = Math.floor(Math.random()*255);
+	var b = Math.floor(Math.random()*255);
+	$(el).velocity({colorRed: r, colorGreen: g, colorBlue: b});
+}
+
 function loadComplete() {
 	/* Do when DOM loaded */
 	'use strict';
@@ -312,6 +319,12 @@ function loadComplete() {
 		updateCountdownLabel();
 		handleRightPane();
 		setInterval(updateCountdownLabel, 1000);
+		var stopSnazzify = setInterval(function() {
+			snazzify(document.getElementById("disable-grooviness"));
+		}, 500);
+		setTimeout(function() {
+			clearInterval(stopSnazzify);
+		}, 500*20);
 	}
 	else {
 		console.log('activating swag mode');
