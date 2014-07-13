@@ -386,6 +386,20 @@ td {
 	display: none;
 }
 
+#disable-grooviness {
+	position: absolute;
+	bottom: 20px;
+	cursor: pointer;
+}
+
+#groovy {
+	position: absolute;
+	top: 0px;
+	left: 50%;
+	width: 300px;
+	margin-left: -150px;
+}
+
 @media screen and (max-device-width: 1000px), screen and (max-width: 1000px) {
 	#left-pane, #right-pane {
 		width: 50%;

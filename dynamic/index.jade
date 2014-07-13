@@ -105,6 +105,7 @@ html
 			div#expand.mega-octicon.octicon-screen-full
 			div#collapse.mega-octicon.octicon-screen-normal
 		if true
-			// THE FINAL COUNTDOWN
-			audio(autoplay,loop)
+			a#disable-grooviness(href="javascript:void(0)",onclick="document.getElementById('groovy').controls = true;document.getElementById('groovy').style.display = 'block';")
+				|Control the <em>groove</em>
+			audio#groovy(autoplay,loop)
 				source(src="https://d2g9v1gts353nd.cloudfront.net/tumblr_lis9otqLNE1qca9pxo1.mp3",type="audio/mpeg")
