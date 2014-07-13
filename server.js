@@ -543,7 +543,7 @@ if (process.platform !== 'win32' && SOCKET) {
 	fs.chmod(socket.path, '777');
 } else if (process.platform == 'win32' && NOHTTP) {
 	console.warn('[core_warn] NOHTTP is true, but host platform is Windows! App cannot be accessed in any way!');
-} else if (!SOCKET) {
+} else if (!SOCKET && NOHTTP) {
 	console.warn('[core_warn] NOHTTP is true, but socket not activated! Disable NOHTTP or set `socket` to true in config.js');
 }
 
