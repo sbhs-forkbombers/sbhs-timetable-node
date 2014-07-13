@@ -328,8 +328,8 @@ td {
 	color: #ffc107;
 }
 
-#feedback {
-	position: absolute;
+#links {
+	position: fixed;
 	bottom: 0;
 	left: 0;
 }

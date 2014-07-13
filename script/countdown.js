@@ -492,7 +492,7 @@ function handleRightPane() {
 			bell = 'Period ' + bell;
 		}
 		if (bells[i].different) {
-				timeClass += ' changed" title="normally ' + bells[i].normally;
+			timeClass += ' changed" title="normally ' + bells[i].normally;
 		}
 		res += '<tr class="'+rowClass+'"><td class="bell">'+bell+'</td><td class="'+timeClass+'">'+bells[i].time+'</td></tr>';
 	}

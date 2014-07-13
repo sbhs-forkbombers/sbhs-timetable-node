@@ -21,17 +21,17 @@
 var all_start = Date.now();
 console.log('[core] Loading...');
 /* Requires */
-var http = require('http'),
-	fs = require('fs'),
+var fs = require('fs'),
+	http = require('http'),
 	jade = require('jade'),
-	url = require('url'),
-	auth = require('./lib/auth.js'),
-	apis = require('./lib/api.js'),
-	config = require('./config.js'),
-	variables = require('./variables.js'),
-	etag = require('./lib/etag.js'),
 	uuid = require('node-uuid'),
-	zlib = require('zlib');
+	url = require('url'),
+	zlib = require('zlib'),
+	apis = require('./lib/api.js'),
+	auth = require('./lib/auth.js'),
+	etag = require('./lib/etag.js'),
+	config = require('./config.js'),
+	variables = require('./variables.js');
 
 /* Variables */
 var HOLIDAYS = config.holidays,
@@ -41,7 +41,7 @@ var HOLIDAYS = config.holidays,
 	REL_RV = variables.REL_RV,
 	DEBUG = variables.DEBUG,
 	index_cache, ipv4, ipv6, socket;
-global.sessions = {}; // global
+global.sessions = {};
 
 if (!RELEASE) {
 	/* Set GIT_RV to current Git revision */
@@ -112,7 +112,7 @@ function cleanSessions() {
 			delete global.sessions[i];
 			cleaned++;
 			if (DEBUG) {
-			console.log('[sessions_debug] 11/10 would clean again');
+				console.log('[sessions_debug] 11/10 would clean again');
 			}
 		} else if (DEBUG) {
 			console.log('[sessions_debug] 0/10 would not recommend');
