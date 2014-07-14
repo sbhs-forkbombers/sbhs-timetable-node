@@ -38,11 +38,23 @@ html
 		if holidays
 			style
 				include ../style/holidays.css
-			script.
-				window.HOLIDAYS = true;
+			script
+				|window.HOLIDAYS = true;
+				="window.holEnd = " + holEnd
+				|setTimeout(function() {
+				|	$('audio').each(function() { this.pause() });
+				|}, now-window.holEnd);
 		else
-			script.
-				window.HOLIDAYS = false;
+			script
+				|window.HOLIDAYS = false;
+				if holEnd - Date.now() < (1000 * 60 * 60 * 24 * 3) && reallyInHolidays
+					="window.holEnd = " + holEnd + ";"
+					|setTimeout(function() {
+					|	$('#groovy')[0].pause();
+					|	$('#groovy')[0].removeAttribute('controls');
+					|	$('#disable-grooviness').velocity('slideUp');
+					|}, holEnd - Date.now());
+					|console.log('Will stop music in ' + (holEnd - Date.now()) + 'ms')
 
 	body
 		div#content
@@ -98,7 +110,8 @@ html
 		div#expand-toggle
 			div#expand.mega-octicon.octicon-screen-full
 			div#collapse.mega-octicon.octicon-screen-normal
-		if false
+		-console.log(holEnd, Date.now(), reallyInHolidays)
+		if holEnd - Date.now() < (1000 * 60 * 60 * 24 * 3) && reallyInHolidays
 			a#disable-grooviness(href="javascript:void(0)",onclick="document.getElementById('groovy').controls = true;document.getElementById('groovy').style.display = 'block';")
 				|Control the <em>groove</em>
 			audio#groovy(autoplay,loop)

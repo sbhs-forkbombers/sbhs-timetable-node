@@ -31,11 +31,12 @@ var fs = require('fs'),
 	auth = require('./lib/auth.js'),
 	etag = require('./lib/etag.js'),
 	config = require('./config.js'),
-	variables = require('./variables.js');
+	variables = require('./variables.js'),
+	schoolday = require('./lib/schoolday.js');
 
 /* Variables */
-var HOLIDAYS = config.holidays,
-	IPV6 = config.ipv6,
+//global.HOLIDAYS = config.holidays; -- now set elsewhere
+var	IPV6 = config.ipv6,
 	NOHTTP = config.nohttp,
 	RELEASE = variables.RELEASE,
 	REL_RV = variables.REL_RV,
@@ -87,8 +88,8 @@ function cache_index() {
 	'use strict';
 	console.log('[core] Caching index/timetable pages... (hangup to re-cache)');
 	var jade_comp = Date.now();
-	var idx = compile_jade('dynamic/index.jade');
-	index_cache = idx({title: '', holidays: HOLIDAYS});
+	index_cache = compile_jade('dynamic/index.jade');
+	//index_cache = idx();
 	if (index_cache == serverError) {
 		console.error('[core_emerg] Encountered an error while caching index page. Fix errors, and then hangup to reload.');
 	}
@@ -322,13 +323,18 @@ function onRequest(req, res) {
 	if (uri.pathname === '/') {
 		/* Main page */
 		// TODO cache two different versions of index for logged-in and not logged in.
-		target = index_cache;
-		if (typeof target === 'function') {
+		target = index_cache({
+			title: '', 
+			holidays: global.HOLIDAYS, 
+			holEnd: schoolday.getHolidaysFinished(), 
+			loggedIn: global.sessions[res.SESSID].refreshToken !== undefined,
+			reallyInHolidays: schoolday.actualHolidaysFinished()
+		});
+		if (index_cache == serverError) {
 			httpHeaders(res, 500, 'text/html', true);
 			target().pipe(res);
 		} else {
 			contentType = 'text/html';
-			target = target.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined);
 			checkText(target, req, unchanged, dynChanged);
 		}
 		//httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);

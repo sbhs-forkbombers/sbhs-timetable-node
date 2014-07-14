@@ -47,6 +47,7 @@ td {
 
 .arrow.disabled {
 	opacity: 0 !important;
+	cursor: default !important;
 }
 
 .arrow:hover {

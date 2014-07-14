@@ -109,7 +109,7 @@ function handleTimetable() {
 	window.todayNames = res;
 	$('#rtd-unavailable').html('Loaded real-time data!');
 	setTimeout(function() {
-		$('#rtd-unavailable').fadeOut();
+		$('#rtd-unavailable').velocity('fadeOut');
 		setTimeout(function() { $('#rtd-unavailable').html('').css({'display': 'block'}); }, 1000);
 	}, 3000);
 	if (currentBellIndex == -1) {

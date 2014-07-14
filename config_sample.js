@@ -14,6 +14,4 @@ module.exports = {
 	'nohttp': false,
 	/* Listen on a UNIX socket. If you don't know what this is, ignore it */
 	'socket': false,
-	/* Holiday mode. It's a surprise. */
-	'holidays': false
 };
