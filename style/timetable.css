@@ -1,0 +1,99 @@
+h1 {
+	font-family: Roboto Thin, Segoe UI, Helvetica, sans-serif;
+	font-weight: 100;
+	font-size: 70px;
+}
+
+.header {
+	font-size: 40px;
+	font-family: Roboto Bold, inherit;
+	font-weight: bold;
+}
+
+table {
+	font-size: 35px;
+}
+
+#timetable-wrapper {
+	height: 400px;
+	width: 620px;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-top: -200px;
+	margin-left: -300px;
+	overflow: hidden;
+}
+
+td {
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.arrow {
+	height: 0;
+	width: 0;
+	border: 25px solid transparent;
+	opacity: 0.25;
+	position: fixed;
+	z-index: 4;
+	-webkit-transition: all 1s ease;
+	-moz-transition: all 1s ease;
+	-ms-transition: all 1s ease;
+	-o-transition: all 1s ease;
+	transition: all 1s ease;
+	cursor: pointer;
+}
+
+.arrow.disabled {
+	opacity: 0 !important;
+}
+
+.arrow:hover {
+	opacity: 1;
+}
+
+#arrow-down {
+	left: 50%;
+	margin-left: -25px;
+	bottom: -25px;
+	border-top-color: white;
+}
+
+#arrow-up {
+	left: 50%;
+	margin-left: -25px;
+	top: -25px;
+	border-bottom-color: white;
+}
+
+#arrow-left {
+	left: -25px;
+	top: 50%;
+	margin-top: -25px;
+	border-right-color: white;
+}
+
+#arrow-right {
+	right: -25px;
+	top: 50%;
+	margin-top: -25px;
+	border-left-color: white;
+}
+
+.wk-A {
+	position: absolute;
+}
+
+.wk-B, .wk-C {
+	position: absolute;
+	top: 300%;
+}
+
+.day-1,.day-2,.day-3,.day-4 {
+	left: 400%;
+}
+
+.day-0 {
+	left: 0;
+}

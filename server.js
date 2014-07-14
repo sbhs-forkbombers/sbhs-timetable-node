@@ -41,7 +41,7 @@ var HOLIDAYS = config.holidays,
 	REL_RV = variables.REL_RV,
 	DEBUG = variables.DEBUG,
 	SOCKET = config.socket,
-	index_cache, ipv4, ipv6, socket;
+	index_cache, timetable_cache, ipv4, ipv6, socket;
 global.sessions = {};
 
 if (!RELEASE) {
@@ -85,14 +85,18 @@ function compile_jade(path) {
 function cache_index() {
 	/* Compile and cache the index page */
 	'use strict';
-	console.log('[core] Caching index page... (hangup to re-cache)');
+	console.log('[core] Caching index/timetable pages... (hangup to re-cache)');
 	var jade_comp = Date.now();
 	var idx = compile_jade('dynamic/index.jade');
 	index_cache = idx({title: '', holidays: HOLIDAYS});
 	if (index_cache == serverError) {
 		console.error('[core_emerg] Encountered an error while caching index page. Fix errors, and then hangup to reload.');
 	}
-	console.log('[core] Index page cached in ' + (Date.now() - jade_comp) + 'ms');
+	timetable_cache = compile_jade('dynamic/timetable.jade');
+	if (timetable_cache == serverError) {
+		console.error('[core_emerg] Encountered an error while caching timetable page. Fix errors, and then hangup to reload.');
+	}
+	console.log('[core] Index and Timetable pages cached in ' + (Date.now() - jade_comp) + 'ms');
 }
 
 function cleanSessions() {
@@ -329,6 +333,18 @@ function onRequest(req, res) {
 		}
 		//httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
 		//res.end(index_cache.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined));
+	} else if (uri.pathname === '/timetable') {
+		var loggedIn = 'refreshToken' in global.sessions[res.SESSID];
+		if (loggedIn) {
+			apis.get('bettertimetable.json', {}, res.SESSID, function(obj) {
+				target = timetable_cache({'loggedIn': loggedIn, 'timetable': obj});
+				checkText(target, req, unchanged, dynChanged);
+			});
+		}
+		else {
+			target = timetable_cache({'loggedIn': loggedIn});
+			checkText(target, req, unchanged, dynChanged);
+		}
 	} else if (uri.pathname.match('.*config[.]js.*') && fs.existsSync('config_sample.js')) {
 		httpHeaders(res, 403, 'text/plain');
 		fs.createReadStream('config_sample.js').pipe(res);

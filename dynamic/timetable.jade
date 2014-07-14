@@ -1,0 +1,90 @@
+//-
+	SBHS-Timetable-Node: Countdown and timetable all at once (NodeJS app).
+	Copyright (C) 2014 James Ye, Simon Shields
+
+	This file is part of SBHS-Timetable-Node.
+
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU Affero General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU Affero General Public License for more details.
+
+	You should have received a copy of the GNU Affero General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+doctype html
+html
+	include header.jade
+		title SBHS Timetable | Timetable
+		style
+			include ../style/timetable.css
+		script
+			include ../srv/jquery.min.js
+			include ../srv/jquery.velocity.min.js
+		script.
+			var weeks = ['A', 'B', 'C'],
+				weekVisible = 0,
+				dayVisible = 0;
+			$(document).ready(function() {
+				$('#arrow-down').click(function() {
+					if ((weekVisible + 1) < 3) {
+						$('.wk-'+weeks[weekVisible]).velocity({top: '-200%'});
+						$('.wk-'+weeks[++weekVisible]).velocity({top: 0});
+						
+					}
+						
+				});
+				$('#arrow-up').click(function() {
+					if ((weekVisible - 1) > -1) {
+						$('.wk-'+weeks[weekVisible]).velocity({top: '200%'});
+						$('.wk-'+weeks[--weekVisible]).velocity({top: 0});
+						
+					}
+						
+				});
+				$('#arrow-left').click(function() {
+					if ((dayVisible - 1) > -1) {
+						$('.day-'+dayVisible).velocity({left: '200%'});
+						$('.day-'+(--dayVisible)).velocity({left: 0});
+					}
+				});
+				$('#arrow-right').click(function() {
+					if ((dayVisible + 1) < 5) {
+						$('.day-'+dayVisible).velocity({left: '-200%'});
+						$('.day-'+(++dayVisible)).velocity({left: 0});
+					}
+				});
+			});
+	body
+		if !loggedIn
+			h1 you need to log in!
+			iframe(src="/try_do_oauth") Need moar iframe :(
+		else
+			div(id="arrow-up",class="arrow")
+			div(id="arrow-down",class="arrow")
+			div(id="arrow-left",class="arrow")
+			div(id="arrow-right",class="arrow")
+			div(id="timetable-wrapper")
+				- var tt = timetable.days;
+				- for (var day in tt) {
+					- var nday = (day % 5) - 1;
+					- if (nday == -1) nday = 4;
+					div(id="day"+day,class="wk-"+tt[day].dayname.split(' ')[1]+" day-"+nday)
+						h2=tt[day].dayname
+						table
+							tr(class="header") <td>Period</td><td>Subject</td><td>Teacher</td><td>Room</td>
+							- for (var period in tt[day].periods) {
+							- var p = tt[day].periods[period];
+							- var inf = timetable.subjInfo[p.year+p.title];
+								tr
+									td=period
+									td=inf.title
+									td=p.teacher
+									td=p.room
+							- }
+				- }
+				
