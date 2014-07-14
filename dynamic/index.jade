@@ -40,12 +40,6 @@ html
 				include ../style/holidays.css
 			script.
 				window.HOLIDAYS = true;
-				function snazzify(el) {
-					var r = Math.floor(Math.random()*255);
-					var g = Math.floor(Math.random()*255);
-					var b = Math.floor(Math.random()*255);
-					$(el).velocity({colorRed: r, colorGreen: g, colorBlue: b};
-				}
 		else
 			script.
 				window.HOLIDAYS = false;
@@ -104,7 +98,7 @@ html
 		div#expand-toggle
 			div#expand.mega-octicon.octicon-screen-full
 			div#collapse.mega-octicon.octicon-screen-normal
-		if true
+		if false
 			a#disable-grooviness(href="javascript:void(0)",onclick="document.getElementById('groovy').controls = true;document.getElementById('groovy').style.display = 'block';")
 				|Control the <em>groove</em>
 			audio#groovy(autoplay,loop)

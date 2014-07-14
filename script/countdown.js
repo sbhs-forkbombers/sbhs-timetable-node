@@ -28,7 +28,7 @@ var timetable,
 	reloading = false,
 	currentBellIndex = -1, // next bell
 	nextStart,
-	manualOverride = 0, // manual date offset for public holidays etc (should cap at some number, TODO)
+	manualOverride = 0, // manual date offset for public holidays etc - increases up to a max of 5 days in the future
 	topExpanded = false,
 	leftExpanded = false,
 	rightExpanded = false,
@@ -304,6 +304,7 @@ function domReady() {
 }
 
 function snazzify(el) {
+	'use strict';
 	var r = Math.floor(Math.random()*255);
 	var g = Math.floor(Math.random()*255);
 	var b = Math.floor(Math.random()*255);
@@ -320,7 +321,7 @@ function loadComplete() {
 		handleRightPane();
 		setInterval(updateCountdownLabel, 1000);
 		var stopSnazzify = setInterval(function() {
-			snazzify(document.getElementById("disable-grooviness"));
+			snazzify(document.getElementById('disable-grooviness'));
 		}, 500);
 		setTimeout(function() {
 			clearInterval(stopSnazzify);
