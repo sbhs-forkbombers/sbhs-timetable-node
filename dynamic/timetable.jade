@@ -32,30 +32,36 @@ html
 			$(document).ready(function() {
 				$('#arrow-down').click(function() {
 					if ((weekVisible + 1) < 3) {
+						$('#arrow-up').removeClass('disabled');
 						$('.wk-'+weeks[weekVisible]).velocity({top: '-200%'});
 						$('.wk-'+weeks[++weekVisible]).velocity({top: 0});
-						
+						if (weekVisible + 1 > 2) $('#arrow-down').addClass('disabled');
 					}
 						
 				});
 				$('#arrow-up').click(function() {
 					if ((weekVisible - 1) > -1) {
+						$('#arrow-down').removeClass('disabled');
 						$('.wk-'+weeks[weekVisible]).velocity({top: '200%'});
 						$('.wk-'+weeks[--weekVisible]).velocity({top: 0});
-						
+						if (weekVisible - 1 < 0) $('#arrow-up').addClass('disabled');
 					}
 						
 				});
 				$('#arrow-left').click(function() {
 					if ((dayVisible - 1) > -1) {
+						$('#arrow-right').removeClass('disabled');
 						$('.day-'+dayVisible).velocity({left: '200%'});
 						$('.day-'+(--dayVisible)).velocity({left: 0});
+						if (dayVisible - 1 < 0) $('#arrow-left').addClass('disabled');
 					}
 				});
 				$('#arrow-right').click(function() {
 					if ((dayVisible + 1) < 5) {
+						$('#arrow-left').removeClass('disabled');
 						$('.day-'+dayVisible).velocity({left: '-200%'});
 						$('.day-'+(++dayVisible)).velocity({left: 0});
+						if (dayVisible + 1 > 4) $('#arrow-right').addClass('disabled');
 					}
 				});
 			});
@@ -64,9 +70,9 @@ html
 			h1 you need to log in!
 			iframe(src="/try_do_oauth") Need moar iframe :(
 		else
-			div(id="arrow-up",class="arrow")
+			div(id="arrow-up",class="arrow disabled")
 			div(id="arrow-down",class="arrow")
-			div(id="arrow-left",class="arrow")
+			div(id="arrow-left",class="arrow disabled")
 			div(id="arrow-right",class="arrow")
 			div(id="timetable-wrapper")
 				- var tt = timetable.days;
