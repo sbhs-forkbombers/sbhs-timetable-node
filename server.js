@@ -328,7 +328,8 @@ function onRequest(req, res) {
 			holidays: global.HOLIDAYS, 
 			holEnd: schoolday.getHolidaysFinished(), 
 			loggedIn: global.sessions[res.SESSID].refreshToken !== undefined,
-			reallyInHolidays: schoolday.actualHolidaysFinished()
+			reallyInHolidays: schoolday.actualHolidaysFinished(),
+			grooveOverride: 'groove' in uri.query
 		});
 		if (index_cache == serverError) {
 			httpHeaders(res, 500, 'text/html', true);
