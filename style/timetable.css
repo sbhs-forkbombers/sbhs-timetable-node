@@ -6,12 +6,13 @@ h1 {
 
 .header {
 	font-size: 40px;
-	font-family: Roboto Bold, inherit;
-	font-weight: bold;
+	font-family: Roboto Condensed, inherit;
+	font-weight: 400;
 }
 
 table {
 	font-size: 35px;
+	font-family: Roboto Thin;
 }
 
 #timetable-wrapper {
@@ -22,6 +23,10 @@ table {
 	top: 50%;
 	margin-top: -200px;
 	margin-left: -300px;
+	overflow: visible;
+}
+
+body {
 	overflow: hidden;
 }
 

@@ -19,7 +19,7 @@
 doctype html
 html
 	include header.jade
-		title SBHS Timetable | Timetable
+		title My Timetable
 		style
 			include ../style/timetable.css
 		script
@@ -68,7 +68,7 @@ html
 	body
 		if !loggedIn
 			h1 you need to log in!
-			iframe(src="/try_do_oauth") Need moar iframe :(
+			iframe(src="/try_do_oauth?app=1") Need moar iframe :(
 		else
 			div(id="arrow-up",class="arrow disabled")
 			div(id="arrow-down",class="arrow")
