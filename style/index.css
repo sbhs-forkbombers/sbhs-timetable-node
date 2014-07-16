@@ -476,4 +476,12 @@ td {
 	.really-annoying {
 		font-size: 2em;
 	}
+
+	.nomobile {
+		display: none;
+	}
+
+	#sidebar {
+		background-color: rgba(0, 0, 0, 0.75);
+	}
 }

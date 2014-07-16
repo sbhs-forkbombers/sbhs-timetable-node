@@ -36,7 +36,8 @@ var timetable,
 	miniMode = window.innerWidth < 800,
 	bellsCached = false,
 	timetableCached = false,
-	noticesCached = false;
+	noticesCached = false,
+	last_screen_tap = Date.now();
 
 function updateSidebarStatus() {
 	/* Show load state info for various API data */
@@ -293,6 +294,33 @@ function domReady() {
 			$arrow.addClass('expanded'); // can't velocify this.
 		}
 	});
+	if (miniMode) {
+		/*setTimeout(function() {
+			$('#cached').detach().appendTo('#top-pane').css({position: 'absolute', right: 20, top: 0});
+		}, 10000);*/
+		var scrntap_id = 0;
+		var scrntap = function() {
+			if ((Date.now() - last_screen_tap) > 3000) {
+				$('.arrow').css({ opacity: 0 });
+				$('#links,.really-annoying,#sidebar').velocity({ 'opacity': 0 });
+			}
+			else {
+				scrntap_id = setTimeout(scrntap, 3000 - (Date.now() - last_screen_tap));
+			}
+		};
+
+		document.addEventListener('touchstart', function() {
+			$('.arrow').css({ 'opacity': 0.25 });
+			$('#links,.really-annoying,#sidebar').velocity({ 'opacity': 1 });
+			last_screen_tap = Date.now();
+			if (scrntap_id !== 0) {
+				clearTimeout(scrntap_id);
+			}
+			setTimeout(scrntap, 3000);
+		});
+		scrntap_id = setTimeout(scrntap, 3000);
+		console.log('mini mode');
+	}
 
 	setTimeout(fadeOutUpdate, 10000);
 
@@ -301,6 +329,7 @@ function domReady() {
 	if (window.localStorage.expanded === 'true') {
 		$('#expand').click();
 	}
+
 }
 
 function snazzify(el) {
