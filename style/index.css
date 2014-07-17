@@ -24,7 +24,8 @@
 	left: 0;
 	width: 100%;
 	text-align: center;
-	font-family: "Roboto Thin", "Segoe UI", "Helvetica Neue", sans-serif;
+	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
+	font-weight: 100;
 }
 
 #period-label {
@@ -60,7 +61,8 @@
 .really-annoying {
 	position: fixed;
 	font-size: 3em;
-	font-family: "Roboto Thin", "Segoe UI", "Helvetica Neue", sans-serif;
+	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
+	font-weight: 100;
 	z-index: -1;
 	color: #b0120a;
 }
@@ -146,7 +148,8 @@
 	width: 100%;
 	text-align: center;
 	font-size: 2em;
-	font-family: "Roboto Thin", "Segoe UI", "Helvetica Neue", sans-serif;
+	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
+	font-weight: 100;
 	cursor: default;
 }
 
@@ -192,7 +195,8 @@
 	width: 100%;
 	text-align: center;
 	font-size: 1.5em;
-	font-family: "Roboto Thin", "Segoe UI", "Helvetica Neue", sans-serif;
+	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
+	font-weight: 100;
 	cursor: default;
 	padding-bottom: 20px;
 }
@@ -210,8 +214,13 @@
 }
 
 #right-pane .break {
-	font-family: "Roboto Thin", "Segoe UI", "Helvetica Neue", sans-serif;
+	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
+	font-weight: 100;
 	font-style: italic;
+}
+
+#left-pane strong {
+	font-weight: 400;
 }
 
 #right-pane-arrow {
