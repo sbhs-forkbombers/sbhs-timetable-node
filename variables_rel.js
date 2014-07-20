@@ -1,6 +1,6 @@
 /* variables for release mode */
 module.exports = {
-	REL_RV: '1.92-rc',
+	REL_RV: '1.99-rc',
 	DEBUG: false,
 	RELEASE: true,
 	MINIFY: true

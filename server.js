@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/*globals sessions*/
+/* globals sessions */
 
 var all_start = Date.now();
 console.log('[core] Loading...');
@@ -35,7 +35,6 @@ var fs = require('fs'),
 	schoolday = require('./lib/schoolday.js');
 
 /* Variables */
-//global.HOLIDAYS = config.holidays; -- now set elsewhere
 var	IPV6 = config.ipv6,
 	NOHTTP = config.nohttp,
 	RELEASE = variables.RELEASE,
@@ -89,7 +88,6 @@ function cache_index() {
 	console.log('[core] Caching index/timetable pages... (hangup to re-cache)');
 	var jade_comp = Date.now();
 	index_cache = compile_jade('dynamic/index.jade');
-	//index_cache = idx();
 	if (index_cache == serverError) {
 		console.error('[core_emerg] Encountered an error while caching index page. Fix errors, and then hangup to reload.');
 	}
@@ -114,7 +112,7 @@ function cleanSessions() {
 			if (DEBUG) {
 				console.log('[sessions_debug] 10/10 would clean again');
 			}
-		} else if (Object.keys(global.sessions[i]).length < 2) { // not storing anything in the session, so it's just eating memory.
+		} else if (Object.keys(global.sessions[i]).length < 2) { // empty session
 			delete global.sessions[i];
 			cleaned++;
 			if (DEBUG) {
@@ -180,14 +178,14 @@ function pipeCompress(req, file, res) {
 }
 
 process.on('SIGHUP', function() {
-	/* Clean and re-cache if we receive a hangup */
+	/* Clean and re-cache if we receive SIGHUP */
 	'use strict';
 	cache_index();
 	cleanSessions();
 });
 
 process.on('SIGINT', function() {
-	/* Close the sockets and save sessions when we receive an interrupt */
+	/* Close the sockets and save sessions when we receive SIGINT */
 	'use strict';
 	socket.close(function() { global.socketDone = true; });
 	if (!NOHTTP) {
@@ -200,7 +198,7 @@ process.on('SIGINT', function() {
 
 
 function httpHeaders(res, response, contentType, dynamic, tag, headers) {
-	/* Generate HTTP headers, including the response code, content type and any other headers */
+	/* Generate HTTP headers, including the response code, content type etc. */
 	'use strict';
 	var date;
 	dynamic = dynamic || false;
@@ -318,15 +316,13 @@ function onRequest(req, res) {
 	}
 
 	var target, uri = url.parse(req.url, true);
-	uri.pathname = uri.pathname.replace('/../', '/'); // hahaha NO
 	/* Response block */
-	if (uri.pathname === '/') {
+	if (uri.pathname === '/') { // TODO cache two different versions of index for logged-in and not logged in.
 		/* Main page */
-		// TODO cache two different versions of index for logged-in and not logged in.
 		target = index_cache({
-			title: '', 
-			holidays: global.HOLIDAYS, 
-			holEnd: schoolday.getHolidaysFinished(), 
+			title: '',
+			holidays: global.HOLIDAYS,
+			holEnd: schoolday.getHolidaysFinished(),
 			loggedIn: global.sessions[res.SESSID].refreshToken !== undefined,
 			reallyInHolidays: schoolday.actualHolidaysFinished(),
 			grooveOverride: 'groove' in uri.query
@@ -391,7 +387,7 @@ function onRequest(req, res) {
 		contentType = 'text/plain';
 		filePath = 'COPYING';
 		checkFile(filePath, req, unchanged, changed);
-	} else if (uri.pathname.match('^/[.]ht.*')) {
+	} else if (uri.pathname.match('^/([.]ht.*)|([.]config[.]js)')) {
 		/* Disallow pattern */
 		httpHeaders(res, 403, 'text/html');
 		fs.createReadStream('static/403.html').pipe(res);
@@ -478,7 +474,7 @@ function onRequest(req, res) {
 		filePath = 'w8tile/browserconfig.xml';
 		contentType = 'text/xml';
 		checkFile(filePath, req, unchanged, changed);
-	} else if (uri.pathname == '/win8') {
+	} else if (uri.pathname == '/win8' && DEBUG) {
 		/* STOP error :( */
 		httpHeaders(res, 500, 'text/html');
 		fs.createReadStream('static/500.8.html').pipe(res);

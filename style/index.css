@@ -98,11 +98,6 @@
 }
 
 .pane {
-	/*-webkit-transition: all 1s ease;
-	-moz-transition: all 1s ease;
-	-ms-transition: all 1s ease;
-	-o-transition: all 1s ease;
-	transition: all 1s ease;*/
 	height: 100%;
 	padding: 10px;
 	position: fixed;
@@ -367,17 +362,20 @@ td {
 	display: inline-block;
 	height: 0;
 	width: 0;
+	margin-left: 5px;
 }
 
 #dropdown-arrow.expanded {
 	border-right-color: transparent;
 	border-top-color: white;
-	margin-left: 5px;
-	bottom: -7px;
+	bottom: -6px;
 }
 
 #verbose-hidden {
 	display: none;
+	position: absolute;
+	right: 5px;
+	width: auto;
 }
 
 #expand-toggle {

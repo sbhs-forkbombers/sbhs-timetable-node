@@ -16,8 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* globals handleBells, loadTimetable, loadNotices, loadComplete, domReady, getLoggedIn, todayNames, snazzify */
-/* jshint -W098 */
+/* globals handleBells, loadTimetable, loadNotices, loadComplete, domReady, getLoggedIn, todayNames, snazzify */ /* jshint -W098 */
 
 /* Variables */
 var timetable,
@@ -253,10 +252,10 @@ function domReady() {
 		setTimeout(loadComplete, 0);
 	}
 	if (getLoggedIn()) {
-		$('#login-status').html('<a href="/logout" title="Log out" class="octicon octicon-sign-out"></a>');
+		$('#login-status').html('<a href="/logout" title="Log out" style="text-decoration: none">Log out <span class="octicon octicon-sign-out"/></a>');
 	}
 	else {
-		$('#login-status').html('<a href="/try_do_oauth" title="Log in" class="octicon octicon-sign-in"></a>');
+		$('#login-status').html('<a href="/try_do_oauth" title="Log in" style="text-decoration: none">Log in <span class="octicon octicon-sign-in"/></a>');
 	}
 
 	$('#left-pane-arrow').click(function() {
@@ -288,8 +287,7 @@ function domReady() {
 		if ($arrow.hasClass('expanded')) {
 			$('#verbose-hidden').velocity('stop').velocity('slideUp');
 			$arrow.removeClass('expanded');
-		}
-		else {
+		} else {
 			$('#verbose-hidden').velocity('stop').velocity('slideDown');
 			$arrow.addClass('expanded'); // can't velocify this.
 		}
@@ -319,7 +317,7 @@ function domReady() {
 		if (scrntap_id !== 0) {
 			clearTimeout(scrntap_id);
 		}
-		setTimeout(scrntap, 3000);
+		setTimeout(scrntap, 5000);
 	};
 	if (window.PointerEvent) {
 		document.addEventListener('pointerdown', showThings);
@@ -329,7 +327,7 @@ function domReady() {
 	}
 	document.addEventListener('mousemove', showThings);
 	document.addEventListener('touchstart', showThings);
-	scrntap_id = setTimeout(scrntap, 3000);
+	scrntap_id = setTimeout(scrntap, 5000);
 
 	setTimeout(fadeOutUpdate, 10000);
 
