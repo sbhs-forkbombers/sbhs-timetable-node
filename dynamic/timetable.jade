@@ -19,7 +19,7 @@
 doctype html
 html
 	include header.jade
-		link(href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,300' rel='stylesheet' type='text/css')
+		link(href='//fonts.googleapis.com/css?family=Roboto+Condensed:400,300', rel='stylesheet', type='text/css')
 		title My Timetable
 		style
 			include ../style/timetable.css
@@ -71,16 +71,16 @@ html
 			h1 you need to log in!
 			iframe(src="/try_do_oauth?app=1") Need moar iframe :(
 		else
-			div(id="arrow-up",class="arrow disabled")
-			div(id="arrow-down",class="arrow")
-			div(id="arrow-left",class="arrow disabled")
-			div(id="arrow-right",class="arrow")
+			div(id="arrow-up", class="arrow disabled")
+			div(id="arrow-down", class="arrow")
+			div(id="arrow-left", class="arrow disabled")
+			div(id="arrow-right", class="arrow")
 			div(id="timetable-wrapper")
 				- var tt = timetable.days;
 				- for (var day in tt) {
 					- var nday = (day % 5) - 1;
 					- if (nday == -1) nday = 4;
-					div(id="day"+day,class="wk-"+tt[day].dayname.split(' ')[1]+" day-"+nday)
+					div(id="day"+day, class="wk-"+tt[day].dayname.split(' ')[1]+" day-"+nday)
 						h1=tt[day].dayname
 						table
 							tr(class="header") <td>Period</td><td>Subject</td><td>Teacher</td><td>Room</td>

@@ -19,8 +19,8 @@
 doctype html
 html
 	include header.jade
-		link(rel="stylesheet",href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.min.css",type="text/css")
-		script(async,defer,src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
+		link(href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.min.css", rel="stylesheet", type="text/css")
+		script(async, defer, src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
 		title SBHS Timetable #{page}
 		style
 			include ../style/index.css
@@ -28,13 +28,13 @@ html
 			include ../srv/jquery.min.js
 		script
 			include ../srv/jquery.velocity.min.js
-		script(async,src="/script/belltimes.concat.js?cachingsucks")
-		meta(name="application-name",content="SBHS Timetable")
-		meta(name="mobile-web-app-capable",content="yes")
-		meta(name="apple-mobile-web-app-capable",content="yes")
-		meta(name="apple-mobile-web-app-status-bar-style",content="black")
-		link(rel="icon",href="../static/icon-hires.png",sizes="196x196")
-		link(rel="apple-touch-icon",href="../static/icon-hires.png",sizes="196x196")
+		script(async, src="/script/belltimes.concat.js?cachingsucks")
+		meta(name="application-name", content="SBHS Timetable")
+		meta(name="mobile-web-app-capable", content="yes")
+		meta(name="apple-mobile-web-app-capable", content="yes")
+		meta(name="apple-mobile-web-app-status-bar-style", content="black")
+		link(rel="icon", href="../static/icon-hires.png", sizes="196x196")
+		link(rel="apple-touch-icon", href="../static/icon-hires.png", sizes="196x196")
 		if holidays
 			style
 				include ../style/holidays.css
@@ -100,11 +100,11 @@ html
 				| Oops. :(
 		div.arrow#right-pane-arrow
 		div#links
-			a(href="https://docs.google.com/forms/d/18VjH5GM80Xl0C1KBRpCrwTXUCiK8G2sg9Z6lDuNA7vk/viewform?usp=send_form",title="Feedback") Feedback
+			a(href="https://docs.google.com/forms/d/18VjH5GM80Xl0C1KBRpCrwTXUCiK8G2sg9Z6lDuNA7vk/viewform?usp=send_form", title="Feedback") Feedback
 			|&nbsp;|&nbsp;
-			a(href="https://github.com/sbhs-forkbombers/sbhs-timetable-node",title="Source") Source
+			a(href="https://github.com/sbhs-forkbombers/sbhs-timetable-node", title="Source") Source
 			|&nbsp;|&nbsp;
-			a(href="https://github.com/sbhs-forkbombers/sbhs-timetable-node/wiki",title="About") About
+			a(href="https://github.com/sbhs-forkbombers/sbhs-timetable-node/wiki", title="About") About
 		div.nomobile#update Welcome to SBHS Timetable v2.0! Now with waaaay less typing.&nbsp;
 			a(href="/try_do_oauth",title="Login") Login and take a look at the left-hand pane!
 		div.nomobile#expand-toggle
@@ -112,7 +112,7 @@ html
 			div#collapse.mega-octicon.octicon-screen-normal
 		-console.log(holEnd, Date.now(), reallyInHolidays)
 		if (holEnd - Date.now() < (1000 * 60 * 60 * 24 * 3) && reallyInHolidays) || grooveOverride
-			a#disable-grooviness(href="javascript:void(0)",onclick="document.getElementById('groovy').controls = true;document.getElementById('groovy').style.display = 'block';")
+			a#disable-grooviness(href="javascript:void(0)", onclick="document.getElementById('groovy').controls = true;document.getElementById('groovy').style.display = 'block';")
 				|Control the <em>groove</em>
-			audio#groovy(autoplay,loop)
+			audio#groovy(autoplay, loop)
 				source(src="https://d2g9v1gts353nd.cloudfront.net/tumblr_lis9otqLNE1qca9pxo1.mp3",type="audio/mpeg")
