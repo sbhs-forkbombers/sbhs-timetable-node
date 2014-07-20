@@ -19,22 +19,22 @@
 doctype html
 html
 	include header.jade
+		link(rel="stylesheet",href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.min.css",type="text/css")
+		script(async,defer,src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
 		title SBHS Timetable #{page}
 		style
 			include ../style/index.css
-		meta(name="application-name",content="SBHS Timetable")
-		meta(name="mobile-web-app-capable",content="yes")
-		meta(name="apple-mobile-web-app-capable",content="yes")
-		meta(name="apple-mobile-web-app-status-bar-style",content="black")
-		link(rel="stylesheet",href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.min.css",type="text/css")
-		link(rel="icon",href="../static/icon-hires.png",sizes="196x196")
-		link(rel="apple-touch-icon",href="../static/icon-hires.png",sizes="196x196")
 		script
 			include ../srv/jquery.min.js
 		script
 			include ../srv/jquery.velocity.min.js
-		script(async,defer,src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
 		script(async,src="/script/belltimes.concat.js?cachingsucks")
+		meta(name="application-name",content="SBHS Timetable")
+		meta(name="mobile-web-app-capable",content="yes")
+		meta(name="apple-mobile-web-app-capable",content="yes")
+		meta(name="apple-mobile-web-app-status-bar-style",content="black")
+		link(rel="icon",href="../static/icon-hires.png",sizes="196x196")
+		link(rel="apple-touch-icon",href="../static/icon-hires.png",sizes="196x196")
 		if holidays
 			style
 				include ../style/holidays.css
