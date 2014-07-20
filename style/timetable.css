@@ -1,18 +1,39 @@
+/* SBHS-Timetable-Node: Countdown and timetable all at once (NodeJS app).
+ * Copyright (C) 2014 James Ye, Simon Shields
+ *
+ * This file is part of SBHS-Timetable-Node.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/* These styles are only used on the full timetable display */
 h1 {
-	font-family: Roboto Thin, Segoe UI, Helvetica, sans-serif;
-	font-weight: 100;
-	font-size: 70px;
+	font-family: "Roboto Condensed", "Segoe UI", "Helvetica Neue", sans-serif;
+	font-weight: 300;
+	font-size: 3em;
 }
 
 .header {
-	font-size: 40px;
-	font-family: Roboto Condensed, inherit;
+	font-size: 1.25em;
+	font-family: "Roboto Condensed", "Segoe UI", "Helvetica Neue", sans-serif;
 	font-weight: 400;
 }
 
 table {
-	font-size: 35px;
-	font-family: Roboto Thin;
+	font-size: 2em;
+	font-family: "Roboto Condensed", "Segoe UI", "Helvetica Neue", sans-serif;
+	font-weight: 300;
 }
 
 #timetable-wrapper {
@@ -96,7 +117,7 @@ td {
 	top: 300%;
 }
 
-.day-1,.day-2,.day-3,.day-4 {
+.day-1, .day-2, .day-3, .day-4 {
 	left: 400%;
 }
 
