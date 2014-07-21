@@ -507,6 +507,14 @@ function updatePeriodLabel() {
 	}
 	$('#period-label').text(name);
 	$('#in-label').text(inLabel);
+	if (belltimes.bellsAltered) {
+		if (miniMode) {
+			roomChangedInfo = belltimes.bellsAlteredReason + '! ' + roomChangedInfo;
+		}
+		else {
+			roomChangedInfo = 'Bells changed: ' + belltimes.bellsAlteredReason + roomChangedInfo;
+		}
+	}
 	$('#top-line-notice').text(roomChangedInfo);
 }
 
