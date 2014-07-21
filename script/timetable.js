@@ -109,7 +109,7 @@ function handleTimetable() {
 	$('#rtd-unavailable').html('Loaded real-time data!');
 	setTimeout(function() {
 		$('#rtd-unavailable').velocity('fadeOut');
-		setTimeout(function() { $('#rtd-unavailable').html('').css({'display': 'block'}); }, 1000);
+		setTimeout(function() { $('#rtd-unavailable').velocity('fadeOut').html('').css({'display': 'block'}); }, 1000);
 	}, 3000);
 	if (currentBellIndex == -1) {
 		calculateUpcomingLesson();

@@ -303,6 +303,7 @@ function domReady() {
 	var scrntap = function() {
 		if ((Date.now() - last_screen_tap) > 3000) {
 			$('.arrow').css({ opacity: 0 }).css({ visibility: 'hidden' });
+			$('body').css({cursor: 'none'});
 			$('#links,.really-annoying,#sidebar').velocity('stop').velocity({ 'opacity': 0 });
 		}
 		else {
@@ -312,6 +313,7 @@ function domReady() {
 
 	var showThings = function() {
 		$('.arrow').css({ 'visibility': 'visible', 'opacity': 0.25 });
+		$('body').css({ 'cursor': 'default' });
 		$('#links,.really-annoying,#sidebar').velocity('stop').velocity({ 'opacity': 1 });
 		last_screen_tap = Date.now();
 		if (scrntap_id !== 0) {
