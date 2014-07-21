@@ -102,14 +102,14 @@ function handleTimetable() {
 		window.localStorage[lsKey] = this.responseText;
 	}
 	else if (!res.timetable) {
-		$('#rtd-unavailable').html('Real-time data inaccessible');
+		$('#rtd-status').html('Real-time data inaccessible');
 		return; // we don't want to do that... TODO refresh access token and stuff
 	}
 	window.todayNames = res;
-	$('#rtd-unavailable').html('Loaded real-time data!');
+	$('#rtd-status').html('Loaded real-time data');
 	setTimeout(function() {
-		$('#rtd-unavailable').velocity('fadeOut');
-		setTimeout(function() { $('#rtd-unavailable').velocity('fadeOut').html('').css({'display': 'block'}); }, 1000);
+		$('#rtd-status').velocity('fadeOut');
+		setTimeout(function() { $('#rtd-status').velocity('fadeOut').html('').css({'display': 'block'}); }, 1000);
 	}, 3000);
 	if (currentBellIndex == -1) {
 		calculateUpcomingLesson();
@@ -129,14 +129,14 @@ function loadTimetable() {
 		window.todayNames = JSON.parse(window.localStorage[belltimes.day+belltimes.weekType]);
 		setTimeout(handleLeftPane, 0);
 		updateSidebarStatus();
-		$('#rtd-unavailable').html('Loading real-time data...');
+		$('#rtd-status').html('Loading real-time data…');
 	}
 	else if (!getLoggedIn() && !window.todayNames) {
 		console.log('umm');
 		window.todayNames = {timetable: {failure: true}};
 	}
 	if (!getLoggedIn()) {
-		$('#rtd-unavailable').html('<a href="/try_do_oauth">Login</a> to use real-time data');
+		$('#rtd-status').html('<a href="/try_do_oauth">Log in</a> for real-time data');
 		return;
 	}
 	var xhr = new XMLHttpRequest();
