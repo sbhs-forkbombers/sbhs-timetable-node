@@ -53,13 +53,13 @@ function updateSidebarStatus() {
 		belltimesClass = 'ok',
 		belltimesText = 'OK',
 		timetableClass = 'notok',
-		timetableText = 'Unavailable',
+		timetableText = 'Failed!',
 		noticesClass = 'notok',
-		noticesText = 'Unavailable',
+		noticesText = 'Failed!',
 		shortText = ['B: '+tick,'T: '+cross,'N: '+cross];
 
 	if (!belltimesOK) {
-		belltimesText = 'Unavailable';
+		belltimesText = 'Failed!';
 		belltimesClass = 'notok';
 		shortText[0] = 'B: ' + cross;
 	}
