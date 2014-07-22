@@ -36,6 +36,7 @@ var timetable,
 	bellsCached = false,
 	timetableCached = false,
 	noticesCached = false,
+	rigToFail = true,
 	last_screen_tap = Date.now();
 
 function updateSidebarStatus() {
@@ -415,8 +416,13 @@ function calculateUpcomingLesson() {
 		reloading = false;
 		return;
 	}
-	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15})) || getNextSchoolDay().valueOf() != Date.today().valueOf()) {
+	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15})) || getNextSchoolDay().isAfter(Date.today())) {
 		now = getNextSchoolDay();
+	} else if (new Date().isAfter(Date.today().set({hour: 15, minute: 15})) && getNextSchoolDay().valueOf() == Date.today().valueOf()) {
+		// after 3:15!!!!
+		calculateDay();
+		calculateUpcomingLesson();
+		return;
 	} else {
 		now = new Date();
 	}
