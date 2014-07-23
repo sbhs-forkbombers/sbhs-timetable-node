@@ -421,7 +421,9 @@ function calculateUpcomingLesson() {
 	} else if (new Date().isAfter(Date.today().set({hour: 15, minute: 15})) && getNextSchoolDay().valueOf() == Date.today().valueOf()) {
 		// after 3:15!!!!
 		calculateDay();
+		loadTimetable();
 		calculateUpcomingLesson();
+		setTimeout(loadNotices, 0);
 		return;
 	} else {
 		now = new Date();

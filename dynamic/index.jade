@@ -35,6 +35,8 @@ html
 		meta(name="apple-mobile-web-app-status-bar-style", content="black")
 		link(rel="icon", href="../static/icon-hires.png", sizes="196x196")
 		link(rel="apple-touch-icon", href="../static/icon-hires.png", sizes="196x196")
+		if testing
+			script(async,src="http://sinonjs.org/releases/sinon-1.10.3.js")
 		if holidays
 			style
 				include ../style/holidays.css

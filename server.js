@@ -325,7 +325,8 @@ function onRequest(req, res) {
 			holEnd: schoolday.getHolidaysFinished(),
 			loggedIn: global.sessions[res.SESSID].refreshToken !== undefined,
 			reallyInHolidays: schoolday.actualHolidaysFinished(),
-			grooveOverride: 'groove' in uri.query
+			grooveOverride: 'groove' in uri.query,
+			testing: 'testing' in uri.query
 		});
 		if (index_cache == serverError) {
 			httpHeaders(res, 500, 'text/html', true);
