@@ -187,7 +187,9 @@ process.on('SIGHUP', function() {
 process.on('SIGINT', function() {
 	/* Close the sockets and save sessions when we receive SIGINT */
 	'use strict';
-	socket.close(function() { global.socketDone = true; });
+	if (SOCKET) {
+		socket.close(function() { global.socketDone = true; });
+	}
 	if (!NOHTTP) {
 		ipv4.close(function() { global.ipv4Done = true; });
 		ipv6.close(function() { global.ipv6Done = true; });

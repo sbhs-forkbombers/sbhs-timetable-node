@@ -44,7 +44,7 @@ function updateSidebarStatus() {
 	'use strict';
 	/* Loading state symbols */
 	var tick = '<span class="octicon octicon-check ok"></span>',
-		cross = '<span class="octicon octicon-x notok"></span>',
+		cross = '<span class="octicon octicon-x failed"></span>',
 		cached = '<span class="octicon octicon-alert stale"></span>',
 		loading = '<span class="idk">…</span>';
 	/* Local variables */
@@ -53,15 +53,15 @@ function updateSidebarStatus() {
 		timetableOK = window.hasOwnProperty('todayNames') && todayNames.timetable && !todayNames.timetable.failure,
 		belltimesClass = 'ok',
 		belltimesText = 'OK',
-		timetableClass = 'notok',
-		timetableText = 'Failed!',
-		noticesClass = 'notok',
-		noticesText = 'Failed!',
+		timetableClass = 'failed',
+		timetableText = 'Failed',
+		noticesClass = 'failed',
+		noticesText = 'Failed',
 		shortText = ['B: '+tick,'T: '+cross,'N: '+cross];
 
 	if (!belltimesOK) {
-		belltimesText = 'Failed!';
-		belltimesClass = 'notok';
+		belltimesText = 'Failed';
+		belltimesClass = 'failed';
 		shortText[0] = 'B: ' + cross;
 	}
 
