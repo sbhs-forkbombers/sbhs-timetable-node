@@ -199,14 +199,19 @@ process.on('SIGINT', function() {
 });
 
 
-function httpHeaders(res, response, contentType, dynamic, tag, headers) {
+function httpHeaders(res, req, responseCode, contentType, dynamic, tag, headers) {
 	/* Generate HTTP headers, including the response code, content type etc. */
 	'use strict';
 	var date;
 	dynamic = dynamic || false;
 	headers = headers || {};
-	if (!('Set-Cookie' in headers) && 'SESSID' in res) {
-		headers['Set-Cookie'] = 'SESSID='+res.SESSID+'; Max-Age=36000';
+	var data = url.parse(req.url);
+	if (!('Set-Cookie' in headers) && 'SESSID' in res && data.pathname == '/login') {
+		console.log('set cookie',res.SESSID);
+		var exp = new Date();
+		exp = new Date(exp.valueOf() + 60*60*24*90*1000);
+		console.log('expire',exp,exp.valueOf());
+		headers['Set-Cookie'] = 'SESSID='+res.SESSID+'; Path=/; Expires=' + exp.toGMTString();
 	}
 	if (dynamic || DEBUG) { // disable caching
 		headers['Cache-Control'] = 'no-cache, must-revalidate';
@@ -223,7 +228,7 @@ function httpHeaders(res, response, contentType, dynamic, tag, headers) {
 	}
 	headers['Content-Type'] = contentType + '; charset=UTF-8';
 	headers['X-Powered-By'] = 'Node.js ' + process.version;
-	res.writeHead(response, headers);
+	res.writeHead(responseCode, headers);
 	return res;
 }
 
@@ -284,7 +289,7 @@ function onRequest(req, res) {
 		filePath = 'static/404.html';
 	var changed = function(hash) {
 		var pipe = pipeCompress(req, filePath, res);
-		httpHeaders(res, 200, contentType, false, hash);
+		httpHeaders(res, req, 200, contentType, false, hash);
 		pipe.pipe(res);
 	};
 	var dynChanged = function(hash) {
@@ -293,7 +298,7 @@ function onRequest(req, res) {
 				res.setHeader('Content-Encoding', '');
 				r = target;
 			}
-			httpHeaders(res, 200, contentType, true, hash);
+			httpHeaders(res, req, 200, contentType, true, hash);
 			res.end(r);
 		});
 	};
@@ -331,13 +336,13 @@ function onRequest(req, res) {
 			testing: 'testing' in uri.query
 		});
 		if (index_cache == serverError) {
-			httpHeaders(res, 500, 'text/html', true);
+			httpHeaders(res, req, 500, 'text/html', true);
 			target().pipe(res);
 		} else {
 			contentType = 'text/html';
 			checkText(target, req, unchanged, dynChanged);
 		}
-		//httpHeaders(res, (target == serverError ? 500 : 200), 'text/html', true);
+		//httpHeaders(res, req, (target == serverError ? 500 : 200), 'text/html', true);
 		//res.end(index_cache.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined));
 	} else if (uri.pathname === '/timetable') {
 		var loggedIn = 'refreshToken' in global.sessions[res.SESSID];
@@ -352,7 +357,7 @@ function onRequest(req, res) {
 			checkText(target, req, unchanged, dynChanged);
 		}
 	} else if (uri.pathname.match('.*config[.]js.*') && fs.existsSync('config_sample.js')) {
-		httpHeaders(res, 403, 'text/plain');
+		httpHeaders(res, req, 403, 'text/plain');
 		fs.createReadStream('config_sample.js').pipe(res);
 	} else if (uri.pathname.match('/style/.*[.]css$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* Style sheets */
@@ -367,7 +372,7 @@ function onRequest(req, res) {
 	} else if (uri.pathname == '/api/belltimes') {
 		/* Belltimes wrapper */
 		apis.get('belltimes', uri.query, res.SESSID, function(obj) {
-			httpHeaders(res, 200, 'text/html', true, obj.etag);
+			httpHeaders(res, req, 200, 'text/html', true, obj.etag);
 			res.end(obj.json);
 		});
 	} else if (uri.pathname.match('/static/.*[.]jpg|jpeg$') && fs.existsSync(uri.pathname.slice(1))) {
@@ -392,7 +397,7 @@ function onRequest(req, res) {
 		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname.match('^/([.]ht.*)|([.]config[.]js)')) {
 		/* Disallow pattern */
-		httpHeaders(res, 403, 'text/html');
+		httpHeaders(res, req, 403, 'text/html');
 		fs.createReadStream('static/403.html').pipe(res);
 	} else if (uri.pathname == '/try_do_oauth') {
 		/* OAuth2 attempt */
@@ -413,21 +418,24 @@ function onRequest(req, res) {
 				console.log('[core_debug] Sending to /mobile_loading!');
 			}
 			auth.getAuthToken(res, uri, function() {
-				httpHeaders(res, 302, '', true, null, { 'Location': '/mobile_loading?sessionID='+encodeURIComponent(res.SESSID) });
+				httpHeaders(res, req, 302, '', true, null, { 'Location': '/mobile_loading?sessionID='+encodeURIComponent(res.SESSID) });
 				res.end();
-				//httpHeaders(res, 200, 'application/json', true);
+				//httpHeaders(res, req, 200, 'application/json', true);
 				//res.end(JSON.stringify(global.sessions[res.SESSID]));
 			}, false);
 		}
 		else {
-			auth.getAuthToken(res, uri, null, true);
+			auth.getAuthToken(res, uri, function() {
+				httpHeaders(res, req, 302, '', true, null, { 'Location': '/' });
+				res.end();
+			}, false);
 		}
 	} else if (uri.pathname == '/mobile_loading') {
-		httpHeaders(res, 200, 'text/html', true, null);
+		httpHeaders(res, req, 200, 'text/html', true, null);
 		fs.createReadStream('static/appLoading.html').pipe(res);
 	} else if (uri.pathname == '/session_debug' && DEBUG) {
 		/* Session info */
-		httpHeaders(res, 200, 'application/json', true);
+		httpHeaders(res, req, 200, 'application/json', true);
 		var obj = {};
 		obj[res.SESSID] = global.sessions[res.SESSID];
 		res.end(JSON.stringify(obj));
@@ -440,7 +448,7 @@ function onRequest(req, res) {
 		});
 	} else if (uri.pathname == '/logout') {
 		/* Log out */
-		httpHeaders(res, 302, 'text/plain', true, null, { 'Location': '/' });
+		httpHeaders(res, req, 302, 'text/plain', true, null, { 'Location': '/' });
 		res.end('Redirecting...');
 		delete global.sessions[res.SESSID].accessToken;
 		delete global.sessions[res.SESSID].refreshToken;
@@ -458,13 +466,13 @@ function onRequest(req, res) {
 		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname == '/reset_access_token') {
 		/* Reset access token */
-		httpHeaders(res, 200, 'application/json', true);
+		httpHeaders(res, req, 200, 'application/json', true);
 		delete global.sessions[res.SESSID].accessToken;
 		global.sessions[res.SESSID].accessTokenExpires = 0;
 		res.end(JSON.stringify(global.sessions[res.SESSID]));
 	} else if (uri.pathname == '/refresh_token') {
 		/* Refresh access token */
-		httpHeaders(res, 200, 'application/json', true);
+		httpHeaders(res, req, 200, 'application/json', true);
 		if (global.sessions[res.SESSID].refreshToken) {
 			auth.refreshAuthToken(global.sessions[res.SESSID].refreshToken, res.SESSID, function() {
 				res.end(JSON.stringify(global.sessions[res.SESSID]));
@@ -479,15 +487,15 @@ function onRequest(req, res) {
 		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname == '/win8' && DEBUG) {
 		/* STOP error :( */
-		httpHeaders(res, 500, 'text/html');
+		httpHeaders(res, req, 500, 'text/html');
 		fs.createReadStream('static/500.8.html').pipe(res);
 	} else if (uri.pathname == '/EFLAT' && DEBUG) {
 		/* Force a 500 error (out of tune) */
-		httpHeaders(res, 500, 'text/html');
+		httpHeaders(res, req, 500, 'text/html');
 		serverError().pipe(res);
 	} else {
 		/* 404 everything else */
-		httpHeaders(res, 404, 'text/html');
+		httpHeaders(res, req, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
 	}
 	console.log('[' + this.name + ']', req.method, req.url, 'in', Date.now()-start + 'ms');
@@ -497,6 +505,10 @@ function requestSafeWrapper(req, res) {
 	/* Wrapper to return 500 if bad things happen */
 	/* jshint validthis: true */
 	'use strict';
+	res.setTimeout(60000, function() {
+		console.log('[timeout_debug] Request timed out :(');
+		this.end('<html><head><title>We took too long</title></head><body><h1>Oops</h1></body></html>');
+	});
 	try {
 		onRequest.call(this, req, res);
 	} catch (e) {
