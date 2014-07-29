@@ -249,6 +249,7 @@ function domReady() {
 	if (document.readyState != 'complete') {
 		return;
 	}
+	document.body.style.color = '#' + window.colour;// || '000000';
 	if ((belltimes !== null && belltimes !== undefined) || window.HOLIDAYS) {
 		setTimeout(loadComplete, 0);
 	}

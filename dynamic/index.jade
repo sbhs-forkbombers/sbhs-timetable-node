@@ -57,6 +57,14 @@ html
 					|	$('#disable-grooviness').velocity('slideUp');
 					|}, holEnd - Date.now());
 					|console.log('Will stop music in ' + (holEnd - Date.now()) + 'ms')
+		script
+			="window.colour = '" + colour + "';"
+		style
+			| body {
+			="color:#"+colour+";"
+			| } a {
+			="color:#"+colour+";"
+			| }
 
 	body
 		div#content

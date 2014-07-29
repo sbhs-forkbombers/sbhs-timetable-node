@@ -32,7 +32,8 @@ var fs = require('fs'),
 	etag = require('./lib/etag.js'),
 	config = require('./config.js'),
 	variables = require('./variables.js'),
-	schoolday = require('./lib/schoolday.js');
+	schoolday = require('./lib/schoolday.js'),
+	colours = require('./lib/colours.js');
 
 /* Variables */
 var	IPV6 = config.ipv6,
@@ -326,6 +327,7 @@ function onRequest(req, res) {
 	/* Response block */
 	if (uri.pathname === '/') { // TODO cache two different versions of index for logged-in and not logged in.
 		/* Main page */
+		console.log('colour' in uri.query);
 		target = index_cache({
 			title: '',
 			holidays: global.HOLIDAYS,
@@ -333,7 +335,8 @@ function onRequest(req, res) {
 			loggedIn: global.sessions[res.SESSID].refreshToken !== undefined,
 			reallyInHolidays: schoolday.actualHolidaysFinished(),
 			grooveOverride: 'groove' in uri.query,
-			testing: 'testing' in uri.query
+			testing: 'testing' in uri.query,
+			colour: 'colour' in uri.query ? colours.get(uri.query.colour) : 'ffffff'
 		});
 		if (index_cache == serverError) {
 			httpHeaders(res, req, 500, 'text/html', true);
