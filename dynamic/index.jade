@@ -97,13 +97,19 @@ html
 						br
 		div.ss.pane#left-pane
 			div.umad
-				a(href="/try_do_oauth") Log in
-				|&nbsp;to show your timetable
+				if !loggedIn
+					a(href="/try_do_oauth") Log in
+					|&nbsp;to show your timetable
+				else
+					|¯\_(ツ)_/¯ Loading ¯\_(ツ)_/¯
 		div.arrow#left-pane-arrow
 		div.ss.pane#top-pane
 			div.umad
-				a(href="/try_do_oauth") Log in
-				|&nbsp;to show the daily notices
+				if !loggedIn
+					a(href="/try_do_oauth") Log in
+					|&nbsp;to show the daily notices
+				else
+					|¯\_(ツ)_/¯ Loading ¯\_(ツ)_/¯
 		div.arrow#top-pane-arrow
 		div.ss.pane#right-pane
 			div.umad
@@ -115,8 +121,9 @@ html
 			a(href="https://github.com/sbhs-forkbombers/sbhs-timetable-node", title="Source") Source
 			|&nbsp;|&nbsp;
 			a(href="/faq.html", title="FAQ") FAQ
-		div.nomobile#update Welcome to SBHS Timetable v2.0! Now with waaaay less typing.&nbsp;
-			a(href="/try_do_oauth",title="Login") Login and take a look at the left-hand pane!
+		div.nomobile#update
+			if colour == 'b388ff'
+				|Shout-out to Nelson. Hi.
 		div.nomobile#expand-toggle
 			div#expand.mega-octicon.octicon-screen-full
 			div#collapse.mega-octicon.octicon-screen-normal
