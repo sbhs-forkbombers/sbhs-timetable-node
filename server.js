@@ -327,7 +327,13 @@ function onRequest(req, res) {
 	/* Response block */
 	if (uri.pathname === '/') { // TODO cache two different versions of index for logged-in and not logged in.
 		/* Main page */
-		console.log('colour' in uri.query);
+		var scheme = {};
+		if ('colour' in uri.query) {
+			scheme = colours.get(uri.query.colour);
+		}
+		else {
+			scheme = colours.getFromUriQuery(uri.query);
+		}
 		target = index_cache({
 			title: '',
 			holidays: global.HOLIDAYS,
@@ -336,7 +342,7 @@ function onRequest(req, res) {
 			reallyInHolidays: schoolday.actualHolidaysFinished(),
 			grooveOverride: 'groove' in uri.query,
 			testing: 'testing' in uri.query,
-			colour: 'colour' in uri.query ? colours.get(uri.query.colour) : 'ffffff'
+			colour: scheme
 		});
 		if (index_cache == serverError) {
 			httpHeaders(res, req, 500, 'text/html', true);
