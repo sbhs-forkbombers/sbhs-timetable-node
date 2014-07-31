@@ -3,7 +3,12 @@ SBHS-Timetable v2.0
 
 This is a rewrite of [SBHS Timetable](https://github.com/sbhs-forkbombers/sbhs-timetable) for Node.js.
 
+A live version can be found at [sbhstimetable.tk](http://sbhstimetable.tk), or for those after a non-mainstream alternative, you may see [here](http://rhc.sbhstimetable.tk)<sup>1</sup>
+
 Join `##sbhstimetable` on [freenode](http://freenode.net) for development news.
+
+<hr />
+<sup>1</sup>Hipster mode may be identical to normal mode.
 
 ## Installation
 
