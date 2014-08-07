@@ -266,6 +266,16 @@
 	font-weight: normal;
 }
 
+.teach-expand {
+	display: none;
+	font-weight: 200;
+	font-variant: small-caps;
+}
+
+#left-pane .teacher {
+	font-variant: small-caps;
+}
+
 .meeting .notice-data {
 	background-color: #e51c23;
 	border: 0;

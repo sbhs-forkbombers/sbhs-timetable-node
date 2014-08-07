@@ -78,7 +78,21 @@ function handleLeftPane() {
 				nSubj += subj[j] + '<span class="subj-expand">'+mStr+'</span>';
 				idx = z;
 			}
-			html += '<tr'+(cancelled?' class="cancelled"':'')+'><td title="'+subjName+'" onclick="expandSubject(event,'+i+')">'+timetable[i].year+prefix+'<strong>'+nSubj+'</strong>'+suffix+'</td><td '+(teacherChanged?'class="changed'+(!final?' changeable" ':'" '):'')+'title="'+fullTeacher+'">'+teacher+'</td><td'+(roomChanged?' class="changed' + (!final?' changeable"':'"'):'')+'>'+room+'</td></tr>';
+			var nTeach = '';
+			idx = 0;
+			var temp = teacher.toLowerCase();
+			var fullTemp = fullTeacher;
+			if (/^M(r|s) /.test(fullTemp)) {
+				fullTemp = fullTemp.split(' ').slice(1).join(' ');
+			}
+			for (var k = 0; k < teacher.length; k++) {
+				var y = fullTemp.toLowerCase().indexOf(temp[k+1]);
+				y = y < 0 ? undefined : y;
+				var extra = fullTemp.substring(idx+1, y);
+				nTeach += teacher[k].toLowerCase() + '<span class="teach-expand">'+extra.toLowerCase()+'</span>';
+				idx = y;
+			}
+			html += '<tr'+(cancelled?' class="cancelled"':'')+'><td title="'+subjName+'" onclick="expandSubject(event,'+i+')">'+timetable[i].year+prefix+'<strong>'+nSubj+'</strong>'+suffix+'</td><td class="teacher"'+(teacherChanged?' changed'+(!final?' changeable':''):'')+'" title="'+fullTeacher+'" onclick="teacherExpand(event,'+i+')">'+nTeach+'</td><td'+(roomChanged?' class="changed' + (!final?' changeable"':'"'):'')+'>'+room+'</td></tr>';
 			cancelled = false;
 			roomChanged = false;
 			teacherChanged = false;
@@ -112,6 +126,18 @@ function expandSubject(event, id) {
 		todayNames.timetable[id].expanded = true;
 	}
 	
+}
+
+function teacherExpand(event, id) {
+	'use strict';
+	if (todayNames.timetable[id].teachExpanded) {
+		$('.teach-expand', event.toElement.parentElement).velocity('transition.slideLeftBigOut');
+		todayNames.timetable[id].teachExpanded = false;
+	}
+	else {
+		$('.teach-expand', event.toElement.parentElement).velocity('transition.slideLeftBigIn');
+		todayNames.timetable[id].teachExpanded = true;
+	}
 }
 
 function handleTimetable() {
