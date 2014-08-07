@@ -34,6 +34,7 @@ function handleLeftPane() {
 			html += '<tr class="free"><td>Free</td><td></td><td></td></tr>';
 		}
 		else {
+			todayNames.timetable[i].expanded = false;
 			prefix = '';
 			subj = '';
 			suffix = '';
@@ -67,8 +68,17 @@ function handleLeftPane() {
 					room = timetable[i].roomTo;
 				}
 			}
-
-			html += '<tr'+(cancelled?' class="cancelled"':'')+'><td title="'+subjName+'">'+timetable[i].year+prefix+'<strong>'+subj+'</strong>'+suffix+'</td><td '+(teacherChanged?'class="changed'+(!final?' changeable" ':'" '):'')+'title="'+fullTeacher+'">'+teacher+'</td><td'+(roomChanged?' class="changed' + (!final?' changeable"':'"'):'')+'>'+room+'</td></tr>';
+			var nSubj = '';
+			var idx = 0;
+			
+			for (var j = 0; j < subj.length; j++) {
+				var z = subjName.indexOf(subj[j+1]);
+				z = z < 0 ? undefined : z;
+				var mStr = subjName.substring(idx+1, z);
+				nSubj += subj[j] + '<span class="subj-expand">'+mStr+'</span>';
+				idx = z;
+			}
+			html += '<tr'+(cancelled?' class="cancelled"':'')+'><td title="'+subjName+'" onclick="expandSubject(event,'+i+')">'+timetable[i].year+prefix+'<strong>'+nSubj+'</strong>'+suffix+'</td><td '+(teacherChanged?'class="changed'+(!final?' changeable" ':'" '):'')+'title="'+fullTeacher+'">'+teacher+'</td><td'+(roomChanged?' class="changed' + (!final?' changeable"':'"'):'')+'>'+room+'</td></tr>';
 			cancelled = false;
 			roomChanged = false;
 			teacherChanged = false;
@@ -89,6 +99,19 @@ function getLoggedIn() {
 	/* Are you logged in? */
 	'use strict';
 	return window.loggedIn;
+}
+
+function expandSubject(event, id) {
+	'use strict';
+	if (todayNames.timetable[id].expanded) {
+		$('.subj-expand', event.toElement.parentElement).velocity('transition.slideLeftBigOut');
+		todayNames.timetable[id].expanded = false;
+	}
+	else {
+		$('.subj-expand', event.toElement.parentElement).velocity('transition.slideLeftBigIn');
+		todayNames.timetable[id].expanded = true;
+	}
+	
 }
 
 function handleTimetable() {
