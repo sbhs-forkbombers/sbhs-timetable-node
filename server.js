@@ -42,6 +42,7 @@ var	IPV6 = config.ipv6,
 	REL_RV = variables.REL_RV,
 	DEBUG = variables.DEBUG,
 	SOCKET = config.socket,
+	PORT = config.port,
 	index_cache, timetable_cache, ipv4, ipv6, socket;
 global.sessions = {};
 
@@ -562,7 +563,7 @@ if (!NOHTTP) {
 	ipv4.name = 'ipv4';
 	ipv4.on('request', requestSafeWrapper);
 	ipv4.on('listening', onListening);
-	ipv4.listen(8080, '0.0.0.0');
+	ipv4.listen(PORT, '0.0.0.0');
 
 	/* Start the IPv6 server if it is enabled */
 	if (IPV6) {
@@ -570,7 +571,7 @@ if (!NOHTTP) {
 		ipv6.name = 'ipv6';
 		ipv6.on('request', requestSafeWrapper);
 		ipv6.on('listening', onListening);
-		ipv6.listen(8080, '::');
+		ipv6.listen(PORT, '::');
 	}
 }
 
