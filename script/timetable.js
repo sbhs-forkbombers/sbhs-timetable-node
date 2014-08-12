@@ -94,7 +94,13 @@ function handleLeftPane() {
 				var y = fullTemp.toLowerCase().indexOf(temp[k+1]);
 				y = y < 0 ? undefined : y;
 				var extra = fullTemp.substring(idx+1, y);
-				nTeach += teacher[k].toUpperCase() + '<span class="teach-expand">'+extra.toLowerCase()+'</span>';
+				if (k !== 0) {
+					nTeach += '<span class="small-caps">';
+				}
+				nTeach += (k === 0 ? teacher[k].toUpperCase() : teacher[k].toLowerCase()) + '<span class="teach-expand">'+extra.toLowerCase()+'</span>';
+				if (k !== 0) {
+					nTeach += '</span>';
+				}
 				idx = y;
 			}
 			html += '<tr'+(cancelled?' class="cancelled"':'')+'><td title="'+subjName+'" onclick="expandSubject(event,'+i+')">'+timetable[i].year+prefix+'<strong>'+nSubj+'</strong>'+suffix+'</td><td class="teacher'+(teacherChanged?' changed'+(!final?' changeable':''):'')+'" title="'+fullTeacher+'" onclick="teacherExpand(event,'+i+')">'+nTeach+'</td><td'+(roomChanged?' class="changed' + (!final?' changeable"':'"'):'')+'>'+room+'</td></tr>';
