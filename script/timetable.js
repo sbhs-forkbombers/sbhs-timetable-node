@@ -85,14 +85,19 @@ function handleLeftPane() {
 			if (/^M(r|s) /.test(fullTemp)) {
 				fullTemp = fullTemp.split(' ').slice(1).join(' ');
 			}
+			if (fullTemp[0].toLowerCase() !== teacher[0].toLowerCase()) {
+				// we'll make up a prefix - probably a split class
+				teacher = temp = fullTemp[0] + fullTemp.substr(-1);
+				temp = temp.toLowerCase();
+			}
 			for (var k = 0; k < teacher.length; k++) {
 				var y = fullTemp.toLowerCase().indexOf(temp[k+1]);
 				y = y < 0 ? undefined : y;
 				var extra = fullTemp.substring(idx+1, y);
-				nTeach += teacher[k].toLowerCase() + '<span class="teach-expand">'+extra.toLowerCase()+'</span>';
+				nTeach += teacher[k].toUpperCase() + '<span class="teach-expand">'+extra.toLowerCase()+'</span>';
 				idx = y;
 			}
-			html += '<tr'+(cancelled?' class="cancelled"':'')+'><td title="'+subjName+'" onclick="expandSubject(event,'+i+')">'+timetable[i].year+prefix+'<strong>'+nSubj+'</strong>'+suffix+'</td><td class="teacher"'+(teacherChanged?' changed'+(!final?' changeable':''):'')+'" title="'+fullTeacher+'" onclick="teacherExpand(event,'+i+')">'+nTeach+'</td><td'+(roomChanged?' class="changed' + (!final?' changeable"':'"'):'')+'>'+room+'</td></tr>';
+			html += '<tr'+(cancelled?' class="cancelled"':'')+'><td title="'+subjName+'" onclick="expandSubject(event,'+i+')">'+timetable[i].year+prefix+'<strong>'+nSubj+'</strong>'+suffix+'</td><td class="teacher'+(teacherChanged?' changed'+(!final?' changeable':''):'')+'" title="'+fullTeacher+'" onclick="teacherExpand(event,'+i+')">'+nTeach+'</td><td'+(roomChanged?' class="changed' + (!final?' changeable"':'"'):'')+'>'+room+'</td></tr>';
 			cancelled = false;
 			roomChanged = false;
 			teacherChanged = false;
