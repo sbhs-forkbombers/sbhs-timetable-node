@@ -103,7 +103,7 @@ function handleLeftPane() {
 				}
 				idx = y;
 			}
-			html += '<tr'+(cancelled?' class="cancelled"':'')+'><td title="'+subjName+'" onclick="expandSubject(event,'+i+')">'+timetable[i].year+prefix+'<strong>'+nSubj+'</strong>'+suffix+'</td><td class="teacher'+(teacherChanged?' changed'+(!final?' changeable':''):'')+'" title="'+fullTeacher+'" onclick="teacherExpand(event,'+i+')">'+nTeach+'</td><td'+(roomChanged?' class="changed' + (!final?' changeable"':'"'):'')+'>'+room+'</td></tr>';
+			html += '<tr'+(cancelled?' class="cancelled"':'')+'><td class="subject" title="'+subjName+'" onclick="expandSubject(event,'+i+')">'+timetable[i].year+prefix+'<strong>'+nSubj+'</strong>'+suffix+'</td><td class="teacher'+(teacherChanged?' changed'+(!final?' changeable':''):'')+'" title="'+fullTeacher+'" onclick="teacherExpand(event,'+i+')">'+nTeach+'</td><td'+(roomChanged?' class="changed' + (!final?' changeable"':'"'):'')+'>'+room+'</td></tr>';
 			cancelled = false;
 			roomChanged = false;
 			teacherChanged = false;

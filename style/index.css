@@ -272,6 +272,10 @@
 	font-variant: small-caps;
 }
 
+td.subject, td.teacher {
+	cursor: pointer;
+}
+
 .small-caps {
 	font-variant: small-caps;
 }
@@ -280,6 +284,7 @@
 	background-color: #e51c23;
 	border: 0;
 }
+
 
 .notice-meeting {
 	padding: 5px;
