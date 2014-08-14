@@ -70,7 +70,7 @@ function handleLeftPane() {
 			}
 			var nSubj = '';
 			var idx = 0;
-			
+
 			for (var j = 0; j < subj.length; j++) {
 				var z = subjName.indexOf(subj[j+1]);
 				z = z < 0 ? undefined : z;
@@ -129,24 +129,28 @@ function getLoggedIn() {
 function expandSubject(event, id) {
 	'use strict';
 	if (todayNames.timetable[id].expanded) {
-		$('.subj-expand', event.toElement.parentElement).velocity('transition.slideLeftBigOut');
+		$('.subj-expand', event.toElement.parentElement).velocity('stop').velocity('transition.slideLeftBigOut');
 		todayNames.timetable[id].expanded = false;
 	}
 	else {
-		$('.subj-expand', event.toElement.parentElement).velocity('transition.slideLeftBigIn');
+		$('.subj-expand', event.toElement.parentElement).velocity('stop').velocity('transition.slideLeftBigIn');
 		todayNames.timetable[id].expanded = true;
 	}
-	
 }
 
 function teacherExpand(event, id) {
 	'use strict';
+	var el = event.toElement.parentElement;
+	if (el.tagName.toLowerCase() === 'span') {
+		console.log('#nope');
+		el = el.parentElement;
+	}
 	if (todayNames.timetable[id].teachExpanded) {
-		$('.teach-expand', event.toElement.parentElement).velocity('transition.slideLeftBigOut');
+		$('.teach-expand', el).velocity('stop').velocity('transition.slideLeftBigOut');
 		todayNames.timetable[id].teachExpanded = false;
 	}
 	else {
-		$('.teach-expand', event.toElement.parentElement).velocity('transition.slideLeftBigIn');
+		$('.teach-expand', el).velocity('stop').velocity('transition.slideLeftBigIn');
 		todayNames.timetable[id].teachExpanded = true;
 	}
 }
