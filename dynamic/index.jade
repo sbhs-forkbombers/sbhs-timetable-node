@@ -24,10 +24,11 @@ html
 		title SBHS Timetable #{page}
 		style
 			include ../style/index.css
+		| <!--[if IE]><script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><![endif]-->
 		script
-			include ../srv/jquery.min.js
+			include ../srv/zepto.min.js
 		script
-			include ../srv/jquery.velocity.min.js
+			include ../srv/velocity.min.js
 			include ../srv/velocity.ui.min.js
 		script(async, src="/script/belltimes.concat.js?cachingsucks")
 		meta(name="application-name", content="SBHS Timetable")
