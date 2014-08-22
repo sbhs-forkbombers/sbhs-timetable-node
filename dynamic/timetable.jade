@@ -23,9 +23,11 @@ html
 		title My Timetable
 		style
 			include ../style/timetable.css
+		| <!--[if IE]><script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><![endif]-->
 		script
-			include ../srv/jquery.min.js
-			include ../srv/jquery.velocity.min.js
+			include ../srv/zepto.min.js
+		script
+			include ../srv/velocity.min.js
 		script.
 			var weeks = ['A', 'B', 'C'],
 				weekVisible = 0,
