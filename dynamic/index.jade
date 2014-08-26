@@ -64,6 +64,9 @@ html
 		style
 			| body {
 			="color:#"+colour.fg+";"
+			="background-color:#"+colour.bg+";"
+			| } .pane, #cached {
+			="background-color:rgba("+Number('0x'+colour.bg.substr(0,2))+","+Number('0x'+colour.bg.substr(2,2))+","+Number('0x'+colour.bg.substr(4,2))+",0.5);"
 			| } a {
 			="color:#"+colour.fg+";"
 			| } .changed,.changeable-status {

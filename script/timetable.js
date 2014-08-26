@@ -75,7 +75,7 @@ function handleLeftPane() {
 				var z = subjName.indexOf(subj[j+1]);
 				z = z < 0 ? undefined : z;
 				var mStr = subjName.substring(idx+1, z);
-				nSubj += subj[j] + '<span class="subj-expand">'+mStr+'</span>';
+				nSubj += subj[j] + '<span class="subj-expand ' + (cancelled ? 'cancelled':'') + '">'+mStr+'</span>';
 				idx = z;
 			}
 			var nTeach = '';
