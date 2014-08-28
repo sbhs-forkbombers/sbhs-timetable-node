@@ -138,7 +138,7 @@ function calculateDay() {
 	var date = new Date(),
 		dayOffset = 0,
 		schoolEnd = new Date();
-	schoolEnd.setHours(15, 15);
+	schoolEnd.setHours(15, 14, 59);
 	if (date.getDay() === 5 && date > schoolEnd) { // Friday
 		dayOffset += 2; // push to Sunday at this time.
 		needMidnightCountdown = true;
@@ -175,11 +175,16 @@ function getDateOffsetDate() {
 	res.setDate(res.getDate() + dateOffset + manualOverride);
 	return res;
 }
-
+var endOfDay = false;
 function reloadBelltimes() {
 	/* Try to reload the belltimes */
 	'use strict';
+	console.log('reloading belltimes...',endOfDay);
+	if (endOfDay) {
+		return; // #NOPE
+	}
 	reloading = true;
+	endOfDay = true;
 	var d = getNextSchoolDay();
 	var s = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
 	var myXHR = new XMLHttpRequest();
@@ -212,8 +217,10 @@ function handleBells(bells) {
 		reloadBelltimes();
 		return;
 	}
+	console.log('fantastic!');
 	setTimeout(loadTimetable, 0); // now that the belltimes are done, we can load the subject info
 	setTimeout(loadNotices, 0);
+	endOfDay = false;
 	if (document.readyState == 'complete') {
 		loadComplete();
 	}
@@ -414,7 +421,6 @@ function calculateUpcomingLesson() {
 	var i, lastOK = 0, bell, bdate, nextBell, now;
 	if (belltimes === null) {
 		reloadBelltimes();
-		reloading = false;
 		return;
 	}
 	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15})) || getNextSchoolDay().isAfter(Date.today())) {
@@ -438,6 +444,7 @@ function calculateUpcomingLesson() {
 		}
 	}
 	if (nextBell === undefined) {
+		console.log('next bell pls');
 		calculateDay();
 		reloadBelltimes();
 	}
