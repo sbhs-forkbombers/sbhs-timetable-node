@@ -337,7 +337,7 @@ function domReady() {
 		collapsePane('left');
 	});
 
-	$('#top-pane').swipeUp(function() {
+	$('#top-pane-arrow').swipeUp(function() {
 		collapsePane('top');
 	});
 
