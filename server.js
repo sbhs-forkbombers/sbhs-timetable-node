@@ -43,6 +43,7 @@ var	IPV6 = config.ipv6,
 	DEBUG = variables.DEBUG,
 	SOCKET = config.socket,
 	PORT = config.port,
+	SESSIONS_PATH = config.sessions,
 	index_cache, timetable_cache, ipv4, ipv6, socket;
 global.sessions = {};
 
@@ -125,7 +126,7 @@ function cleanSessions() {
 		}
 	}
 	console.log('[core] Cleaned ' + cleaned + ' sessions');
-	fs.writeFileSync('sessions.json', JSON.stringify(global.sessions));
+	fs.writeFileSync(SESSIONS_PATH, JSON.stringify(global.sessions));
 	console.log('[core] Wrote ' + Object.keys(global.sessions).length + ' sessions to disk');
 }
 
@@ -196,7 +197,7 @@ process.on('SIGINT', function() {
 		ipv4.close(function() { global.ipv4Done = true; });
 		ipv6.close(function() { global.ipv6Done = true; });
 	}
-	fs.writeFileSync('sessions.json', JSON.stringify(global.sessions));
+	fs.writeFileSync(SESSIONS_PATH, JSON.stringify(global.sessions));
 	console.log('[core] Saved sessions');
 });
 
@@ -593,10 +594,10 @@ if (process.platform !== 'win32' && SOCKET) {
 
 setInterval(cleanSessions, 900000); // clean expired sessions every 15 minutes
 
-if (fs.existsSync('sessions.json')) {
+if (fs.existsSync(SESSIONS_PATH)) {
 	console.log('[core] Loading sessions...');
 	try {
-		global.sessions = JSON.parse(fs.readFileSync('sessions.json'));
+		global.sessions = JSON.parse(fs.readFileSync(SESSIONS_PATH));
 		console.log('[core] Success!');
 	} catch (e) {
 		console.warn('[sessions_warn] Failed to load sessions.json:', e);

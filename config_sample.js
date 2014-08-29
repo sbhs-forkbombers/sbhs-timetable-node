@@ -15,5 +15,7 @@ module.exports = {
 	/* Listen on a UNIX socket. If you don't know what this is, ignore it */
 	'socket': false,
 	/* port to listen to. You can probably leave this on the default (8080) */
-	'port': 8080
+	'port': 8080,
+	/* location of sessions.json - defaults to root directory */
+	'sessions': 'sessions.json'
 };

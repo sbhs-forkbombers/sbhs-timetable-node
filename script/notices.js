@@ -38,6 +38,28 @@ function handleTopPane() {
 	} else {
 		res += '<h1 class="notices-header">Notices for ' + belltimes.date + ' (Week ' + belltimes.week + belltimes.weekType + ')</h1><table><tbody>';
 	}
+	if (window.barcodenews) {
+		res += '<tr id="barcodenews" class="notice-row notice" style="line-height: 1.5">';
+		res += '<td class="notice-target animated">All Students and Staff</td>';
+		res += '<td class="notice-data"><h2 class="notice-title">Today\'s Barcode News</h2><div class="notices-hidden" id="nbarcodenews-hidden">';
+		res += '<div id="nbarcodenews-txt" class="notice-content">';
+		for (var j in window.barcodenews.content.current) {
+			list = window.barcodenews.content.current[j];
+			res += '<strong style="font-family: Roboto Slab;">';
+			if (list.years[0] !== 'all' && list.years.length > 1) {
+				res += 'Years ' + list.years.join(', ');
+			}
+			else if (list.years[0] !== 'all' && list.years.length == 1) {
+				res += 'Year ' + list.years[0];
+			}
+			else {
+				res += 'Everyone';
+			}
+			res += '</strong>';
+			res +=': ' + list.content + '<br />';
+		}
+		res += '</div></div></td></tr>';
+	}
 	for (var i in sorted) {
 		list = window.notices.notices[sorted[i]];
 		for (var j in list) {
@@ -86,6 +108,30 @@ function handleNotices(err) {
 	updateSidebarStatus();
 }
 
+function handleBarcodeNews() {
+	/*jshint validthis: true */
+	'use strict';
+	var res = JSON.parse(this.responseText);
+	if (res.content) {
+		window.barcodenews = res;
+		handleTopPane();
+	}
+}
+
+function loadBarcodeNews() {
+	'use strict';
+	var xhr;
+	var date = getNextSchoolDay();
+	var ds = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+
+	if (getLoggedIn()) {
+		xhr = new XMLHttpRequest();
+		xhr.onload = handleBarcodeNews;
+		xhr.open('GET', '/api/barcodenews.json?date='+ds, true);
+		xhr.send();
+	}
+}
+
 function loadNotices() {
 	'use strict';
 	window.noticesCached = false;
@@ -109,4 +155,7 @@ function loadNotices() {
 	xhr.onload = handleNotices;
 	xhr.open('GET', '/api/notices.json?date='+ds, true);
 	xhr.send();
+	loadBarcodeNews();
 }
+
+
