@@ -81,7 +81,7 @@
 .arrow {
 	height: 0;
 	width: 0;
-	border: 25px solid transparent;
+	border: 25px solid white;
 	opacity: 0.25;
 	position: fixed;
 	z-index: 4;
@@ -109,14 +109,16 @@
 }
 
 #left-pane-arrow {
-	border-left-color: white;
+	border-right-color: transparent;
+	border-top-color: transparent;
+	border-bottom-color: transparent;
 	left: 0;
 	top: 75%;
 }
 
 #left-pane-arrow.expanded {
 	border-left-color: transparent;
-	border-right-color: white;
+	border-right-color: inherit;
 	left: -25px;
 }
 #left-pane {
@@ -158,7 +160,9 @@
 #top-pane-arrow {
 	top: 0;
 	left: 15%;
-	border-top-color: white;
+	border-right-color: transparent;
+	border-left-color: transparent;
+	border-bottom-color: transparent;
 	z-index: 5;
 }
 
@@ -221,7 +225,10 @@
 }
 
 #right-pane-arrow {
-	border-right-color: white;
+	border-top-color: transparent;
+	border-left-color: transparent;
+	border-bottom-color: transparent;
+
 	right: 0;
 	top: 75%;
 }
@@ -373,8 +380,10 @@ td {
 }
 
 #dropdown-arrow {
-	border: 7px solid transparent;
-	border-right-color: white;
+	border: 7px solid white;
+	border-left-color: transparent;
+	border-bottom-color: transparent;
+	border-top-color: transparent;
 	position: relative;
 	opacity: 1;
 	right: 2px;
@@ -386,7 +395,7 @@ td {
 
 #dropdown-arrow.expanded {
 	border-right-color: transparent;
-	border-top-color: white;
+	border-top-color: inherit;
 	bottom: -6px;
 }
 

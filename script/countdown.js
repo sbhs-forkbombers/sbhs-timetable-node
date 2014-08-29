@@ -375,7 +375,7 @@ function domReady() {
 	};
 
 	var showThings = function() {
-		$('.arrow').css({ 'visibility': 'visible', 'opacity': 0.25 });
+		$('.arrow').css({ 'visibility': 'visible', 'opacity': 'inherit' });
 		$('body').css({ 'cursor': 'default' });
 		$('#links,.really-annoying,#sidebar').velocity('stop').velocity({ 'opacity': 1 });
 		last_screen_tap = Date.now();

@@ -330,8 +330,11 @@ function onRequest(req, res) {
 	if (uri.pathname === '/') { // TODO cache two different versions of index for logged-in and not logged in.
 		/* Main page */
 		var scheme = {};
-		if ('colour' in uri.query) {
-			scheme = colours.get(uri.query.colour);
+		if ('colour' in uri.query || 'invert' in uri.query) {
+			if (!('colour' in uri.query)) {
+				uri.query.colour = 'default';
+			}
+			scheme = colours.get(uri.query.colour, 'invert' in uri.query);
 		}
 		else {
 			scheme = colours.getFromUriQuery(uri.query);
@@ -396,7 +399,7 @@ function onRequest(req, res) {
 		contentType = 'image/x-icon';
 		filePath = 'static/favicon.ico';
 		checkFile(filePath, req, unchanged, changed);
-	} else if (uri.pathname == '/static/icon-hires.png') {
+	} else if (uri.pathname == '/static/icon-hires.png' || uri.pathname == '/static/icon-hires.ico') {
 		/* hires icon */
 		contentType = 'image/png';
 		filePath = 'static/icon-hires.png';
