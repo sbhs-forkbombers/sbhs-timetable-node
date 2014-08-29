@@ -136,9 +136,20 @@ html
 			a(href="/faq.html", title="FAQ") FAQ
 		div.nomobile#update
 			if colour.fg == 'b388ff'
+				//- purple
 				|Shout-out to Nelson. Hi.
+			else if colour.fg == 'e84e40'
+				//- red
+				|Hi Jayden.
+			else if colour.fg == '8bc34a'
+				//- green
+				|Green's so fancy. You already know.
 			else
-				a(href="/?colour=purple",title="PURUURURURURUPLE!!11111!!!eleven1!!!") DIFFERENT COLOURS?
+				a(href="/?colour=purple",title="PURUURURURURUPLE!!11111!!!eleven1!!!") PURPLE?!?&nbsp;
+				a(href="/?colour=red",title="RED?!?")  RED :O&nbsp;
+				a(href="/?colour=green",title="GREEEEEEEEN")  GREEN!!!&nbsp;
+			yield
+			a(href=query+"&invert=1",title="HIGH CONTRAST MODE") &nbsp;INVERT IT.
 		div.nomobile#expand-toggle
 			div#expand.mega-octicon.octicon-screen-full
 			div#collapse.mega-octicon.octicon-screen-normal

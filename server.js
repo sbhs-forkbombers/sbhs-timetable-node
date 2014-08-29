@@ -347,7 +347,8 @@ function onRequest(req, res) {
 			reallyInHolidays: schoolday.actualHolidaysFinished(),
 			grooveOverride: 'groove' in uri.query,
 			testing: 'testing' in uri.query,
-			colour: scheme
+			colour: scheme,
+			query: '?colour='+uri.query.colour
 		});
 		if (index_cache == serverError) {
 			httpHeaders(res, req, 500, 'text/html', true);
