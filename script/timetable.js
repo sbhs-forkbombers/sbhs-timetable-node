@@ -104,7 +104,7 @@ function handleLeftPane() {
 				idx = y;
 			}
 			if (cancelled) {
-				room = "N/A";
+				room = 'N/A';
 			}
 			html += '<tr'+(cancelled?' class="cancelled changed"':'')+'><td class="subject" title="'+subjName+'" onclick="expandSubject(event,'+i+')">'+timetable[i].year+prefix+'<strong>'+nSubj+'</strong>'+suffix+'</td><td class="teacher'+(teacherChanged?' changed'+(!final?' changeable':''):'')+'" title="'+fullTeacher+'" onclick="teacherExpand(event,'+i+')">'+nTeach+'</td><td'+(roomChanged?' class="changed' + (!final?' changeable"':'"'):'')+'>'+room+'</td></tr>';
 			cancelled = false;

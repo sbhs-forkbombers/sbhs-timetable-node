@@ -20,7 +20,7 @@
 
 function handleTopPane() {
 	'use strict';
-	var entry, list, today = new Date(), res = '';
+	var entry, list, today = new Date(), res = '', j;
 	if (!window.notices) {
 		return;
 	}
@@ -43,7 +43,7 @@ function handleTopPane() {
 		res += '<td class="notice-target animated">All Students and Staff</td>';
 		res += '<td class="notice-data"><h2 class="notice-title">Today\'s Barcode News</h2><div class="notices-hidden" id="nbarcodenews-hidden">';
 		res += '<div id="nbarcodenews-txt" class="notice-content">';
-		for (var j in window.barcodenews.content.current) {
+		for (j in window.barcodenews.content.current) {
 			list = window.barcodenews.content.current[j];
 			res += '<strong style="font-family: Roboto Slab;">';
 			if (list.years[0] !== 'all' && list.years.length > 1) {
@@ -62,7 +62,7 @@ function handleTopPane() {
 	}
 	for (var i in sorted) {
 		list = window.notices.notices[sorted[i]];
-		for (var j in list) {
+		for (j in list) {
 			entry = list[j];
 			res += '<tr id="'+entry.id+'" class="notice' + entry.years.join(' notice') + ' notice-row ' + (entry.isMeeting ? 'meeting' : '') + '">';
 			res += '<td class="notice-target animated">'+entry.dTarget+'</td>';
