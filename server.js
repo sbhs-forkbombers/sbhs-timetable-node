@@ -400,7 +400,7 @@ function onRequest(req, res) {
 		contentType = 'image/x-icon';
 		filePath = 'static/favicon.ico';
 		checkFile(filePath, req, unchanged, changed);
-	} else if (uri.pathname == '/static/icon-hires.png' || uri.pathname == '/static/icon-hires.ico') {
+	} else if (uri.pathname == '/static/icon-hires.png' || uri.pathname == '/static/icon-hires.ico' || uri.pathname == '/icon.png') {
 		/* hires icon */
 		contentType = 'image/png';
 		filePath = 'static/icon-hires.png';
