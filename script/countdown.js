@@ -373,7 +373,7 @@ function domReady() {
 		if ((Date.now() - last_screen_tap) > 3000) {
 			$('.arrow').css({ opacity: 0 }).css({ visibility: 'hidden' });
 			$('body').css({cursor: 'none'});
-			$('#links,.really-annoying,#sidebar').velocity('stop').velocity({ 'opacity': 0 });
+			$('#update,#links,.really-annoying,#sidebar').velocity('stop').velocity({ 'opacity': 0 });
 		}
 		else {
 			scrntap_id = setTimeout(scrntap, 3000 - (Date.now() - last_screen_tap));
@@ -383,7 +383,7 @@ function domReady() {
 	var showThings = function() {
 		$('.arrow').css({ 'visibility': 'visible', 'opacity': 'inherit' });
 		$('body').css({ 'cursor': 'default' });
-		$('#links,.really-annoying,#sidebar').velocity('stop').velocity({ 'opacity': 1 });
+		$('#update,#links,.really-annoying,#sidebar').velocity('stop').velocity({ 'opacity': 1 });
 		last_screen_tap = Date.now();
 		if (scrntap_id !== 0) {
 			clearTimeout(scrntap_id);
@@ -397,10 +397,11 @@ function domReady() {
 		document.addEventListener('MSPointerDown', showThings);
 	}
 	document.addEventListener('mousemove', showThings);
+	document.addEventListener('onclick', showThings);
 	document.addEventListener('touchstart', showThings);
 	scrntap_id = setTimeout(scrntap, 5000);
 
-	setTimeout(fadeOutUpdate, 10000);
+	//setTimeout(fadeOutUpdate, 10000);
 
 	$('#expand,#collapse').on('click', toggleExpansion);
 

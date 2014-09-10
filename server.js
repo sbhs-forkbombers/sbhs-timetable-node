@@ -334,10 +334,18 @@ function onRequest(req, res) {
 			if (!('colour' in uri.query)) {
 				uri.query.colour = 'default';
 			}
-			scheme = colours.get(uri.query.colour, 'invert' in uri.query);
+			scheme = colours.get(uri.query.colour, false);
 		}
 		else {
 			scheme = colours.getFromUriQuery(uri.query);
+		}
+		if ('invert' in uri.query) {
+			var tmp = scheme.highBg;
+			scheme.highBg = scheme.highFg;
+			scheme.highFg = tmp;
+			tmp = scheme.bg;
+			scheme.bg = scheme.fg;
+			scheme.fg = tmp;
 		}
 		target = index_cache({
 			title: '',
