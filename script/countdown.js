@@ -271,6 +271,9 @@ function domReady() {
 		if (topExpanded) {
 			collapsePane('top');
 		}
+		if ((window.innerWidth <= 450) && (rightExpanded)) {
+			collapsePane('right');
+		}
 		togglePane('left');
 	});
 
@@ -288,6 +291,9 @@ function domReady() {
 		if (topExpanded) {
 			collapsePane('top');
 		}
+		if ((window.innerWidth <= 450) && (leftExpanded)) {
+			collapsePane('left');
+		}
 		togglePane('right');
 	});
 
@@ -301,7 +307,7 @@ function domReady() {
 		}
 	});
 
-	$('#left-pane-arrow').swipeRight(function() {
+	$('#left-pane-target').swipeRight(function() {
 		if (topExpanded) {
 			collapsePane('top');
 		}
@@ -312,7 +318,7 @@ function domReady() {
 		}
 	});
 
-	$('#right-pane-arrow').swipeLeft(function() {
+	$('#right-pane-target').swipeLeft(function() {
 		if (topExpanded) {
 			collapsePane('top');
 		}
@@ -323,7 +329,7 @@ function domReady() {
 		}
 	});
 
-	$('#top-pane-arrow').swipeDown(function() {
+	$('#top-pane-target').swipeDown(function() {
 		if (rightExpanded) {
 			collapsePane('right');
 		}
@@ -337,12 +343,12 @@ function domReady() {
 		collapsePane('left');
 	});
 
-	$('#top-pane-arrow').swipeUp(function() {
-		collapsePane('top');
-	});
-
 	$('#right-pane').swipeRight(function() {
 		collapsePane('right');
+	});
+
+	$('#bottom-pane-target').swipeUp(function() {
+		collapsePane('top');
 	});
 
 	$('#cached').swipeDown(function() {

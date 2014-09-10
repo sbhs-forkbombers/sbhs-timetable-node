@@ -84,7 +84,7 @@
 	border: 25px solid white;
 	opacity: 0.25;
 	position: fixed;
-	z-index: 4;
+	z-index: 5;
 	-webkit-transition: all 1s ease;
 	-moz-transition: all 1s ease;
 	-ms-transition: all 1s ease;
@@ -163,7 +163,6 @@
 	border-right-color: transparent;
 	border-left-color: transparent;
 	border-bottom-color: transparent;
-	z-index: 5;
 }
 
 #top-pane.expanded {
@@ -228,7 +227,6 @@
 	border-top-color: transparent;
 	border-left-color: transparent;
 	border-bottom-color: transparent;
-
 	right: 0;
 	top: 75%;
 }
@@ -239,6 +237,39 @@
 	right: -25px;
 }
 
+.target {
+	position: fixed;
+	z-index: 4;
+	background-color: transparent;
+}
+
+#left-pane-target {
+	left: 0;
+	top: 0;
+	height: 100%;
+	width: 5%;
+}
+
+#right-pane-target {
+	right: 0;
+	top: 0;
+	height: 100%;
+	width: 5%;
+}
+
+#top-pane-target {
+	top: 0;
+	left: 0;
+	height: 10%;
+	width: 100%;
+}
+
+#bottom-pane-target {
+	bottom: 0;
+	left: 0;
+	height: 10%;
+	width: 100%;
+}
 
 .changed {
 	color: #ffc107;
