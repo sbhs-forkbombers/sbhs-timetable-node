@@ -52,7 +52,7 @@ function handleLeftPane() {
 				prefix = subj[0];
 				subj = subj.substr(1);
 			}
-			if (timetable[i].changed) {
+			if (timetable[i].changed && todayNames.variationsFinalised) {
 				if (timetable[i].hasOwnProperty('hasCover') && timetable[i].varies) { // don't show anything because I really don't get what the point of setting a casual but then not actually using aforementioned casual is.
 					if (!timetable[i].hasCover) {
 						cancelled = true;
@@ -112,13 +112,14 @@ function handleLeftPane() {
 			teacherChanged = false;
 		}
 	}
+	/*// Variations should not be shown if not final
 	html += '</tbody></table><div class="changeable-status">';
 	if (todayNames.variationsFinalised) {
 		html += 'This info is final</div>';
 	}
 	else {
 		html += 'This info may change</div>';
-	}
+	}*/
 	pane.innerHTML = html;
 
 }
