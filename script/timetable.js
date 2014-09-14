@@ -112,7 +112,7 @@ function handleLeftPane() {
 			teacherChanged = false;
 		}
 	}
-	html += '</tbody></table>'
+	html += '</tbody></table>';
 	// Variations should not be shown if not final
 	/*html += '><div class="changeable-status">';
 	if (todayNames.variationsFinalised) {
