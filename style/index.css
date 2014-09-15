@@ -45,9 +45,9 @@
 	right: 0;
 	padding-right: 2px;
 	top: 0;
-	z-index: 5;
 	text-align: right;
 	font-size: 0.9em;
+	z-index: 2;
 }
 
 #top-line-notice {
@@ -56,14 +56,6 @@
 	left: 0;
 	width: 100%;
 	text-align: center;
-}
-
-.really-annoying {
-	position: fixed;
-	font-size: 3em;
-	font-weight: 100;
-	z-index: -1;
-	color: #b0120a;
 }
 
 #tl {
@@ -82,7 +74,7 @@
 	border: 25px solid white;
 	opacity: 0.25;
 	position: fixed;
-	z-index: 6;
+	z-index: 3;
 	-webkit-transition: all 1s ease;
 	-moz-transition: all 1s ease;
 	-ms-transition: all 1s ease;
@@ -100,7 +92,7 @@
 	padding: 10px;
 	position: fixed;
 	top: 0;
-	z-index: 5;
+	z-index: 3;
 	overflow: auto;
 	width: 40%;
 	background-color: rgba(0,0,0,0.80);
@@ -233,22 +225,22 @@
 
 .target {
 	position: fixed;
-	z-index: 4;
 	background-color: transparent;
+	z-index: 1;
 }
 
 #left-pane-target {
 	left: 0;
 	top: 0;
 	height: 100%;
-	width: 5%;
+	width: 10%;
 }
 
 #right-pane-target {
 	right: 0;
 	top: 0;
 	height: 100%;
-	width: 5%;
+	width: 10%;
 }
 
 #top-pane-target {
@@ -261,7 +253,7 @@
 #bottom-pane-target {
 	bottom: 0;
 	left: 0;
-	height: 10%;
+	height: 1%;
 	width: 100%;
 }
 
@@ -389,14 +381,15 @@ td {
 	position: fixed;
 	bottom: 0;
 	left: 0;
+	z-index: 2;
 }
 
 #update {
 	position: fixed;
 	bottom: 0;
 	text-align: center;
-	z-index: -1;
 	width: 100%;
+	z-index: 2;
 }
 
 #cached {
@@ -435,8 +428,8 @@ td {
 	position: fixed;
 	left: 2px;
 	top: 2px;
-	z-index: 1;
 	cursor: pointer;
+	z-index: 2;
 }
 
 #expand-toggle img {
