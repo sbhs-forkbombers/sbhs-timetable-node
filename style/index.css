@@ -74,7 +74,7 @@
 	border: 25px solid white;
 	opacity: 0.25;
 	position: fixed;
-	z-index: 3;
+	z-index: 4;
 	-webkit-transition: all 1s ease;
 	-moz-transition: all 1s ease;
 	-ms-transition: all 1s ease;
