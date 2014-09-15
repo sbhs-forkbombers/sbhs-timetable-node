@@ -24,7 +24,6 @@
 	left: 0;
 	width: 100%;
 	text-align: center;
-	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
 	font-weight: 100;
 }
 
@@ -34,7 +33,6 @@
 
 #in-label {
 	font-size: 1em;
-	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
 	font-weight: 400;
 }
 
@@ -63,7 +61,6 @@
 .really-annoying {
 	position: fixed;
 	font-size: 3em;
-	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
 	font-weight: 100;
 	z-index: -1;
 	color: #b0120a;
@@ -85,7 +82,7 @@
 	border: 25px solid white;
 	opacity: 0.25;
 	position: fixed;
-	z-index: 5;
+	z-index: 6;
 	-webkit-transition: all 1s ease;
 	-moz-transition: all 1s ease;
 	-ms-transition: all 1s ease;
@@ -103,7 +100,7 @@
 	padding: 10px;
 	position: fixed;
 	top: 0;
-	z-index: 3;
+	z-index: 5;
 	overflow: auto;
 	width: 40%;
 	background-color: rgba(0,0,0,0.80);
@@ -147,7 +144,6 @@
 	width: 100%;
 	text-align: center;
 	font-size: 2em;
-	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
 	font-weight: 100;
 	cursor: default;
 }
@@ -195,7 +191,6 @@
 	width: 100%;
 	text-align: center;
 	font-size: 1.5em;
-	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
 	font-weight: 100;
 	cursor: default;
 	padding-bottom: 20px;
@@ -210,12 +205,10 @@
 }
 
 #right-pane .period {
-	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
 	font-weight: 400;
 }
 
 #right-pane .break {
-	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
 	font-weight: 100;
 	font-style: italic;
 }
