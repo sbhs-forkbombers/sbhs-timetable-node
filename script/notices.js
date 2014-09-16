@@ -81,11 +81,13 @@ function handleTopPane() {
 		/*jshint validthis: true*/
 		var id = this.id;
 		var el = $('#n'+id+'-hidden');
-		if (el.hasClass('notice-hidden')) {
-			el.velocity('stop').removeClass('notice-hidden').velocity('slideDown');
-		}
-		else {
-			el.velocity('stop').velocity('slideUp').addClass('notice-hidden');
+		if (!el.hasClass('velocity-animating')) {
+			if (el.hasClass('notice-hidden')) {
+				el.velocity('stop').removeClass('notice-hidden').velocity('slideDown');
+			}
+			else {
+				el.velocity('stop').velocity('slideUp').addClass('notice-hidden');
+			}
 		}
 	});
 

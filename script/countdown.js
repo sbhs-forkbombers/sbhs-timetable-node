@@ -106,7 +106,7 @@ function collapsePane(p) {
 	var el = $('#'+p+'-pane');
 	var cfg = {};
 	cfg[p] = '-110%';
-	el.velocity('stop').velocity(cfg, 1500, 'ease');
+	el.velocity('stop').velocity(cfg, 750, 'ease');
 	$('#'+p+'-pane-arrow').removeClass('expanded');
 	window[p+'Expanded'] = false;
 }
