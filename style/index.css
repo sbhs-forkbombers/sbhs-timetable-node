@@ -75,11 +75,11 @@
 	opacity: 0.25;
 	position: fixed;
 	z-index: 4;
-	-webkit-transition: all 1s ease;
-	-moz-transition: all 1s ease;
-	-ms-transition: all 1s ease;
-	-o-transition: all 1s ease;
-	transition: all 1s ease;
+	-webkit-transition: all 500ms ease;
+	-moz-transition: all 500ms ease;
+	-ms-transition: all 500ms ease;
+	-o-transition: all 500ms ease;
+	transition: all 500ms ease;
 	cursor: pointer;
 }
 
@@ -266,11 +266,11 @@
 }
 
 .animated {
-	-webkit-transition: all 500ms ease;
-	-moz-transition: all 500ms ease;
-	-ms-transition: all 500ms ease;
-	-o-transition: all 500ms ease;
-	transition: all 500ms ease;
+	-webkit-transition: all 300ms ease;
+	-moz-transition: all 300ms ease;
+	-ms-transition: all 300ms ease;
+	-o-transition: all 300ms ease;
+	transition: all 300ms ease;
 }
 
 .notices-header {
@@ -414,7 +414,6 @@ td {
 #dropdown-arrow.expanded {
 	border-right-color: transparent;
 	border-top-color: inherit;
-	bottom: -6px;
 }
 
 #verbose-hidden {
