@@ -29,15 +29,18 @@
 
 #period-label {
 	font-size: 5em;
+	z-index: -1;
 }
 
 #in-label {
 	font-size: 1em;
 	font-weight: 400;
+	z-index: -1;
 }
 
 #countdown-label {
 	font-size: 7em;
+	z-index: -1;
 }
 
 #sidebar {
@@ -225,8 +228,8 @@
 
 .target {
 	position: fixed;
-	background-color: transparent;
-	z-index: 1;
+/*	background-color: rgba(255, 0, 0, 0.5); DEBUG ONLY*/
+	z-index: 0;
 }
 
 #left-pane-target {
@@ -389,7 +392,7 @@ td {
 	bottom: 0;
 	text-align: center;
 	width: 100%;
-	z-index: 2;
+	z-index: 1;
 }
 
 #cached {
