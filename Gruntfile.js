@@ -29,6 +29,7 @@ module.exports = function(grunt) {
 		closureCompiler: {
 			options: {
 				compilerFile: CLOSURE,
+				checkModified: true,
 				compilerOpts: {
 					compilation_level: 'SIMPLE_OPTIMIZATIONS',
 					language_in: 'ECMASCRIPT5_STRICT'
