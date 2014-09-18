@@ -199,6 +199,8 @@ process.on('SIGINT', function() {
 	}
 	fs.writeFileSync(SESSIONS_PATH, JSON.stringify(global.sessions));
 	console.log('[core] Saved sessions');
+	console.log('[core] Exiting');
+	process.exit(0);
 });
 
 
@@ -418,10 +420,6 @@ function onRequest(req, res) {
 		contentType = 'text/plain';
 		filePath = 'COPYING';
 		checkFile(filePath, req, unchanged, changed);
-	} else if (uri.pathname.match('^/([.]ht.*)|([.]config[.]js)')) {
-		/* Disallow pattern */
-		httpHeaders(res, req, 403, 'text/html');
-		fs.createReadStream('static/403.html').pipe(res);
 	} else if (uri.pathname == '/try_do_oauth') {
 		/* OAuth2 attempt */
 		if ('app' in uri.query) {
@@ -503,11 +501,6 @@ function onRequest(req, res) {
 		} else {
 			res.end('{"error": "not logged in"}');
 		}
-	} else if (uri.pathname == '/browserconfig.xml') {
-		/* Windows thingies, ignore this */
-		filePath = 'w8tile/browserconfig.xml';
-		contentType = 'text/xml';
-		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname == '/win8' && DEBUG) {
 		/* STOP error :( */
 		httpHeaders(res, req, 500, 'text/html');
@@ -589,7 +582,6 @@ if (!NOHTTP) {
 }
 
 /* Start the server on a Unix socket if we aren't running on Windows */
-/* All values for process.platform as of Node.js v0.10.29 support Unix sockets except Windows */
 if (process.platform !== 'win32' && SOCKET) {
 	socket = http.createServer();
 	socket.name = 'socket';
@@ -598,10 +590,11 @@ if (process.platform !== 'win32' && SOCKET) {
 	socket.path = '/tmp/sbhstimetable.socket';
 	socket.listen(socket.path);
 	fs.chmod(socket.path, '777');
-} else if (process.platform == 'win32' && NOHTTP) {
-	console.warn('[core_warn] NOHTTP is true, but host platform is Windows! App cannot be accessed in any way!');
+	if (NOHTTP) {
+		console.warn('[core_warn] NOHTTP is true, but host platform is Windows! App cannot be accessed in any way! (hint: use Linux, OS X, or any other UNIX-like)');
+	}
 } else if (!SOCKET && NOHTTP) {
-	console.warn('[core_warn] NOHTTP is true, but socket not activated! Disable NOHTTP or set `socket` to true in config.js');
+	console.warn('[core_warn] NOHTTP is true, but socket not activated! Disable NOHTTP or make `socket\' true in config.js');
 }
 
 setInterval(cleanSessions, 900000); // clean expired sessions every 15 minutes
