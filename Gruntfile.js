@@ -24,6 +24,18 @@ module.exports = function(grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 		GIT_RV: fs.readFileSync('.git/refs/heads/master').toString().trim(),
 		GIT_RV_SHORT: fs.readFileSync('.git/refs/heads/master').toString().trim().substr(0,6),
+		'closure-compiler': {
+			/* NOTE: to use closure-compiler and thus release mode you must have CLOSURE_PATH pointing to a
+			 * local closure-compiler in your environment */
+			frontend: {
+				js: ['script/*.js', '!script/belltimes.concat.js'],
+				jsOutputFile: 'script/belltimes.concat.js',
+				options: {
+					compilation_level: 'SIMPLE_OPTIMIZATIONS',
+					language_in: "ECMASCRIPT5"
+				}
+			}
+		},
 		uglify: {
 			options: {
 				banner: '/*! <%= pkg.name %> rev. <%= GIT_RV_SHORT %> License: https://www.gnu.org/licenses/agpl-3.0.html (C) 2014.' +
@@ -47,7 +59,7 @@ module.exports = function(grunt) {
 			}
 		},
 		jshint: {
-			files: ['script/*.js', 'server.js', 'lib/*.js'],
+			files: ['script/*.js', '!script/belltimes.concat.js', 'server.js', 'lib/*.js'],
 			options: {
 				jshintrc: true,
 				reporter: require('jshint-stylish'),
@@ -161,6 +173,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-closure-compiler');
 
 	grunt.registerMultiTask('delete', 'delete stuff', function() {
 		if (process.platform !== 'win32') {
@@ -181,8 +194,7 @@ module.exports = function(grunt) {
 		grunt.log.writeln('reloaded process.');
 	});
 
-	grunt.registerTask('minify', ['uglify', 'cssmin']);
-	grunt.registerTask('release', ['jshint', 'concat', 'minify', 'copy']);
+	grunt.registerTask('release', ['closure-compiler', 'cssmin', 'copy']);
 	grunt.registerTask('test', ['jshint']);
 	grunt.registerTask('default', ['delete', 'concat', 'concurrent:develop', 'delete']);
 };
