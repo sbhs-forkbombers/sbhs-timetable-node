@@ -61,19 +61,21 @@ html
 					|console.log('Will stop music in ' + (holEnd - Date.now()) + 'ms')
 				else if holEnd - Date.now() < (1000 * 60 * 60 * 24 * 3)
 					|function holidaysOver() {
-					|	$('audio').each(function() { this.play() });
+					|	$('audio').each(function() { this.pause() });
 					|	$('#disable-grooviness').css({'display': 'block'});
-					|	$('body,#left-pane').css({'background-image': 'url(/static/HOLIDAYS.jpg)'});
+					|	$('body,.pane').css({'background-image': 'url(/static/HOLIDAYS.jpg)', 'color':'black'});
 					|	window.HOLIDAYS = true;
 					|	loadComplete();
 					|}
 					|function playTheGroove() {
 					|	$('audio').each(function() { this.play() });
 					|	$('#disable-grooviness').css({'display': 'block'});
-					|	$('body,.pane').css({'background-image': 'url(/static/ALMOSTHOLIDAYS.jpg)'});
+					|	$('body,.pane').css({'background-image': 'url(/static/ALMOSTHOLIDAYS.jpg)','color':'black'});
 					|	var b = function snazzyCountdown() {
-					|		snazzify('#countdown-label,#in-label,#period-label');
-					|		setTimeout(b, 250);
+					|		snazzify('#countdown-label');
+					|		snazzify('#in-label');
+					|		snazzify('#period-label');
+					|		setTimeout(b, 500);
 					|	}
 					|	setTimeout(b, 250);
 					|}

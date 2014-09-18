@@ -432,11 +432,13 @@ function loadComplete() {
 		updateCountdownLabel();
 		handleRightPane();
 		setInterval(updateCountdownLabel, 1000);
+		$(document.getElementById('disable-grooviness')).velocity({'font-size': '32px'});
 		var stopSnazzify = setInterval(function() {
 			snazzify(document.getElementById('disable-grooviness'));
 		}, 500);
 		setTimeout(function() {
 			clearInterval(stopSnazzify);
+			$(document.getElementById('disable-grooviness')).velocity({'font-size': '20px'});
 		}, 500*20);
 	}
 	else {

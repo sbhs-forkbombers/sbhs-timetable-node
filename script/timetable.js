@@ -134,18 +134,18 @@ function getLoggedIn() {
 function expandSubject(event, id) {
 	'use strict';
 	if (todayNames.timetable[id].expanded) {
-		$('.subj-expand', event.toElement.parentNode).velocity('stop').velocity('transition.slideLeftBigOut');
+		$('.subj-expand', event.currentElement.parentNode).velocity('stop').velocity('transition.slideLeftBigOut');
 		todayNames.timetable[id].expanded = false;
 	}
 	else {
-		$('.subj-expand', event.toElement.parentNode).velocity('stop').velocity('transition.slideLeftBigIn');
+		$('.subj-expand', event.currentElement.parentNode).velocity('stop').velocity('transition.slideLeftBigIn');
 		todayNames.timetable[id].expanded = true;
 	}
 }
 
 function teacherExpand(event, id) {
 	'use strict';
-	var el = event.toElement.parentNode;
+	var el = event.currentElement.parentNode;
 	if (el.tagName.toLowerCase() === 'span') {
 		console.log('#nope');
 		el = el.parentNode;
