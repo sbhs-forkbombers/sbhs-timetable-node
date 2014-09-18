@@ -18,42 +18,24 @@
  */
 
 /* These styles are only used on the full timetable display */
-h1 {
+body {
 	font-family: "Roboto Condensed", "Segoe UI", "Helvetica Neue", sans-serif;
-	font-weight: 300;
-	font-size: 3em;
-}
-
-.header {
-	font-size: 1.25em;
-	font-family: "Roboto Condensed", "Segoe UI", "Helvetica Neue", sans-serif;
-	font-weight: 400;
+	overflow: hidden;
 }
 
 table {
 	font-size: 2em;
-	font-family: "Roboto Condensed", "Segoe UI", "Helvetica Neue", sans-serif;
 	font-weight: 300;
-}
-
-#timetable-wrapper {
-	height: 400px;
-	width: 620px;
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	margin-top: -200px;
-	margin-left: -300px;
-	overflow: visible;
-}
-
-body {
-	overflow: hidden;
 }
 
 td {
 	padding-left: 5px;
 	padding-right: 5px;
+}
+
+h1 {
+	font-weight: 300;
+	font-size: 3em;
 }
 
 .arrow {
@@ -78,6 +60,28 @@ td {
 
 .arrow:hover {
 	opacity: 1;
+}
+
+.day-1, .day-2, .day-3, .day-4 {
+	left: 400%;
+}
+
+.day-0 {
+	left: 0;
+}
+
+.header {
+	font-size: 1.25em;
+	font-weight: 400;
+}
+
+.wk-A {
+	position: absolute;
+}
+
+.wk-B, .wk-C {
+	position: absolute;
+	top: 300%;
 }
 
 #arrow-down {
@@ -108,19 +112,14 @@ td {
 	border-left-color: white;
 }
 
-.wk-A {
+#timetable-wrapper {
+	height: 400px;
+	width: 620px;
 	position: absolute;
+	left: 50%;
+	top: 50%;
+	margin-top: -200px;
+	margin-left: -300px;
+	overflow: visible;
 }
 
-.wk-B, .wk-C {
-	position: absolute;
-	top: 300%;
-}
-
-.day-1, .day-2, .day-3, .day-4 {
-	left: 400%;
-}
-
-.day-0 {
-	left: 0;
-}

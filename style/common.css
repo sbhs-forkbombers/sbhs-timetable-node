@@ -18,12 +18,6 @@
  */
 
 /* These styles are used on all pages */
-body {
-	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
-	background-color: black;
-	color: white;
-}
-
 a {
 	color: white;
 	-webkit-transition: all 300ms ease;
@@ -35,6 +29,12 @@ a {
 
 a:hover {
 	color: #03a9f4;
+}
+
+body {
+	font-family: "Roboto", "Segoe UI", "Helvetica Neue", sans-serif;
+	background-color: black;
+	color: white;
 }
 
 /* Font smoothing weirdness for OS X */

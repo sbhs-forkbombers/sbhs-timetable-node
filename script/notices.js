@@ -45,7 +45,7 @@ function handleTopPane() {
 		res += '<div id="nbarcodenews-txt" class="notice-content">';
 		for (j in window.barcodenews.content.current) {
 			list = window.barcodenews.content.current[j];
-			res += '<strong style="font-family: Roboto Slab;">';
+			res += '<strong>';
 			if (list.years[0] !== 'all' && list.years.length > 1) {
 				res += 'Years ' + list.years.join(', ');
 			}
