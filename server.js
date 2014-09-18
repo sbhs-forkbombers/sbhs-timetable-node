@@ -45,6 +45,11 @@ var	IPV6 = config.ipv6,
 	PORT = config.port,
 	SESSIONS_PATH = config.sessions,
 	index_cache, timetable_cache, ipv4, ipv6, socket;
+
+if (process.platform == 'win32') {
+	SOCKET = false; // Here's a nickel, kid. Get yourself a better OS.
+}
+
 global.sessions = {};
 
 if (!RELEASE) {
@@ -192,6 +197,9 @@ process.on('SIGINT', function() {
 	'use strict';
 	if (SOCKET) {
 		socket.close(function() { global.socketDone = true; });
+		if (fs.exists('/tmp/sbhstimetable.socket')) {
+			fs.unlink('/tmp/sbhstimetable.socket');
+		}
 	}
 	if (!NOHTTP) {
 		ipv4.close(function() { global.ipv4Done = true; });
@@ -581,8 +589,8 @@ if (!NOHTTP) {
 	}
 }
 
-/* Start the server on a Unix socket if we aren't running on Windows */
-if (process.platform !== 'win32' && SOCKET) {
+/* Start the server on a Unix socket */
+if (SOCKET) {
 	socket = http.createServer();
 	socket.name = 'socket';
 	socket.on('request', requestSafeWrapper);
@@ -590,9 +598,6 @@ if (process.platform !== 'win32' && SOCKET) {
 	socket.path = '/tmp/sbhstimetable.socket';
 	socket.listen(socket.path);
 	fs.chmod(socket.path, '777');
-	if (NOHTTP) {
-		console.warn('[core_warn] NOHTTP is true, but host platform is Windows! App cannot be accessed in any way! (hint: use Linux, OS X, or any other UNIX-like)');
-	}
 } else if (!SOCKET && NOHTTP) {
 	console.warn('[core_warn] NOHTTP is true, but socket not activated! Disable NOHTTP or make `socket\' true in config.js');
 }
