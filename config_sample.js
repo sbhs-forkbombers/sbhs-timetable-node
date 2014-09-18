@@ -17,5 +17,9 @@ module.exports = {
 	/* port to listen to. You can probably leave this on the default (8080) */
 	'port': 8080,
 	/* location of sessions.json - defaults to root directory */
-	'sessions': 'sessions.json'
+	'sessions': 'sessions.json',
+
+	/* Runtime settings */
+	/* Location of Closure Compiler jar */
+	'closure': 'node_modules/closurecompiler/compiler/compiler.jar'
 };

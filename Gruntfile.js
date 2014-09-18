@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 var fs = require('fs');
+CLOSURE = require('./config').closure;
 
 module.exports = function(grunt) {
 	'use strict';
@@ -24,16 +25,18 @@ module.exports = function(grunt) {
 		pkg: grunt.file.readJSON('package.json'),
 		GIT_RV: fs.readFileSync('.git/refs/heads/master').toString().trim(),
 		GIT_RV_SHORT: fs.readFileSync('.git/refs/heads/master').toString().trim().substr(0,6),
-		'closure-compiler': {
-			/* NOTE: to use closure-compiler and thus release mode you must have CLOSURE_PATH pointing to a
-			 * local closure-compiler in your environment */
-			frontend: {
-				js: ['script/*.js', '!script/belltimes.concat.js'],
-				jsOutputFile: 'script/belltimes.concat.js',
-				options: {
+
+		closureCompiler: {
+			options: {
+				compilerFile: CLOSURE,
+				compilerOpts: {
 					compilation_level: 'SIMPLE_OPTIMIZATIONS',
-					language_in: "ECMASCRIPT5"
+					language_in: 'ECMASCRIPT5_STRICT'
 				}
+			},
+			compile: {
+				src: ['script/*.js', '!script/belltimes.concat.js'],
+				dest: 'build/script/belltimes.concat.js'
 			}
 		},
 		uglify: {
@@ -173,7 +176,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-concat');
-	grunt.loadNpmTasks('grunt-closure-compiler');
+	grunt.loadNpmTasks('grunt-closure-tools');
 
 	grunt.registerMultiTask('delete', 'delete stuff', function() {
 		if (process.platform !== 'win32') {
@@ -194,7 +197,7 @@ module.exports = function(grunt) {
 		grunt.log.writeln('reloaded process.');
 	});
 
-	grunt.registerTask('release', ['closure-compiler', 'cssmin', 'copy']);
+	grunt.registerTask('release', ['closureCompiler', 'cssmin', 'copy']);
 	grunt.registerTask('test', ['jshint']);
 	grunt.registerTask('default', ['delete', 'concat', 'concurrent:develop', 'delete']);
 };
