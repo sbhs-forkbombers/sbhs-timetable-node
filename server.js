@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /* globals sessions */
-
+process.env.TZ = 'Australia/Sydney';
 var all_start = Date.now();
 console.log('[core] Loading...');
 /* Requires */
