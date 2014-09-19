@@ -79,8 +79,9 @@ html
 					|	}
 					|	setTimeout(b, 250);
 					|}
-					|setTimeout(holidaysOver, now-window.holEnd);
-					|setTimeout(playTheGroove, (now-window.holEnd) - (1000 * 60 * 60));
+					|var now = Date.now();
+					|setTimeout(holidaysOver, window.holEnd - now);
+					|setTimeout(playTheGroove, (window.holEnd - now) - (1000 * 60 * 55));
 
 		script
 			!="window.colour = " + JSON.stringify(colour) + ";"
