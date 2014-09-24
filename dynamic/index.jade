@@ -44,7 +44,7 @@ html
 				include ../style/holidays.css
 			script
 				|window.HOLIDAYS = true;
-				="window.holEnd = " + holEnd
+				="window.holEnd = " + holEnd + ";"
 				|setTimeout(function() {
 				|	$('audio').each(function() { this.pause() });
 				|}, now-window.holEnd);
