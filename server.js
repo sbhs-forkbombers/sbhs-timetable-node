@@ -197,8 +197,8 @@ process.on('SIGINT', function() {
 	'use strict';
 	if (SOCKET) {
 		socket.close(function() { global.socketDone = true; });
-		if (fs.exists('/tmp/sbhstimetable.socket')) {
-			fs.unlink('/tmp/sbhstimetable.socket');
+		if (fs.existsSync('/tmp/sbhstimetable.socket')) {
+			fs.unlinkSync('/tmp/sbhstimetable.socket');
 		}
 	}
 	if (!NOHTTP) {
