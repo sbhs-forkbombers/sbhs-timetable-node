@@ -112,15 +112,15 @@ function handleLeftPane() {
 			teacherChanged = false;
 		}
 	}
-	html += '</tbody></table>';
+	//html += '</tbody></table>';
 	// Variations should not be shown if not final
-	/*html += '><div class="changeable-status">';
+	html += '><div class="changeable-status">';
 	if (todayNames.variationsFinalised) {
 		html += 'This info is final</div>';
 	}
 	else {
 		html += 'This info may change</div>';
-	}*/
+	}
 	pane.innerHTML = html;
 
 }
