@@ -427,6 +427,20 @@ function loadComplete() {
 	/* Do when DOM loaded */
 	'use strict';
 	reloading = false;
+	// TODO enable this when the app goes stable.
+/*	if (/Android/.test(navigator.userAgent) && !('noprompt' in window.localStorage)) {
+		var r = confirm('Hey, look, an Android app (BETA)! Install it now from the Play Store?');
+		if (r) {
+			window.location='https://play.google.com/store/apps/details?id=com.sbhstimetable.sbhs_timetable_android';
+		}
+		else {
+			window.localStorage.noprompt = true;
+		}
+	}
+*/
+	setTimeout(function() {
+		$('#top-update').velocity('fadeOut');
+	}, 10000);
 	if (!window.HOLIDAYS) {
 		calculateUpcomingLesson();
 		updateCountdownLabel();
