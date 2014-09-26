@@ -18,6 +18,9 @@ module.exports = {
 	'port': 8080,
 	/* location of sessions.json - defaults to root directory */
 	'sessions': 'sessions.json',
+	/* force disable holiday mode */
+	'disableHoliday': false,
+
 
 	/* Runtime settings */
 	/* Location of Closure Compiler jar */

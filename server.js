@@ -359,7 +359,7 @@ function onRequest(req, res) {
 		}
 		target = index_cache({
 			title: '',
-			holidays: global.HOLIDAYS || 'holiday' in uri.query,
+			holidays: (global.HOLIDAYS || 'holiday' in uri.query) && !config.disableHoliday,
 			holEnd: schoolday.getHolidaysFinished(),
 			loggedIn: global.sessions[res.SESSID].refreshToken !== undefined,
 			reallyInHolidays: schoolday.actualHolidaysFinished(),
