@@ -163,14 +163,19 @@ function teacherExpand(event, id) {
 function handleTimetable() {
 	/* Fill out the timetable */
 	'use strict';
-	/* jshint validthis: true */
+	/* jshint validthis: true, -W041 */
 	window.timetableCached = false;
-	var lsKey = belltimes.day + belltimes.weekType;
-	var res = JSON.parse(this.responseText);
-	if (res.timetable && !res.hasVariations) {
-		window.localStorage[lsKey] = this.responseText;
+	if (window.belltimes == null || belltimes.status === 'Error') {
+		reloadBelltimes(); // use today.json's date.
 	}
-	else if (!res.timetable) {
+	var res = JSON.parse(this.responseText);
+	if (window.belltimes != null) {
+		var lsKey = belltimes.day + belltimes.weekType;
+		if (res.timetable && !res.hasVariations) {
+			window.localStorage[lsKey] = this.responseText;
+		}
+	}
+	if (!res.timetable) {
 		$('#rtd-status').html('Real-time data inaccessible');
 		return; // we don't want to do that... TODO refresh access token and stuff
 	}
@@ -184,7 +189,9 @@ function handleTimetable() {
 		calculateUpcomingLesson();
 	}
 	handleLeftPane();
-	updatePeriodLabel();
+	if (belltimes.status !== 'Error') {
+		updatePeriodLabel();
+	}
 	updateSidebarStatus();
 }
 
@@ -192,7 +199,7 @@ function loadTimetable() {
 	/* Get the timetable */
 	'use strict';
 	window.timetableCached = false;
-	if ((belltimes.day+belltimes.weekType) in window.localStorage) {
+	if (belltimes && (belltimes.day+belltimes.weekType) in window.localStorage) {
 		window.timetableCached = true;
 		console.log('loading from localStorage');
 		window.todayNames = JSON.parse(window.localStorage[belltimes.day+belltimes.weekType]);

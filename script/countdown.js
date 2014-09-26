@@ -156,13 +156,26 @@ function calculateDay() {
 function getNextSchoolDay() {
 	/* Find the next school day (returns time as midnight) */
 	'use strict';
+	var res;
 	if (dateOffset == -1) {
 		calculateDay();
 	}
-	var res = new Date();
+	if (window.todayNames && window.todayNames.date) {
+		res = new Date(window.todayNames.date);
+		res.setHours(0, 0, 0);
+		return res;
+	}
+	res = new Date();
 	res.setDate(res.getDate() + dateOffset + manualOverride + (needMidnightCountdown ? 1 : 0));
 	res.setHours(0,0,0);
 	return res;
+}
+
+function getDateString() {
+	'use strict';
+	var ds = getNextSchoolDay();
+	console.log(ds);
+	return ds.getFullYear() + '-' + (ds.getMonth()+1) + '-' + ds.getDate();
 }
 
 /** returns the CURRENT TIME in dateOffset days */
@@ -179,21 +192,27 @@ var endOfDay = false;
 function reloadBelltimes() {
 	/* Try to reload the belltimes */
 	'use strict';
-	console.log('reloading belltimes...',endOfDay);
 	if (endOfDay) {
 		return; // #NOPE
 	}
 	reloading = true;
 	endOfDay = true;
-	var d = getNextSchoolDay();
-	var s = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+	var s;
+	if (window.todayNames && window.todayNames.date) {
+		s = window.todayNames.date;
+	}
+	else {
+		var d = getNextSchoolDay();
+		s = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+	}
+	console.log('the thing is',s);
 	var myXHR = new XMLHttpRequest();
 	myXHR.onload = handleBells;
 	myXHR.open('get', '/api/belltimes?date=' + s, handleBells);
 	myXHR.send();
 	//$.getJSON('/api/belltimes?date=' + getNextSchoolDay().toString('yyyy-MM-d'), handleBells);
 }
-
+loadTimetable();
 reloadBelltimes();
 
 function handleBells(bells) {
@@ -202,6 +221,7 @@ function handleBells(bells) {
 	'use strict';
 	belltimes = JSON.parse(this.responseText);
 	if (belltimes.status === 'Error') {
+		endOfDay = false;
 		if (window.HOLIDAYS) {
 			manualOverride = 6;
 			loadComplete();
@@ -218,7 +238,7 @@ function handleBells(bells) {
 		return;
 	}
 	console.log('fantastic!');
-	setTimeout(loadTimetable, 0); // now that the belltimes are done, we can load the subject info
+	 // now that the belltimes are done, we can load the subject info
 	setTimeout(loadNotices, 0);
 	endOfDay = false;
 	if (document.readyState == 'complete') {
@@ -538,6 +558,7 @@ function calculateUpcomingLesson() {
 function updatePeriodLabel() {
 	/* Update the period label */
 	'use strict';
+	if (window.HOLIDAYS) return; // no override lol strong gaming
 	var name = belltimes.bells[currentBellIndex].bell,
 		inLabel = 'starts in', pNum, roomChangedInfo, hasCover, hasCasual;
 	name = name.replace('Roll Call', 'School Starts').replace('End of Day', 'School Ends');

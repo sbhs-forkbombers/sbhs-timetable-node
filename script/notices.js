@@ -123,8 +123,7 @@ function handleBarcodeNews() {
 function loadBarcodeNews() {
 	'use strict';
 	var xhr;
-	var date = getNextSchoolDay();
-	var ds = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+	var ds = getDateString();
 
 	if (getLoggedIn()) {
 		xhr = new XMLHttpRequest();
@@ -138,8 +137,8 @@ function loadNotices() {
 	'use strict';
 	window.noticesCached = false;
 	var lsKey = new Date().toDateString();
-	var date = getNextSchoolDay();
-	var ds = date.getFullYear() + '-' + (date.getMonth()+1) + '-' + date.getDate();
+	var ds = getDateString();
+	console.log(ds);
 	if (lsKey in window.localStorage) {
 		window.noticesCached = true;
 		window.notices = JSON.parse(window.localStorage[lsKey]);
