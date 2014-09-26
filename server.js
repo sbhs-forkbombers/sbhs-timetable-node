@@ -349,7 +349,8 @@ function onRequest(req, res) {
 		else {
 			scheme = colours.getFromUriQuery(uri.query);
 		}
-		if ('invert' in uri.query || global.HOLIDAYS || 'holiday' in uri.query) {
+		var isHoliday = (global.HOLIDAYS || 'holiday' in uri.query) && !(config.disableHoliday || 'noholiday' in uri.query);
+		if ('invert' in uri.query || isHoliday) {
 			var tmp = scheme.highBg;
 			scheme.highBg = scheme.highFg;
 			scheme.highFg = tmp;
@@ -359,7 +360,7 @@ function onRequest(req, res) {
 		}
 		target = index_cache({
 			title: '',
-			holidays: (global.HOLIDAYS || 'holiday' in uri.query) && !config.disableHoliday,
+			holidays: isHoliday,
 			holEnd: schoolday.getHolidaysFinished(),
 			loggedIn: global.sessions[res.SESSID].refreshToken !== undefined,
 			reallyInHolidays: schoolday.actualHolidaysFinished(),
