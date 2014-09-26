@@ -19,7 +19,9 @@
 doctype html
 html(lang=en)
 	include header.jade
-		link(href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.min.css", rel="stylesheet", type="text/css")
+		//-link(href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.min.css", rel="stylesheet", type="text/css")
+		style
+			include ../style/octicons.css
 		script(async, defer, src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
 		title SBHS Timetable #{page}
 		style
