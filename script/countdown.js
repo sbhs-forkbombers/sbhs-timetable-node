@@ -231,7 +231,7 @@ function handleBells(bells) {
 		if (manualOverride > 5) {
 			document.getElementById('period-label').innerHTML = 'Couldn\'t get belltimes';
 			document.getElementById('in-label').innerHTML = 'oops :( maybe if you <a href="/try_do_oauth">login</a> it will work?';
-			document.getElementById('countdown-label').innerHTML = '';
+			document.getElementById('countdown-label').style.display = 'none';
 			console.error('No bells for more than five days in a row, SBHS might be down!');
 			return;
 		}
