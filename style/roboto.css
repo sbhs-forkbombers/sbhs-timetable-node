@@ -1,0 +1,36 @@
+/* Files located at http://http://users.on.net/~redleaf59/roboto/ */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Roboto Regular'), local('Roboto-Regular'),
+    url(http://cdn.sbhstimetable.tk/~redleaf59/roboto/roboto-regular-webfont.woff2) format('woff2'),
+    url(http://cdn.sbhstimetable.tk/~redleaf59/roboto/roboto-regular-webfont.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Roboto Italic'), local('Roboto-Italic'),
+    url(http://cdn.sbhstimetable.tk/~redleaf59/roboto/roboto-italic-webfont.woff2) format('woff2'),
+    url(http://cdn.sbhstimetable.tk/~redleaf59/roboto/roboto-italic-webfont.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 100;
+  src: local('Roboto Thin'), local('Roboto-Thin'),
+    url(http://cdn.sbhstimetable.tk/~redleaf59/roboto/roboto-thin-webfont.woff2) format('woff2'),
+    url(http://cdn.sbhstimetable.tk/~redleaf59/roboto/roboto-thin-webfont.woff) format('woff');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: italic;
+  font-weight: 100;
+  src: local('Roboto Thin Italic'), local('Roboto-ThinItalic'),
+    url(http://cdn.sbhstimetable.tk/~redleaf59/roboto/roboto-thinitalic-webfont.woff2) format('woff2'),
+    url(http://cdn.sbhstimetable.tk/~redleaf59/roboto/roboto-thinitalic-webfont.woff) format('woff');
+}

@@ -18,10 +18,11 @@ head
 		You should have received a copy of the GNU Affero General Public License
 		along with this program.  If not, see <http://www.gnu.org/licenses/>.
 	meta(charset="UTF-8")
-	link(href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,400italic', rel='stylesheet', type='text/css')
+	meta(http-equiv="x-ua-compatible", content="IE=edge")
+	//-link(href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,400italic', rel='stylesheet', type='text/css')
 	style
+		include ../style/roboto.css
 		include ../style/common.css
 	script= "window.loggedIn = " + loggedIn
-	meta(http-equiv="x-ua-compatible", content="IE=edge")
 	meta(name="viewport", content="width=device-width, initial-scale=1")
 	yield //- reset to 'head' level
