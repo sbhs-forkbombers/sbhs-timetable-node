@@ -229,7 +229,9 @@ function handleBells(bells) {
 		}
 		manualOverride++;
 		if (manualOverride > 5) {
-			document.getElementById('period-label').innerHTML = 'WAT?!?';
+			document.getElementById('period-label').innerHTML = 'Couldn\'t get belltimes';
+			document.getElementById('in-label').innerHTML = 'oops :( maybe if you <a href="/try_do_oauth">login</a> it will work?';
+			document.getElementById('countdown-label').innerHTML = '';
 			console.error('No bells for more than five days in a row, SBHS might be down!');
 			return;
 		}
@@ -479,7 +481,7 @@ function loadComplete() {
 		console.log('activating swag mode');
 		setTimeout(loadTimetable, 0);
 		$('#period-label,#countdown-label').css({'display': 'none'});
-		$('#in-label').html('lol strong gaming');
+		$('#in-label').html('<br /><br /><a href="/?noholiday">disable the weirdness</a><br /><br /><br />lol strong gaming');
 		setInterval(function() {
 			snazzify(document.getElementById('in-label'));
 		}, 500);

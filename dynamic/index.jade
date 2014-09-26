@@ -47,11 +47,12 @@ html(lang=en)
 				="window.holEnd = " + holEnd + ";"
 				|setTimeout(function() {
 				|	$('audio').each(function() { this.pause() });
-				|}, now-window.holEnd);
+				|}, Date.now()-window.holEnd);
 		else
 			script
 				|window.HOLIDAYS = false;
 				="window.holEnd = " + holEnd + ";"
+				|var now = Date.now();
 				if holEnd - Date.now() < (1000 * 60 * 60 * 24 * 3) && reallyInHolidays
 					|setTimeout(function() {
 					|	$('#groovy')[0].pause();
@@ -79,7 +80,6 @@ html(lang=en)
 					|	}
 					|	setTimeout(b, 250);
 					|}
-					|var now = Date.now();
 					|setTimeout(holidaysOver, window.holEnd - now);
 					|setTimeout(playTheGroove, (window.holEnd - now) - (1000 * 60 * 55));
 
