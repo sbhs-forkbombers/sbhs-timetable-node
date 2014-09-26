@@ -494,6 +494,10 @@ function onRequest(req, res) {
 		filePath = 'static/faq.html';
 		contentType = 'text/html';
 		checkFile(filePath, req, unchanged, changed);
+	} else if (uri.pathname == '/robots.txt') {
+		filePath = 'static/robots.txt';
+		contentType = 'text/plain';
+		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname == '/reset_access_token') {
 		/* Reset access token */
 		httpHeaders(res, req, 200, 'application/json', true);

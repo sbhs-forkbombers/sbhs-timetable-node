@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /try_do_oauth
+Disallow: /api/
+Disallow: /?colour=red
+Disallow: /?colour=green
+Disallow: /?colour=purple
+Disallow: /?invert=1
