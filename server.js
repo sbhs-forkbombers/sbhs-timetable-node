@@ -157,6 +157,9 @@ function compressText(req, text, res, cb) {
 	if (typeof cb !== 'function') {
 		return;
 	}
+	if (res._headerSent) {
+		cb(undefined,text);
+	}
 	if ('accept-encoding' in req.headers) {
 		var encs = req.headers['accept-encoding'].replace(/q=\d\.\d/, '').split(/, ?/);
 		if (encs.indexOf('gzip') != -1) {
@@ -392,7 +395,8 @@ function onRequest(req, res) {
 					query: '?colour='+uri.query.colour,
 					inverted: 'invert' in uri.query,
 					colour: uri.query.colour,
-					css: less
+					css: less,
+					cscheme: scheme
 				});
 				contentType = 'text/html';
 				checkText(target, req, unchanged, dynChanged);

@@ -274,13 +274,89 @@ function fadeOutUpdate() {
 	$('#update').velocity('fadeOut', { duration: 300 });
 }
 
+function loadBackgroundImage() {
+	'use strict';
+	if ('cached-bg' in window.localStorage) {
+		console.log('css bg-image');
+		var c = colourscheme.bg.slice(1);
+		var r = Number('0x'+c.substr(0,2));
+		var g = Number('0x'+c.substr(2,2));
+		var b = Number('0x'+c.substr(4,2));
+		var rgb = 'rgba(' + r + ',' + g + ',' + b + ', 0.3)';
+		$('body').addClass('customBg');
+		console.log('linear-gradient(' + rgb + ',' + rgb + '), #' + c + ' ' + window.localStorage['cached-bg'] + ')');
+		$('body').css({'background': 'linear-gradient(' + rgb + ',' + rgb + '), #' + c + ' url(' + window.localStorage['cached-bg'] + ')'});
+	}
+	else {
+		$('body').removeClass('customBg').css({'background': ''});
+	}
+}
+
+function base64Image(url, width, height, callback) {
+	'use strict';
+	var img = new Image();
+
+	img.onload = function (evt) {
+		var canvas = document.createElement('canvas');
+
+		canvas.width  = width;
+		canvas.height = height;
+
+		var imgRatio    = img.width / img.height,
+		canvasRatio = width / height,
+		resultImageH, resultImageW;
+
+		if (imgRatio < canvasRatio) {
+			resultImageH = canvas.height;
+			resultImageW = resultImageH * imgRatio;
+		}
+		else {
+			resultImageW = canvas.width;
+			resultImageH = resultImageW / imgRatio;
+		}
+
+		canvas.width  = resultImageW;
+		canvas.height = resultImageH;
+		canvas.getContext('2d').drawImage(img, 0, 0, resultImageW, resultImageH);
+		callback(canvas.toDataURL());
+	};
+
+	img.src = url;
+}
+
+function handleUpload() {
+	'use strict';
+	if ('cached-bg' in window.localStorage) {
+		delete window.localStorage['cached-bg'];
+		loadBackgroundImage();
+		$('#custom-background').html('Choose...');
+	}
+	else {
+		var input = $('<input type="file" accept="image/*">').click();
+		input.on('change', function(e) {
+			console.log('loading a file!');
+			if (input[0].files && input[0].files[0]) {
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					base64Image(e.target.result, 1280, 720, function (b64) {
+						localStorage.setItem('cached-bg', b64);
+						loadBackgroundImage();
+					});
+				};
+				reader.readAsDataURL(input[0].files[0]);
+				$('#custom-background').html('Clear');
+			}
+		});
+	}
+}
+
 function domReady() {
 	/* Onclicks and timeouts */
 	'use strict';
 	if (document.readyState != 'complete') {
 		return;
 	}
-	document.body.style.color = '#' + window.colour;// || '000000';
+	loadBackgroundImage();
 	if ((belltimes !== null && belltimes !== undefined) || window.HOLIDAYS) {
 		setTimeout(loadComplete, 0);
 	}
@@ -290,7 +366,6 @@ function domReady() {
 	else {
 		$('#login-status').html('<a href="/try_do_oauth" title="Log in" style="text-decoration: none">Log in <span class="octicon octicon-sign-in"/></a>');
 	}
-
 	$('#left-pane-arrow').click(function() {
 		if (topExpanded) {
 			collapsePane('top');
@@ -341,6 +416,10 @@ function domReady() {
 		$('#settings-modal,#fadeout').velocity('stop').velocity('fadeOut');
 	});
 
+	$('#custom-background').click(handleUpload);
+	if ('cached-bg' in window.localStorage) {
+		$('#custom-background').html('Clear');
+	}
 	var options = ['default', 'red', 'green', 'purple'];
 	$('#colourscheme-combobox')[0].selectedIndex = ((options.indexOf(colour) > -1) ? options.indexOf(colour) : 0);
 

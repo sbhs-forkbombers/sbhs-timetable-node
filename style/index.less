@@ -27,6 +27,15 @@ body {
 	background-color: @bg;
 	color: @fg;
 }
+
+body.customBg {
+	background: linear-gradient(fade(@bg, 30%), fade(@bg, 30%)), @bg url(about:blank);
+	background-size: cover;
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
 td {
 	-webkit-border-radius: 5px 5px 5px 5px;
 	-moz-border-radius: 5px 5px 5px 5px;
