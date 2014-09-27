@@ -95,7 +95,6 @@ function compile_jade(path) {
 function compile_less(path, colour, callback) {
 	/* Compiles less templates into CSS */
 	'use strict';
-	console.log('lessing ' + path);
 	lessParser.parse(fs.readFileSync(path, { encoding: 'utf8' }), function(e, tree) {
 		if (e) {
 			callback(500,'text/html',serverError());
@@ -106,7 +105,6 @@ function compile_less(path, colour, callback) {
 	}, {
 		modifyVars: colour
 	});
-	console.log(require('util').inspect(colour));
 }
 
 function cache_index() {
@@ -424,7 +422,6 @@ function onRequest(req, res) {
 		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname.match('/style/.*[.]less$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* Less */
-		console.log('aha');
 		compile_less(uri.pathname.slice(1), colours.get(uri.query.colour, 'invert' in uri.query), function(rescode, type, css) {
 			if (type === 'text/html') {
 				httpHeaders(res, req, rescode, type);
@@ -433,7 +430,6 @@ function onRequest(req, res) {
 			else {
 				contentType = type;
 				target = css;
-				console.log(target);
 				checkText(target, req, unchanged, dynChanged);
 			}
 		});

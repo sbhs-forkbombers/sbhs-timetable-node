@@ -198,7 +198,7 @@ td.subject, td.teacher {
 
 #cached {
 	cursor: pointer;
-	background-color: rgba(0,0,0,0.75);
+	background-color: fade(@bg, 25%);
 }
 
 #close-settings-modal {
@@ -340,10 +340,11 @@ td.subject, td.teacher {
 }
 
 #links {
-	position: fixed;
+	position: absolute;
 	bottom: 0;
 	left: 0;
-	z-index: 2;
+	width: 100%;
+	text-align: center;
 }
 
 #period-label {

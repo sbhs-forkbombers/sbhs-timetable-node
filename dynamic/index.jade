@@ -144,12 +144,6 @@ html(lang=en)
 		div.arrow#right-pane-arrow
 		div.target#right-pane-target
 		div.target#bottom-pane-target
-		div#links
-			a(href="https://docs.google.com/forms/d/18VjH5GM80Xl0C1KBRpCrwTXUCiK8G2sg9Z6lDuNA7vk/viewform?usp=send_form", title="Feedback") Feedback
-			|&nbsp;|&nbsp;
-			a(href="https://github.com/sbhs-forkbombers/sbhs-timetable-node", title="Source") Source
-			|&nbsp;|&nbsp;
-			a(href="/faq.html", title="FAQ") FAQ
 		div.nomobile#top-update
 			a(href="https://play.google.com/store/apps/details?id=com.sbhstimetable.sbhs_timetable_android",title="app app app") IT'S AN APP! (beta)
 		div.nomobile#update
@@ -167,7 +161,6 @@ html(lang=en)
 				a(href="/?colour=red",title="RED?!?")  RED :O&nbsp;
 				a(href="/?colour=green",title="GREEEEEEEEN")  GREEN!!!&nbsp;
 			yield
-			a(href=query+"&invert=1",title="HIGH CONTRAST MODE") &nbsp;INVERT IT.
 		div.nomobile#expand-toggle
 			div#expand.mega-octicon.octicon-screen-full
 			div#collapse.mega-octicon.octicon-screen-normal
@@ -200,5 +193,11 @@ html(lang=en)
 						label(for="invert-enable") Invert?
 					td#invert-val
 						input(type="checkbox",id="invert-enable")
+			div#links
+				a(href="https://docs.google.com/forms/d/18VjH5GM80Xl0C1KBRpCrwTXUCiK8G2sg9Z6lDuNA7vk/viewform?usp=send_form", title="Feedback") Feedback
+				|&nbsp;|&nbsp;
+				a(href="https://github.com/sbhs-forkbombers/sbhs-timetable-node", title="Source") Source
+				|&nbsp;|&nbsp;
+				a(href="/faq.html", title="FAQ") FAQ
 
 		div#fadeout
