@@ -317,8 +317,8 @@ function onRequest(req, res) {
 	/* jshint validthis: true */
 	'use strict';
 	var start = Date.now(),
-		contentType = 'text/html',
-		filePath = 'static/404.html';
+	contentType = 'text/html',
+	filePath = 'static/404.html';
 	var changed = function(hash) {
 		var pipe = pipeCompress(req, filePath, res);
 		httpHeaders(res, req, 200, contentType, false, hash);
@@ -377,24 +377,28 @@ function onRequest(req, res) {
 			scheme.bg = scheme.fg;
 			scheme.fg = tmp;
 		}
-		target = index_cache({
-			title: '',
-			holidays: isHoliday,
-			holEnd: schoolday.getHolidaysFinished(),
-			loggedIn: global.sessions[res.SESSID].refreshToken !== undefined,
-			reallyInHolidays: schoolday.actualHolidaysFinished(),
-			grooveOverride: 'groove' in uri.query,
-			testing: 'testing' in uri.query,
-			query: '?colour='+uri.query.colour,
-			inverted: 'invert' in uri.query,
-			colour: uri.query.colour
-		});
 		if (index_cache == serverError) {
 			httpHeaders(res, req, 500, 'text/html', true);
 			target().pipe(res);
-		} else {
-			contentType = 'text/html';
-			checkText(target, req, unchanged, dynChanged);
+		}
+		else {
+			compile_less('style/index.less', scheme, function(code, type, less) {
+				target = index_cache({
+					title: '',
+					holidays: isHoliday,
+					holEnd: schoolday.getHolidaysFinished(),
+					loggedIn: global.sessions[res.SESSID].refreshToken !== undefined,
+					reallyInHolidays: schoolday.actualHolidaysFinished(),
+					grooveOverride: 'groove' in uri.query,
+					testing: 'testing' in uri.query,
+					query: '?colour='+uri.query.colour,
+					inverted: 'invert' in uri.query,
+					colour: uri.query.colour,
+					css: less
+				});
+				contentType = 'text/html';
+				checkText(target, req, unchanged, dynChanged);
+			});
 		}
 		//httpHeaders(res, req, (target == serverError ? 500 : 200), 'text/html', true);
 		//res.end(index_cache.replace('\'%%%LOGGEDIN%%%\'', global.sessions[res.SESSID].refreshToken !== undefined));
