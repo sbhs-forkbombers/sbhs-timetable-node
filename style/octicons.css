@@ -32,7 +32,10 @@
 }
 
 .octicon-check:before { content: '\f03a'} /*  */
-.octicon-info:before { content: '\f059'} /*  */
+.octicon-alert:before { content: '\f02d'} /*  */
 .octicon-x:before { content: '\f081'} /*  */
 .octicon-screen-full:before { content: '\f066'} /*  */
 .octicon-screen-normal:before { content: '\f067'} /*  */
+.octicon-sign-in:before { content: '\f036' }
+.octicon-sign-out:before { content: '\f032' }
+.octicon-gear:before { content: '\f02f'}

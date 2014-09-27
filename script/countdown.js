@@ -333,6 +333,52 @@ function domReady() {
 		}
 	});
 
+	$('#launch-settings').click(function() {
+		$('#settings-modal,#fadeout').velocity('stop').velocity('fadeIn');
+	});
+
+	$('#close-settings-modal').click(function() {
+		$('#settings-modal,#fadeout').velocity('stop').velocity('fadeOut');
+	});
+
+	var options = ['default', 'red', 'green', 'purple'];
+	$('#colourscheme-combobox')[0].selectedIndex = ((options.indexOf(colour) > -1) ? options.indexOf(colour) : 0);
+
+	$('#colourscheme-combobox').change(function() {
+		/*jshint validthis: true */
+		var el = this.options[this.selectedIndex].value;
+		if (/colour/.test(window.location.search)) {
+			window.location.search = window.location.search.replace(/colour=.+?(\&|$)/, 'colour='+el+'&');
+		}
+		else {
+			if (window.location.search.substr(0,1) === '?') {
+				window.location.search += '&colour='+el;
+			}
+			else {
+				window.location.search = '?colour='+el;
+			}
+		}
+	});
+
+
+	if (inverted) {
+		$('#invert-enable')[0].checked = true;
+	}
+	$('#invert-enable').change(function() {
+		/*jshint validthis: true */
+		if (this.checked) {
+			if (window.location.search.substr(0,1) === '?') {
+				window.location.search = window.location.search + '&invert=1';
+			}
+			else {
+				window.location.search = '?invert=1';
+			}
+		}
+		else {
+			window.location.search = window.location.search.replace(/.invert=.+?\&?/, '');
+		}
+	});
+
 	$('#left-pane-target').swipeRight(function() {
 		if (topExpanded) {
 			collapsePane('top');
@@ -560,7 +606,9 @@ function calculateUpcomingLesson() {
 function updatePeriodLabel() {
 	/* Update the period label */
 	'use strict';
-	if (window.HOLIDAYS) return; // no override lol strong gaming
+	if (window.HOLIDAYS) {
+		return; // no override lol strong gaming
+	}
 	var name = belltimes.bells[currentBellIndex].bell,
 		inLabel = 'starts in', pNum, roomChangedInfo, hasCover, hasCasual;
 	name = name.replace('Roll Call', 'School Starts').replace('End of Day', 'School Ends');
