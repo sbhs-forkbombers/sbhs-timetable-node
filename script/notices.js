@@ -20,7 +20,7 @@
 
 function handleTopPane() {
 	'use strict';
-	var entry, list, today = new Date(), res = '', j;
+	var entry, list, today = new Date(), res = '', j, i;
 	if (!window.notices) {
 		return;
 	}
@@ -33,13 +33,19 @@ function handleTopPane() {
 		}
 		return 1;
 	});
+	res += '<select id="notices-filter">';
+	res += '<option value="notice">All notices</option>';
+	for (i = 7; i <= 12; i++) {
+		res += '<option value="notice'+i+'">Year ' + i + '</option>';
+	}
+	res += '<option value="noticeStaff">Staff</option></select>';
 	if (window.notices.date !== null) {
 		res += '<h1 class="notices-header">Notices for ' + window.notices.date + ' (Week ' + window.notices.week + ')</h1><table><tbody>';
 	} else {
 		res += '<h1 class="notices-header">Notices for ' + belltimes.date + ' (Week ' + belltimes.week + belltimes.weekType + ')</h1><table><tbody>';
 	}
 	if (window.barcodenews) {
-		res += '<tr id="barcodenews" class="notice-row notice" style="line-height: 1.5">';
+		res += '<tr id="barcodenews" class="notice-row barcodenews" style="line-height: 1.5">';
 		res += '<td class="notice-target animated">All Students and Staff</td>';
 		res += '<td class="notice-data"><h2 class="notice-title">Today\'s Barcode News</h2><div class="notices-hidden" id="nbarcodenews-hidden">';
 		res += '<div id="nbarcodenews-txt" class="notice-content">';
@@ -60,11 +66,11 @@ function handleTopPane() {
 		}
 		res += '</div></div></td></tr>';
 	}
-	for (var i in sorted) {
+	for (i in sorted) {
 		list = window.notices.notices[sorted[i]];
 		for (j in list) {
 			entry = list[j];
-			res += '<tr id="'+entry.id+'" class="notice' + entry.years.join(' notice') + ' notice-row ' + (entry.isMeeting ? 'meeting' : '') + '">';
+			res += '<tr id="'+entry.id+'" class="notice notice' + entry.years.join(' notice') + ' notice-row ' + (entry.isMeeting ? 'meeting' : '') + '">';
 			res += '<td class="notice-target animated">'+entry.dTarget+'</td>';
 			res += '<td class="notice-data"><h2 class="notice-title">'+entry.title+'</h2><div class="notice-hidden" id="n'+entry.id+'-hidden">';
 			if (entry.isMeeting) {
@@ -89,6 +95,14 @@ function handleTopPane() {
 				el.velocity('stop').velocity('slideUp').addClass('notice-hidden');
 			}
 		}
+	});
+
+	$('#notices-filter').change(function() {
+		/*jshint validthis: true*/
+		console.log('change!');
+		var val = this.value;
+		$('.notice').velocity('fadeOut');
+		$('.'+val).velocity('stop').velocity('fadeIn');
 	});
 
 }
