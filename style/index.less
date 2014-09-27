@@ -16,8 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+/* base variable declarations */
+@fg: #ffffff;
+@bg: #000000;
+@highFg: #ffc107;
+@highBg: #e51c23;
+
 
 /* These styles are only used on the front page */
+body {
+	background-color: @bg;
+	color: @fg;
+}
 td {
 	-webkit-border-radius: 5px 5px 5px 5px;
 	-moz-border-radius: 5px 5px 5px 5px;
@@ -72,17 +82,17 @@ td.subject, td.teacher {
 .changeable-status {
 	padding-top: 20px;
 	font-size: 1.3em;
-	color: #ffc107;
+	color: @highFg;
 	font-style: italic;
 	text-align: center;
 }
 
 .changed {
-	color: #ffc107;
+	color: ;
 }
 
 .failed {
-	color: #e51c23;
+	color: @highBg;
 }
 
 .free {
@@ -90,7 +100,7 @@ td.subject, td.teacher {
 }
 
 .meeting .notice-data {
-	background-color: #e51c23;
+	background-color: @highBg;
 	border: 0;
 }
 
@@ -153,7 +163,7 @@ td.subject, td.teacher {
 }
 
 .stale {
-	color: #ffc107;
+	color: @highFg;
 }
 
 .subj-expand {
@@ -190,6 +200,17 @@ td.subject, td.teacher {
 #cached {
 	cursor: pointer;
 	background-color: rgba(0,0,0,0.75);
+}
+
+#close-settings-modal {
+	position: absolute;
+	top: -4vh;
+	right: -0.5vw;
+}
+
+#close-settings-modal a {
+	text-decoration: none;
+	font-size: 30px;
 }
 
 #collapse {
@@ -246,6 +267,16 @@ td.subject, td.teacher {
 #expand-toggle img {
 	height: 30px;
 	width: 30px;
+}
+
+#fadeout {
+	width: 100%;
+	height: 100%;
+	z-index: 5;
+	background-color: rgba(0, 0, 0, 0.75);
+	position: fixed;
+	top: 0;
+	left: 0;
 }
 
 #groovy {
@@ -375,6 +406,36 @@ td.subject, td.teacher {
 	width: 10%;
 }
 
+#settings-modal {
+	position: fixed;
+	width: 50%;
+	height: 50%;
+	left: 50vw;
+	top: 50vh;
+	margin-top: -25vh;
+	margin-left: -25vw;
+	background-color: inherit;
+	border:1px solid @highFg;
+	border-radius: 5px;
+	z-index: 6;
+}
+
+#settings-modal td, #settings-modal input, #settings-modal select {
+	font-family: Roboto;
+	font-weight: 100;
+	font-size: 48px;
+	vertical-align: middle;
+}
+
+#settings-modal td {
+	padding-left: 10px;
+	padding-right: 10px;
+}
+
+#settings-modal .col1 {
+	border-right: 1px solid white;
+	text-align: right;
+}
 #sidebar {
 	position: fixed;
 	right: 0;

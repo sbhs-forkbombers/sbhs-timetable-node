@@ -27,6 +27,7 @@ var fs = require('fs'),
 	uuid = require('node-uuid'),
 	url = require('url'),
 	zlib = require('zlib'),
+	less = require('less'),
 	apis = require('./lib/api.js'),
 	auth = require('./lib/auth.js'),
 	etag = require('./lib/etag.js'),
@@ -44,6 +45,7 @@ var	IPV6 = config.ipv6,
 	SOCKET = config.socket,
 	PORT = config.port,
 	SESSIONS_PATH = config.sessions,
+	lessParser = new less.Parser(),
 	index_cache, timetable_cache, ipv4, ipv6, socket;
 
 if (process.platform == 'win32') {
@@ -88,6 +90,23 @@ function compile_jade(path) {
 		console.error(e.stack);
 		return serverError;
 	}
+}
+
+function compile_less(path, colour, callback) {
+	/* Compiles less templates into CSS */
+	'use strict';
+	console.log('lessing ' + path);
+	lessParser.parse(fs.readFileSync(path, { encoding: 'utf8' }), function(e, tree) {
+		if (e) {
+			callback(500,'text/html',serverError());
+		}
+		else {
+			callback(200, 'text/css', tree.toCSS({ compress: !global.RELEASE }));
+		}
+	}, {
+		modifyVars: colour
+	});
+	console.log(require('util').inspect(colour));
 }
 
 function cache_index() {
@@ -366,8 +385,9 @@ function onRequest(req, res) {
 			reallyInHolidays: schoolday.actualHolidaysFinished(),
 			grooveOverride: 'groove' in uri.query,
 			testing: 'testing' in uri.query,
-			colour: scheme,
-			query: '?colour='+uri.query.colour
+			query: '?colour='+uri.query.colour,
+			inverted: 'invert' in uri.query,
+			colour: uri.query.colour
 		});
 		if (index_cache == serverError) {
 			httpHeaders(res, req, 500, 'text/html', true);
@@ -398,6 +418,21 @@ function onRequest(req, res) {
 		contentType = 'text/css';
 		filePath = uri.pathname.slice(1);
 		checkFile(filePath, req, unchanged, changed);
+	} else if (uri.pathname.match('/style/.*[.]less$') && fs.existsSync(uri.pathname.slice(1))) {
+		/* Less */
+		console.log('aha');
+		compile_less(uri.pathname.slice(1), colours.get(uri.query.colour, 'invert' in uri.query), function(rescode, type, css) {
+			if (type === 'text/html') {
+				httpHeaders(res, req, rescode, type);
+				res.end(css);
+			}
+			else {
+				contentType = type;
+				target = css;
+				console.log(target);
+				checkText(target, req, unchanged, dynChanged);
+			}
+		});
 	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* JavaScript */
 		contentType = 'application/javascript';
