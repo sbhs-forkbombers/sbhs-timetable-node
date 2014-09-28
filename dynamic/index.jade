@@ -19,6 +19,7 @@
 doctype html
 html(lang=en)
 	include header.jade
+		| <!--[if IE]><script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><![endif]-->
 		//-link(href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.min.css", rel="stylesheet", type="text/css")
 		//-link(rel="stylesheet",href="/style/index.less?colour="+colour+(inverted ? "&invert" : ""))
 		style
@@ -38,7 +39,6 @@ html(lang=en)
 			!="window.colour = '" + colour + "';"
 			!="window.inverted = " + inverted + ";"
 			!="window.colourscheme = " + JSON.stringify(cscheme) + ";"
-		| <!--[if IE]><script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><![endif]-->
 		meta(name="application-name", content="SBHS Timetable")
 		meta(name="mobile-web-app-capable", content="yes")
 		meta(name="apple-mobile-web-app-capable", content="yes")
