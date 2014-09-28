@@ -28,6 +28,7 @@ var fs = require('fs'),
 	url = require('url'),
 	zlib = require('zlib'),
 	less = require('less'),
+	minify = require('html-minifier').minify,
 	apis = require('./lib/api.js'),
 	auth = require('./lib/auth.js'),
 	etag = require('./lib/etag.js'),
@@ -40,12 +41,14 @@ var fs = require('fs'),
 var	IPV6 = config.ipv6,
 	NOHTTP = config.nohttp,
 	RELEASE = variables.RELEASE,
+	MINIFY = variables.MINIFY,
 	REL_RV = variables.REL_RV,
 	DEBUG = variables.DEBUG,
 	SOCKET = config.socket,
 	PORT = config.port,
 	SESSIONS_PATH = config.sessions,
 	lessParser = new less.Parser(),
+	hmopts = { removeComments: true, removeCommentsFromCDATA: true, collapseWhitespace: true },
 	index_cache, timetable_cache, ipv4, ipv6, socket;
 
 if (process.platform == 'win32') {
@@ -97,10 +100,10 @@ function compile_less(path, colour, callback) {
 	'use strict';
 	lessParser.parse(fs.readFileSync(path, { encoding: 'utf8' }), function(e, tree) {
 		if (e) {
-			callback(500,'text/html',serverError());
+			callback(500,'text/html', serverError());
 		}
 		else {
-			callback(200, 'text/css', tree.toCSS({ compress: !global.RELEASE }));
+			callback(200, 'text/css', tree.toCSS({ compress: MINIFY }));
 		}
 	}, {
 		modifyVars: colour
@@ -365,8 +368,7 @@ function onRequest(req, res) {
 				uri.query.colour = 'default';
 			}
 			scheme = colours.get(uri.query.colour, false);
-		}
-		else {
+		} else {
 			scheme = colours.getFromUriQuery(uri.query);
 		}
 		var isHoliday = (global.HOLIDAYS || 'holiday' in uri.query) && !(config.disableHoliday || 'noholiday' in uri.query);
@@ -381,8 +383,7 @@ function onRequest(req, res) {
 		if (index_cache == serverError) {
 			httpHeaders(res, req, 500, 'text/html', true);
 			target().pipe(res);
-		}
-		else {
+		} else {
 			compile_less('style/index.less', scheme, function(code, type, less) {
 				target = index_cache({
 					title: '',
@@ -399,6 +400,9 @@ function onRequest(req, res) {
 					cscheme: scheme
 				});
 				contentType = 'text/html';
+				if (MINIFY) {
+					target = minify(target, hmopts);
+				}
 				checkText(target, req, unchanged, dynChanged);
 			});
 		}
@@ -409,11 +413,16 @@ function onRequest(req, res) {
 		if (loggedIn) {
 			apis.get('bettertimetable.json', {}, res.SESSID, function(obj) {
 				target = timetable_cache({'loggedIn': loggedIn, 'timetable': obj});
+				if (MINIFY) {
+					target = minify(target, hmopts);
+				}
 				checkText(target, req, unchanged, dynChanged);
 			});
-		}
-		else {
+		} else {
 			target = timetable_cache({'loggedIn': loggedIn});
+			if (MINIFY) {
+				target = minify(target, hmopts);
+			}
 			checkText(target, req, unchanged, dynChanged);
 		}
 	} else if (uri.pathname.match('.*config[.]js.*') && fs.existsSync('config_sample.js')) {
@@ -425,7 +434,7 @@ function onRequest(req, res) {
 		filePath = uri.pathname.slice(1);
 		checkFile(filePath, req, unchanged, changed);
 	} else if (uri.pathname.match('/style/.*[.]less$') && fs.existsSync(uri.pathname.slice(1))) {
-		/* Less */
+		/* Less style sheets */
 		compile_less(uri.pathname.slice(1), colours.get(uri.query.colour, 'invert' in uri.query), function(rescode, type, css) {
 			if (type === 'text/html') {
 				httpHeaders(res, req, rescode, type);
@@ -492,8 +501,7 @@ function onRequest(req, res) {
 				//httpHeaders(res, req, 200, 'application/json', true);
 				//res.end(JSON.stringify(global.sessions[res.SESSID]));
 			}, false);
-		}
-		else {
+		} else {
 			auth.getAuthToken(res, uri, function() {
 				httpHeaders(res, req, 302, '', true, null, { 'Location': '/' });
 				res.end();

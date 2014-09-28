@@ -1,9 +1,7 @@
 @font-face {
   font-family: 'octicons';
-  src: url('//cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.eot?#iefix') format('embedded-opentype'),
-       url('//cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.woff') format('woff'),
-       url('//cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.ttf') format('truetype'),
-       url('//cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.svg#octicons') format('svg');
+  src: url('http://cdn.sbhstimetable.tk/~redleaf59/octicons/octicons.woff2') format('woff2'),
+       url('http://cdn.sbhstimetable.tk/~redleaf59/octicons/octicons.woff') format('woff');
   font-weight: normal;
   font-style: normal;
 }
@@ -31,11 +29,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.octicon-alert:before { content: '\f02d'} /*  */
+.octicon-gear:before { content: '\f02f'}
+.octicon-sign-out:before { content: '\f032'} /*  */
+.octicon-sign-in:before { content: '\f036'} /*  */
 .octicon-check:before { content: '\f03a'} /*  */
-.octicon-alert:before { content: '\f02d'} /*  */
-.octicon-x:before { content: '\f081'} /*  */
 .octicon-screen-full:before { content: '\f066'} /*  */
 .octicon-screen-normal:before { content: '\f067'} /*  */
-.octicon-sign-in:before { content: '\f036' }
-.octicon-sign-out:before { content: '\f032' }
-.octicon-gear:before { content: '\f02f'}
+.octicon-x:before { content: '\f081'} /*  */

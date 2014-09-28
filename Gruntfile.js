@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-var fs = require('fs');
-CLOSURE = require('./config').closure;
+var fs = require('fs'),
+	CLOSURE = require('./config').closure;
 
 module.exports = function(grunt) {
 	'use strict';
@@ -101,7 +101,7 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				expand: true,
-				src: ['octicons/**', 'dynamic/**', 'static/**', 'server.js', 'srv/**', 'lib/**', 'config.js', 'config_sample.js'],
+				src: ['octicons/**', 'dynamic/**', 'static/**', 'server.js', 'srv/**', 'style/index.less', 'lib/**', 'config.js', 'config_sample.js'],
 				dest: 'build/',
 			},
 			vars: {

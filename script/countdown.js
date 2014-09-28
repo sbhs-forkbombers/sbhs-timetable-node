@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* globals handleBells, loadTimetable, loadNotices, loadComplete, domReady, getLoggedIn, todayNames, snazzify */ /* jshint -W098 */
+/* globals getLoggedIn, loadNotices, loadTimetable, todayNames */ /* jshint -W098 */
 
 /* Variables */
 var timetable,
@@ -200,8 +200,7 @@ function reloadBelltimes() {
 	var s;
 	if (window.todayNames && window.todayNames.date) {
 		s = window.todayNames.date;
-	}
-	else {
+	} else {
 		var d = getNextSchoolDay();
 		s = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
 	}
@@ -253,15 +252,14 @@ function toggleExpansion() {
 	'use strict';
 	if (!$('#period-label').hasClass('velocity-animating')) {
 		if (this.id == 'expand') {
-			$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('stop').velocity('fadeOut', { duration: 300 });
+			$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('stop').velocity('fadeOut', { duration: 400 });
 			$('#countdown-label').css({fontSize: '10em', top: '50%', left: 0, width: '100%'}).css({position: 'fixed', marginTop: '-1em'});
 			this.style.display = 'none';
 			$('#collapse').css({'display': 'block'});
 			window.localStorage.expanded = true;
-		}
-		else {
+		} else {
 			$('#countdown-label').velocity({fontSize: miniMode ? '5em' : '7em', width: 'inherit'}).css({position: 'relative', marginTop: 0})[0].setAttribute('style', '');
-			$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('stop').velocity('fadeIn', { duration: 300 });
+			$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('stop').velocity('fadeIn');
 			this.style.display = 'none';
 			$('#expand').css({'display': 'block'});
 			window.localStorage.expanded = false;
@@ -362,8 +360,7 @@ function domReady() {
 	}
 	if (getLoggedIn()) {
 		$('#login-status').html('<a href="/logout" title="Log out" style="text-decoration: none">Log out <span class="octicon octicon-sign-out"/></a>');
-	}
-	else {
+	} else {
 		$('#login-status').html('<a href="/try_do_oauth" title="Log in" style="text-decoration: none">Log in <span class="octicon octicon-sign-in"/></a>');
 	}
 	$('#left-pane-arrow').click(function() {
@@ -511,6 +508,43 @@ function domReady() {
 		$('#verbose-hidden').velocity('stop').velocity('slideUp', { duration: 300 });
 		$('#dropdown-arrow').removeClass('expanded');
 	});
+	
+	$(document).keydown(function(e) {
+		if (e.which == 27) { // esc
+			$('#settings-modal,#fadeout').velocity('stop').velocity('fadeOut');
+		} else if (e.which == 83) { // s
+			if ($('#settings-modal').css('display') !== 'block') {
+				$('#settings-modal,#fadeout').velocity('stop').velocity('fadeIn');
+			}
+		/*} else if (e.which == 69 || e.which == 81) { // e/q FIXME: make toggleExpansion not use this and things.
+			toggleExpansion();*/
+		} else if (e.which == 65 || e.which == 37) { // a/left arrow
+			if (topExpanded) {
+				collapsePane('top');
+			}
+			if ((window.innerWidth <= 450) && (rightExpanded)) {
+				collapsePane('right');
+			}
+			togglePane('left');
+		} else if (e.which == 87 || e.which == 38) { // w/up arrow
+			if (rightExpanded) {
+				collapsePane('right');
+			}
+			if (leftExpanded) {
+				collapsePane('left');
+			}
+			togglePane('top');
+		} else if (e.which == 68 || e.which == 39) { // d/right arrow
+			if (topExpanded) {
+				collapsePane('top');
+			}
+			if ((window.innerWidth <= 450) && (rightExpanded)) {
+				collapsePane('left');
+			}
+			togglePane('right');
+		}
+	});
+			
 
 	var event = 'mousemove';
 	if (miniMode) {
@@ -524,9 +558,8 @@ function domReady() {
 		if ((Date.now() - last_screen_tap) > 3000) {
 			$('.arrow').css({ opacity: 0 }).css({ visibility: 'hidden' });
 			$('body').css({cursor: 'none'});
-			$('#update,#links,.really-annoying,#sidebar').velocity('stop').velocity({ 'opacity': 0 }, { duration: 300 });
-		}
-		else {
+			$('#update,.really-annoying,#sidebar').velocity('stop').velocity({ 'opacity': 0 }, { duration: 300 });
+		} else {
 			scrntap_id = setTimeout(scrntap, 3000 - (Date.now() - last_screen_tap));
 		}
 	};
@@ -534,7 +567,7 @@ function domReady() {
 	var showThings = function() {
 		$('.arrow').css({ 'visibility': 'visible', 'opacity': 'inherit' });
 		$('body').css({ 'cursor': 'default' });
-		$('#update,#links,.really-annoying,#sidebar').velocity('stop').velocity({ 'opacity': 1 }, { duration: 300 });
+		$('#update,.really-annoying,#sidebar').velocity('stop').velocity({ 'opacity': 1 }, { duration: 300 });
 		last_screen_tap = Date.now();
 		if (scrntap_id !== 0) {
 			clearTimeout(scrntap_id);
@@ -543,8 +576,7 @@ function domReady() {
 	};
 	if (window.PointerEvent) {
 		document.addEventListener('pointerdown', showThings);
-	}
-	else if (window.MSPointerEvent) {
+	} else if (window.MSPointerEvent) {
 		document.addEventListener('MSPointerDown', showThings);
 	}
 	document.addEventListener('mousemove', showThings);
@@ -579,8 +611,7 @@ function loadComplete() {
 		var r = confirm('Hey, look, an Android app (BETA)! Install it now from the Play Store?');
 		if (r) {
 			window.location='https://play.google.com/store/apps/details?id=com.sbhstimetable.sbhs_timetable_android';
-		}
-		else {
+		} else {
 			window.localStorage.noprompt = true;
 		}
 	}
@@ -601,8 +632,7 @@ function loadComplete() {
 			clearInterval(stopSnazzify);
 			$(document.getElementById('disable-grooviness')).velocity({'font-size': '20px'});
 		}, 500*20);
-	}
-	else {
+	} else {
 		console.log('activating swag mode');
 		setTimeout(loadTimetable, 0);
 		$('#period-label,#countdown-label').css({'display': 'none'});
@@ -695,23 +725,20 @@ function updatePeriodLabel() {
 		pNum = name;
 		if (name in window.todayNames.timetable) {
 			name = window.todayNames.timetable[name].fullName;
-		}
-		else {
+		} else {
 			name = 'Period ' + name;
 		}
 	} else if (name == 'Transition') {
 		pNum = belltimes.bells[currentBellIndex-1].bell;
 		if (pNum in window.todayNames.timetable) {
 			name = window.todayNames.timetable[pNum].fullName;
-		}
-		else {
+		} else {
 			name = 'Period ' + belltimes.bells[currentBellIndex - 1].bell;
 		}
 		inLabel = 'ends in';
 	} else if (name == 'School Starts' || name == 'School Ends') {
 		inLabel = 'in';
-	}
-	else {
+	} else {
 		if (/^\d$/.test(belltimes.bells[currentBellIndex-1].bell)) {
 			pNum = belltimes.bells[currentBellIndex-1].bell;
 			inLabel = 'ends in';
@@ -728,8 +755,7 @@ function updatePeriodLabel() {
 		if ('roomTo' in pNum) {
 			if (!miniMode) {
 				roomChangedInfo = name + ' is in room ' + pNum.roomTo + ' instead of ' + pNum.roomFrom + '. ';
-			}
-			else {
+			} else {
 				roomChangedInfo = 'Room: ' + pNum.roomTo + ' ';
 			}
 		}
@@ -737,16 +763,13 @@ function updatePeriodLabel() {
 			if (pNum.hasCover && pNum.hasCasual) { // casual teacher
 				if (!miniMode) {
 					roomChangedInfo += 'You\'ll be having ' + pNum.casualDisplay + ' instead of your usual teacher.';
-				}
-				else {
+				} else {
 					roomChangedInfo += 'Casual: ' + pNum.casualDisplay;
 				}
-			}
-			else if (!pNum.hasCover) { // no teacher
+			} else if (!pNum.hasCover) { // no teacher
 				if (!miniMode) {
 					roomChangedInfo += 'There\'s no teacher covering this class today (we think).';
-				}
-				else {
+				} else {
 					roomChangedInfo += 'No teacher (maybe)';
 				}
 			}
@@ -757,8 +780,7 @@ function updatePeriodLabel() {
 	if (belltimes.bellsAltered) {
 		if (miniMode) {
 			roomChangedInfo = belltimes.bellsAlteredReason + '! ' + roomChangedInfo;
-		}
-		else {
+		} else {
 			roomChangedInfo = 'Bells changed: ' + belltimes.bellsAlteredReason + roomChangedInfo;
 		}
 	}

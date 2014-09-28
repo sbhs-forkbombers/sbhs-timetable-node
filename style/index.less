@@ -104,7 +104,7 @@ td.subject, td.teacher {
 }
 
 .failed {
-	color: @highBg;
+	color: #e51c23;
 }
 
 .free {
@@ -167,7 +167,7 @@ td.subject, td.teacher {
 	z-index: 3;
 	overflow: auto;
 	width: 40%;
-	background-color: @bg;
+	background-color: fadeout(@bg, 20%);
 }
 
 .small-caps {
@@ -175,7 +175,7 @@ td.subject, td.teacher {
 }
 
 .stale {
-	color: @highFg;
+	color: #ffc107;
 }
 
 .subj-expand {
@@ -216,13 +216,10 @@ td.subject, td.teacher {
 
 #close-settings-modal {
 	position: absolute;
-	top: -15px;
-	right: -7px;
-}
-
-#close-settings-modal a {
+	top: -16px;
+	right: -10px;
 	text-decoration: none;
-	font-size: 30px;
+	font-size: 32px;
 }
 
 #collapse {
@@ -429,16 +426,15 @@ td.subject, td.teacher {
 	margin-top: -25vh;
 	margin-left: -25vw;
 	background-color: inherit;
-	border:1px solid @highFg;
-	border-radius: 5px;
+	border: 1px solid @highFg;
 	z-index: 6;
 	display: none;
 }
 
-#settings-modal td, #settings-modal input, #settings-modal select {
+#settings-modal .col1 {
 	font-family: Roboto;
 	font-weight: 100;
-	font-size: 48px;
+	font-size: 3em;
 	vertical-align: middle;
 }
 
@@ -449,8 +445,18 @@ td.subject, td.teacher {
 
 #settings-modal .col1 {
 	border-right: 1px solid white;
+	border-radius: 0;
 	text-align: right;
 }
+
+#settings-table {
+	max-height: calc(50vh - 1em);
+	max-width: 50vw;
+	overflow: auto;
+	display: block;
+	border: 0;
+}
+
 #sidebar {
 	position: fixed;
 	right: 0;
