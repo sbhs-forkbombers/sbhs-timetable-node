@@ -105,9 +105,9 @@ html(lang=en)
 		div.ss#sidebar
 			div.sidebar-item#next
 			span.sidebar-item#login-status
-			|&nbsp;&nbsp;
+			|&nbsp;&nbsp;&nbsp;&nbsp;
 			a.sidebar-item.octicon.octicon-gear#launch-settings(href="javascript:void(0)")
-			|&nbsp;&nbsp;
+			|&nbsp;&nbsp;&nbsp;&nbsp;
 			span.sidebar-item#cached
 				span#shortdata
 					span#shortdata-desc B: ? T: ? N: ?
@@ -147,8 +147,7 @@ html(lang=en)
 		div.arrow#right-pane-arrow
 		div.target#right-pane-target
 		div.target#bottom-pane-target
-		//- ya know, ya should probs tell dem kids on their phone/tablet
-		div#top-update
+		div.nomobile#top-update
 			a(href="https://play.google.com/store/apps/details?id=com.sbhstimetable.sbhs_timetable_android",title="app app app") IT'S AN APP! (beta)
 		div.nomobile#update
 			if colour == 'purple'
