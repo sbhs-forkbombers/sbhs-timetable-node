@@ -45,10 +45,10 @@ td {
 	-moz-border-radius: 5px 5px 5px 5px;
 	-ms-border-radius: 5px 5px 5px 5px;
 	border-radius: 5px 5px 5px 5px;
-}
 
-td.subject, td.teacher {
-	cursor: pointer;
+	.subject, .teacher {
+		cursor: pointer;
+	}
 }
 
 .animated {
@@ -258,11 +258,11 @@ td.subject, td.teacher {
 	height: 0;
 	width: 0;
 	margin-left: 5px;
-}
 
-#dropdown-arrow.expanded {
-	border-right-color: transparent;
-	border-top-color: inherit;
+	.expanded {
+		border-right-color: transparent;
+		border-top-color: inherit;
+	}
 }
 
 #expand-toggle {
@@ -271,11 +271,11 @@ td.subject, td.teacher {
 	top: 2px;
 	cursor: pointer;
 	z-index: 2;
-}
 
-#expand-toggle img {
-	height: 30px;
-	width: 30px;
+	img {
+		height: 30px;
+		width: 30px;
+	}
 }
 
 #fadeout {
@@ -305,27 +305,27 @@ td.subject, td.teacher {
 
 #left-pane {
 	left: -200%;
-}
 
-#left-pane strong {
-	font-weight: 400;
-}
+	strong {
+		font-weight: 400;
+	}
 
-#left-pane table {
-	width: 100%;
-	text-align: center;
-	font-size: 2em;
-	font-weight: 100;
-	cursor: default;
-}
+	table {
+		width: 100%;
+		text-align: center;
+		font-size: 2em;
+		font-weight: 100;
+		cursor: default;
+	}
 
-#left-pane.changeable-status {
-	padding-bottom: 20px;
-}
+	.changeable-status {
+		padding-bottom: 20px;
+	}
 
-#left-pane.expanded {
-	left: 0%;
-	border-right: 0.5px solid white;
+	.expanded {
+		left: 0%;
+		border-right: 0.5px solid white;
+	}
 }
 
 #left-pane-arrow {
@@ -334,12 +334,12 @@ td.subject, td.teacher {
 	border-bottom-color: transparent;
 	left: 0;
 	top: 75%;
-}
 
-#left-pane-arrow.expanded {
-	border-left-color: transparent;
-	border-right-color: inherit;
-	left: -25px;
+	.expanded {
+		border-left-color: transparent;
+		border-right-color: inherit;
+		left: -25px;
+	}
 }
 
 #left-pane-target {
@@ -364,36 +364,36 @@ td.subject, td.teacher {
 
 #right-pane {
 	right: -200%;
-}
 
-#right-pane table {
-	width: 100%;
-	text-align: center;
-	font-size: 1.5em;
-	font-weight: 100;
-	cursor: default;
-	padding-bottom: 20px;
-}
+	table {
+		width: 100%;
+		text-align: center;
+		font-size: 1.5em;
+		font-weight: 100;
+		cursor: default;
+		padding-bottom: 20px;
+	}
 
-#right-pane .bell {
-	font-size: 1em;
-}
+	.bell {
+		font-size: 1em;
+	}
 
-#right-pane .break {
-	font-weight: 100;
-	font-style: italic;
-}
+	.break {
+		font-weight: 100;
+		font-style: italic;
+	}
 
-#right-pane.expanded {
-	right: 0;
-}
+	.expanded {
+		right: 0;
+	}
 
-#right-pane .period {
-	font-weight: 400;
-}
+	.period {
+		font-weight: 400;
+	}
 
-#right-pane .time {
-	font-size: 1em;
+	.time {
+		font-size: 1em;
+	}
 }
 
 #right-pane-arrow {
@@ -402,12 +402,12 @@ td.subject, td.teacher {
 	border-bottom-color: transparent;
 	right: 0;
 	top: 75%;
-}
 
-#right-pane-arrow.expanded {
-	border-right-color: transparent;
-	border-left-color: white;
-	right: -25px;
+	.expanded {
+		border-right-color: transparent;
+		border-left-color: white;
+		right: -25px;
+	}
 }
 
 #right-pane-target {
@@ -429,32 +429,31 @@ td.subject, td.teacher {
 	border: 1px solid @highFg;
 	z-index: 6;
 	display: none;
+
+	.col1 {
+		font-family: Roboto;
+		font-weight: 100;
+		font-size: 3em;
+		vertical-align: middle;
+		border-right: 1px solid white;
+		border-radius: 0;
+		text-align: right;
+
+	}
+
+	td {
+		padding-left: 10px;
+		padding-right: 10px;
+	}
 }
 
-#settings-modal .col1 {
-	font-family: Roboto;
-	font-weight: 100;
-	font-size: 3em;
-	vertical-align: middle;
-}
-
-#settings-modal td {
-	padding-left: 10px;
-	padding-right: 10px;
-}
-
-#settings-modal .col1 {
-	border-right: 1px solid white;
-	border-radius: 0;
-	text-align: right;
-}
 
 #settings-table {
 	max-height: 50vh;
 	max-width: 50vw;
 	overflow: auto;
-	display: block;
 	border: 0;
+	margin: auto;
 }
 
 #sidebar {
@@ -479,17 +478,17 @@ td.subject, td.teacher {
 	top: -200%;
 	width: 100%;
 	left: 0;
-}
 
-#top-pane.expanded {
-	top: 0;
-}
+	.expanded {
+		top: 0;
+	}
 
-#top-pane table {
-	padding-right: 10px;
-	margin-right: 10px;
-	width: 99%;
-	padding-bottom: 20px;
+	table {
+		padding-right: 10px;
+		margin-right: 10px;
+		width: 99%;
+		padding-bottom: 20px;
+	}
 }
 
 #top-pane-arrow {
@@ -553,6 +552,39 @@ td.subject, td.teacher {
 	#period-label {
 		font-size: 4.5em;
 	}
+
+	#settings-table {
+		max-height: 100%;
+		max-width: 100%;
+		overflow: auto;
+		border: 0;
+	}
+
+	#settings-modal {
+		position: fixed;
+		width: 100%;
+		height: 100%;
+		left: 0;
+		top: 0;
+		margin-top: 0;
+		margin-left: 0;
+		background-color: inherit;
+		border: 1px solid @highFg;
+		z-index: 6;
+		display: none;
+
+		.col1 {
+			font-size: 2em;
+		}
+
+	}
+	#close-settings-modal {
+		position: fixed;
+		top: 0;
+		right: 0;
+		text-decoration: none;
+		font-size: 32px;
+	}
 }
 
 @media screen and (max-device-width: 800px), screen and (max-width: 800px) {
@@ -595,6 +627,7 @@ td.subject, td.teacher {
 	#left-pane, #right-pane {
 		width: 100%;
 	}
+
 }
 
 @media screen and (max-device-width: 450px), screen and (max-width: 450px) {
