@@ -73,7 +73,7 @@ module.exports = function(grunt) {
 				args: [ 'server.js' ],
 			},
 			rel: {
-				args: [ 'build/server.js' ],
+				args: [ 'server.js' ],
 			}
 		},
 		cssmin: {
@@ -174,8 +174,9 @@ module.exports = function(grunt) {
 		grunt.log.writeln('reloaded process.');
 	});
 
+	grunt.registerTask('cd', function() { grunt.file.setBase('build') });
 	grunt.registerTask('release', ['delete', 'closureCompiler', 'cssmin', 'copy']);
 	grunt.registerTask('test', ['jshint']);
 	grunt.registerTask('default', ['delete', 'concat', 'concurrent:develop', 'delete']);
-	grunt.registerTask('release-run', ['release', 'run:rel']);
+	grunt.registerTask('release-run', ['release', 'cd', 'run:rel']);
 };
