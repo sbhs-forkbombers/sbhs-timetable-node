@@ -17,21 +17,19 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 doctype html
-html(lang='en')
+html(lang="en")
 	include header.jade
 		| <!--[if IE]><script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><![endif]-->
 		link(href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.1.2/octicons.min.css", rel="stylesheet", type="text/css")
 		style
 			=css
-		script(async, defer, src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
+		script(async, src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.1.0/velocity.min.js")
+		script(async, src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.1.0/velocity.ui.min.js")
+		script(async, src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
 		title SBHS Timetable #{page}
 		script(async, src="/script/belltimes.concat.js?cachingsucks")
 		script
 			include ../srv/zepto.min.js
-		script
-			include ../srv/velocity.min.js
-		script
-			include ../srv/velocity.ui.min.js
 		script
 			!="window.colour = '" + colour + "';"
 			!="window.inverted = " + inverted + ";"
@@ -44,7 +42,7 @@ html(lang='en')
 		link(rel="icon", href="/icon.png", sizes="192x192")
 		link(rel="apple-touch-icon", href="/icon.png", sizes="192x192")
 		if testing
-			script(async,src="http://sinonjs.org/releases/sinon-1.10.3.js")
+			script(async, src="http://sinonjs.org/releases/sinon-1.10.3.js")
 		if holidays
 			style
 				include ../style/holidays.css

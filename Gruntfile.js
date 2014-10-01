@@ -86,7 +86,7 @@ module.exports = function(grunt) {
 		copy: {
 			main: {
 				expand: true,
-				src: ['octicons/**', 'dynamic/**', 'static/**', 'server.js', 'srv/**', 'style/index.less', 'lib/**', 'config.js', 'config_sample.js'],
+				src: ['octicons/**', 'dynamic/**', 'static/**', 'server.js', 'srv/**', 'style/index.less', 'lib/**', 'config.js'],
 				dest: 'build/',
 			},
 			vars: {
@@ -172,7 +172,7 @@ module.exports = function(grunt) {
 		grunt.log.writeln('reloaded process.');
 	});
 
-	grunt.registerTask('release', ['closureCompiler', 'cssmin', 'copy']);
+	grunt.registerTask('release', ['delete', 'closureCompiler', 'cssmin', 'copy']);
 	grunt.registerTask('test', ['jshint']);
 	grunt.registerTask('default', ['delete', 'concat', 'concurrent:develop', 'delete']);
 };

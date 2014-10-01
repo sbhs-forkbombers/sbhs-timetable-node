@@ -26,7 +26,7 @@ html(lang='en')
 		| <!--[if IE]><script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><![endif]-->
 		script
 			include ../srv/zepto.min.js
-			include ../srv/velocity.min.js
+		script(async, src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.1.0/velocity.ui.min.js")
 		script.
 			var weeks = ['A', 'B', 'C'],
 				weekVisible = 0,
