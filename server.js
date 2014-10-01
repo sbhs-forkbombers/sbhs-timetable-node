@@ -45,6 +45,8 @@ var	IPV6 = config.ipv6,
 	REL_RV = variables.REL_RV,
 	DEBUG = variables.DEBUG,
 	SOCKET = config.socket,
+	IPV4_IP = config.ipv4_ip,
+	IPV6_IP = config.ipv6_ip,
 	PORT = config.port,
 	SESSIONS_PATH = config.sessions,
 	lessParser = new less.Parser(),
@@ -653,7 +655,7 @@ if (!NOHTTP) {
 	ipv4.name = 'ipv4';
 	ipv4.on('request', requestSafeWrapper);
 	ipv4.on('listening', onListening);
-	ipv4.listen(PORT, '0.0.0.0');
+	ipv4.listen(PORT, IPV4_IP);
 
 	/* Start the IPv6 server if it is enabled */
 	if (IPV6) {
@@ -661,7 +663,7 @@ if (!NOHTTP) {
 		ipv6.name = 'ipv6';
 		ipv6.on('request', requestSafeWrapper);
 		ipv6.on('listening', onListening);
-		ipv6.listen(PORT, '::');
+		ipv6.listen(PORT, IPV6_IP);
 	}
 }
 

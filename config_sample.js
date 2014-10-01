@@ -14,8 +14,12 @@ module.exports = {
 	'nohttp': false,
 	/* Listen on a UNIX socket. If you don't know what this is, ignore it */
 	'socket': false,
-	/* port to listen to. You can probably leave this on the default (8080) */
+	/* port to listen on. You can probably leave this on the default (8080) */
 	'port': 8080,
+	/* IPv4 address to listen on */
+	'ipv4_ip': '0.0.0.0',
+	/* IPv6 address to listen on */
+	'ipv6_ip': '::',
 	/* location of sessions.json - defaults to root directory */
 	'sessions': 'sessions.json',
 	/* force disable holiday mode */
