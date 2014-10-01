@@ -348,7 +348,11 @@ function onRequest(req, res) {
 	'use strict';
 	var start = Date.now(),
 	contentType = 'text/html',
-	filePath = 'static/404.html';
+	filePath = 'static/404.html',
+	that = this;
+	res.on('finish', function() {
+		console.log('[' + that.name + ']', req.method, req.url, '-', res.statusCode, 'in', Date.now()-start + 'ms');
+	});
 	var changed = function(hash) {
 		var pipe = pipeCompress(req, filePath, res);
 		httpHeaders(res, req, 200, contentType, false, hash);
@@ -600,7 +604,6 @@ function onRequest(req, res) {
 		httpHeaders(res, req, 404, 'text/html');
 		fs.createReadStream('static/404.html').pipe(res);
 	}
-	console.log('[' + this.name + ']', req.method, req.url, 'in', Date.now()-start + 'ms');
 }
 
 function requestSafeWrapper(req, res) {
