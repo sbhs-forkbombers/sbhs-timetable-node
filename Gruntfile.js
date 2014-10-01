@@ -23,8 +23,6 @@ module.exports = function(grunt) {
 	'use strict';
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
-		GIT_RV: fs.readFileSync('.git/refs/heads/master').toString().trim(),
-		GIT_RV_SHORT: fs.readFileSync('.git/refs/heads/master').toString().trim().substr(0,6),
 
 		closureCompiler: {
 			options: {
@@ -42,8 +40,6 @@ module.exports = function(grunt) {
 		},
 		uglify: {
 			options: {
-				banner: '/*! <%= pkg.name %> rev. <%= GIT_RV_SHORT %> License: https://www.gnu.org/licenses/agpl-3.0.html (C) 2014.' +
-						' Built: <%= grunt.template.today("yyyy-mm-dd H:MM Z") %> */\n',
 				compress: {
 					drop_console: true,
 					global_defs: {
@@ -85,18 +81,7 @@ module.exports = function(grunt) {
 				src: ['**/*.css', '!**/*.min.css'],
 				dest: 'build/style/',
 				ext: '.css'
-			}/*, TODO this makes css files 2x bigger - do we really want it?
-			add_banner: {
-				options: {
-					banner: '/* <%= pkg.name %> License: https://www.gnu.org/licenses/agpl-3.0.html (C) 2014. Built: <%= grunt.template.today("yyyy-mm-dd H:MM Z") %>'
-				},
-				files: [{
-					expand: true,
-					src: 'build/style/**.min.css',
-					dest: 'build/style/',
-					flatten: true,
-				}]
-			},*/
+			}
 		},
 		copy: {
 			main: {
@@ -106,12 +91,7 @@ module.exports = function(grunt) {
 			},
 			vars: {
 				src: 'variables_rel.js',
-				dest: 'build/variables.js',
-				options: {
-					process: function(content) {
-						return content + '\nGIT_RV = \'' + grunt.config.get('GIT_RV') + '\';\n';
-					}
-				}
+				dest: 'build/variables.js'
 			}
 		},
 		concat: {
@@ -129,9 +109,6 @@ module.exports = function(grunt) {
 				options: {
 					callback: function(nm) {
 						nm.on('restart', function() {
-							if (fs.existsSync('/tmp/timetable.sock')) {
-								fs.unlinkSync('/tmp/timetable.sock');
-							}
 							if (fs.existsSync('/tmp/sbhstimetable.socket')) {
 								fs.unlinkSync('/tmp/sbhstimetable.socket');
 							}
@@ -181,10 +158,7 @@ module.exports = function(grunt) {
 
 	grunt.registerMultiTask('delete', 'delete stuff', function() {
 		if (process.platform !== 'win32') {
-			if (fs.existsSync('/tmp/timetable.sock')) {
-				fs.unlinkSync('/tmp/timetable.sock');
-				grunt.log.writeln(this.target + ': deleted /tmp/timetable.sock');
-			} else if (fs.existsSync('/tmp/sbhstimetable.socket')) {
+			if (fs.existsSync('/tmp/sbhstimetable.socket')) {
 				fs.unlinkSync('/tmp/sbhstimetable.socket');
 				grunt.log.writeln(this.target + ': deleted /tmp/sbhstimetable.socket');
 			} else {

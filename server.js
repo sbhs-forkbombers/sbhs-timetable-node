@@ -61,8 +61,9 @@ if (!RELEASE) {
 	/* Set GIT_RV to current Git revision */
 	if (fs.existsSync('.git/refs/heads/master')) {
 		var GIT_RV = fs.readFileSync('.git/refs/heads/master').toString().trim().substr(0,6);
+		var NO_GIT = false;
 	} else {
-		var GIT_RV = REL_RV; // If the git revision can't be found (e.g. repo wasn't cloned) we use the git release version
+		var NO_GIT = true; // If the git revision can't be found (e.g. repo wasn't cloned) we use the git release version
 	}
 }
 fs.writeFile('.reload', '0');
@@ -208,6 +209,9 @@ function pipeCompress(req, file, res) {
 	return result;
 }
 
+function exit() {
+}
+
 process.on('SIGHUP', function() {
 	/* Clean and re-cache if we receive SIGHUP */
 	'use strict';
@@ -216,8 +220,9 @@ process.on('SIGHUP', function() {
 });
 
 process.on('SIGINT', function() {
-	/* Close the sockets and save sessions when we receive SIGINT */
+	/* Close sockets and save sessions */
 	'use strict';
+	console.log('[core] Got SIGINT');
 	if (SOCKET) {
 		socket.close(function() { global.socketDone = true; });
 		if (fs.existsSync('/tmp/sbhstimetable.socket')) {
@@ -234,6 +239,25 @@ process.on('SIGINT', function() {
 	process.exit(0);
 });
 
+process.on('SIGTERM', function() {
+	/* Close sockets and save sessions */
+	'use strict';
+	console.log('[core] Got SIGTERM');
+	if (SOCKET) {
+		socket.close(function() { global.socketDone = true; });
+		if (fs.existsSync('/tmp/sbhstimetable.socket')) {
+			fs.unlinkSync('/tmp/sbhstimetable.socket');
+		}
+	}
+	if (!NOHTTP) {
+		ipv4.close(function() { global.ipv4Done = true; });
+		ipv6.close(function() { global.ipv6Done = true; });
+	}
+	fs.writeFileSync(SESSIONS_PATH, JSON.stringify(global.sessions));
+	console.log('[core] Saved sessions');
+	console.log('[core] Exiting');
+	process.exit(0);
+});
 
 function httpHeaders(res, req, responseCode, contentType, dynamic, tag, headers) {
 	/* Generate HTTP headers, including the response code, content type etc. */
@@ -611,7 +635,7 @@ function onUnixListening() {
 }
 
 /* Startup message */
-if (RELEASE) {
+if (RELEASE || NO_GIT) {
 	console.log('[core] SBHS-Timetable-Node version ' + REL_RV + ' starting server...');
 } else {
 	console.log('[core] SBHS-Timetable-Node revision ' + GIT_RV + ' starting server...');
