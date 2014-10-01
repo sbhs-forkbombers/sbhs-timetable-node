@@ -17,15 +17,12 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 doctype html
-html(lang=en)
+html(lang='en')
 	include header.jade
 		| <!--[if IE]><script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><![endif]-->
-		//-link(href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.min.css", rel="stylesheet", type="text/css")
-		//-link(rel="stylesheet",href="/style/index.less?colour="+colour+(inverted ? "&invert" : ""))
+		link(href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.1.2/octicons.min.css", rel="stylesheet", type="text/css")
 		style
 			=css
-		style
-			include ../style/octicons.css
 		script(async, defer, src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
 		title SBHS Timetable #{page}
 		script(async, src="/script/belltimes.concat.js?cachingsucks")
