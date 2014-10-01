@@ -69,10 +69,12 @@ module.exports = function(grunt) {
 			options: {
 				wait: true,
 			},
-			target: {
+			test: {
 				args: [ 'server.js' ],
+			},
+			rel: {
+				args: [ 'build/server.js' ],
 			}
-
 		},
 		cssmin: {
 			minify: {
@@ -175,4 +177,5 @@ module.exports = function(grunt) {
 	grunt.registerTask('release', ['delete', 'closureCompiler', 'cssmin', 'copy']);
 	grunt.registerTask('test', ['jshint']);
 	grunt.registerTask('default', ['delete', 'concat', 'concurrent:develop', 'delete']);
+	grunt.registerTask('release-run', ['release', 'run:rel']);
 };
