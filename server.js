@@ -233,7 +233,9 @@ process.on('SIGINT', function() {
 	}
 	if (!NOHTTP) {
 		ipv4.close(function() { global.ipv4Done = true; });
-		ipv6.close(function() { global.ipv6Done = true; });
+		if (IPV6) {
+			ipv6.close(function() { global.ipv6Done = true; });
+		}
 	}
 	fs.writeFileSync(SESSIONS_PATH, JSON.stringify(global.sessions));
 	console.log('[core] Saved sessions');
@@ -253,7 +255,9 @@ process.on('SIGTERM', function() {
 	}
 	if (!NOHTTP) {
 		ipv4.close(function() { global.ipv4Done = true; });
-		ipv6.close(function() { global.ipv6Done = true; });
+		if (IPV6) {
+			ipv6.close(function() { global.ipv6Done = true; });
+		}
 	}
 	fs.writeFileSync(SESSIONS_PATH, JSON.stringify(global.sessions));
 	console.log('[core] Saved sessions');
