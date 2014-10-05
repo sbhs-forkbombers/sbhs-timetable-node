@@ -311,6 +311,7 @@ td {
 	}
 
 	table {
+		padding-top: 25px;
 		width: 100%;
 		text-align: center;
 		font-size: 2em;
@@ -366,6 +367,7 @@ td {
 	right: -200%;
 
 	table {
+		paddint-top: 25px;
 		width: 100%;
 		text-align: center;
 		font-size: 1.5em;
@@ -438,7 +440,6 @@ td {
 		border-right: 1px solid white;
 		border-radius: 0;
 		text-align: right;
-
 	}
 
 	td {
@@ -446,7 +447,6 @@ td {
 		padding-right: 10px;
 	}
 }
-
 
 #settings-table {
 	max-height: 50vh;
@@ -526,7 +526,6 @@ td {
 	text-align: center;
 	width: 100%;
 	z-index: 1;
-/*	background-color: rgba(255, 255, 255, 0.75);*/
 }
 
 #verbose-hidden {
@@ -536,7 +535,7 @@ td {
 	width: auto;
 }
 
-@media screen and (max-device-width: 1000px), screen and (max-width: 1000px) {
+@media screen and (max-device-width: 1024px), screen and (max-width: 1024px), screen and (max-device-height: 400px), screen and (max-height: 400px) {
 	.really-annoying {
 		font-size: 2.85em;
 	}
@@ -569,21 +568,18 @@ td {
 		margin-top: 0;
 		margin-left: 0;
 		background-color: inherit;
-		border: 1px solid @highFg;
+		border: none;
 		z-index: 6;
 		display: none;
 
 		.col1 {
 			font-size: 2em;
 		}
-
 	}
+
 	#close-settings-modal {
-		position: fixed;
 		top: 0;
-		right: 0;
-		text-decoration: none;
-		font-size: 32px;
+		right: 7px;
 	}
 }
 
