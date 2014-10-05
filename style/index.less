@@ -32,14 +32,6 @@ a {
 	color: @fg;
 }
 
-body.customBg {
-	background: linear-gradient(fade(@bg, 30%), fade(@bg, 30%)), @bg url(about:blank);
-	background-size: cover;
-	background-attachment: fixed;
-	background-repeat: no-repeat;
-	background-position: center;
-}
-
 td {
 	-webkit-border-radius: 5px 5px 5px 5px;
 	-moz-border-radius: 5px 5px 5px 5px;
@@ -76,6 +68,14 @@ td {
 
 .arrow:hover {
 	opacity: 1;
+}
+
+.customBg {
+	background: linear-gradient(fade(@bg, 30%), fade(@bg, 30%)), @bg url(about:blank);
+	background-size: cover;
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	background-position: center;
 }
 
 .cached-notice {
@@ -200,6 +200,16 @@ td {
 	text-align: center;
 	top: 50%;
 	margin-top: -20px;
+}
+
+#background-image {
+	height: 100%;
+	width: 100%;
+	top: 0;
+	left: 0;
+	position: fixed;
+	background: none;
+	z-index: -1;
 }
 
 #bottom-pane-target {

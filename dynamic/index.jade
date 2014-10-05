@@ -166,6 +166,8 @@ html(lang="en")
 		else
 			audio#groovy(loop)
 				source(src="https://ia700209.us.archive.org/9/items/TheFinalCountdown-Europe/Europe-TheFinalCountdown.mp3",type="audio/mpeg")
+		div#background-image
+			//- this is necessary because velocity.js is shifty.
 		div#settings-modal
 			a(href="javascript:void(0)")
 				div#close-settings-modal.mega-octicon.octicon-x

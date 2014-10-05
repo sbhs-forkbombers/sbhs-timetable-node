@@ -275,18 +275,16 @@ function fadeOutUpdate() {
 function loadBackgroundImage() {
 	'use strict';
 	if ('cached-bg' in window.localStorage) {
-		console.log('css bg-image');
 		var c = colourscheme.bg.slice(1);
 		var r = Number('0x'+c.substr(0,2));
 		var g = Number('0x'+c.substr(2,2));
 		var b = Number('0x'+c.substr(4,2));
 		var rgb = 'rgba(' + r + ',' + g + ',' + b + ', 0.3)';
-		$('body').addClass('customBg');
-		console.log('linear-gradient(' + rgb + ',' + rgb + '), #' + c + ' ' + window.localStorage['cached-bg'] + ')');
-		$('body').css({'background': 'linear-gradient(' + rgb + ',' + rgb + '), #' + c + ' url(' + window.localStorage['cached-bg'] + ')'});
+		$('#background-image').addClass('customBg');
+		$('#background-image').css({'background': 'linear-gradient(' + rgb + ',' + rgb + '), #' + c + ' url(' + window.localStorage['cached-bg'] + ')'});
 	}
 	else {
-		$('body').removeClass('customBg').css({'background': ''});
+		$('#background-image').removeClass('customBg').css({'background': ''});
 	}
 }
 
