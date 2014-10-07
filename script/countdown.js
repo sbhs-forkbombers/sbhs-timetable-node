@@ -218,7 +218,7 @@ function handleBells(bells) {
 	/* Load the belltimes */
 	/* jshint validthis: true */
 	'use strict';
-	belltimes = JSON.parse(this.responseText);
+	window.belltimes = JSON.parse(this.responseText);
 	if (belltimes.status === 'Error') {
 		endOfDay = false;
 		if (window.HOLIDAYS) {
@@ -347,12 +347,15 @@ function handleUpload() {
 }
 
 function domReady() {
-	/* Onclicks and timeouts */
+	/* DOM loaded */
 	'use strict';
 	if (document.readyState != 'complete') {
 		return;
 	}
 	loadBackgroundImage();
+	if (!window.HOLIDAYS) {
+		setInterval(updateCountdownLabel, 1000);
+	}
 	if ((belltimes !== null && belltimes !== undefined) || window.HOLIDAYS) {
 		setTimeout(loadComplete, 0);
 	}
@@ -621,15 +624,14 @@ function loadComplete() {
 		calculateUpcomingLesson();
 		updateCountdownLabel();
 		handleRightPane();
-		setInterval(updateCountdownLabel, 1000);
-		$(document.getElementById('disable-grooviness')).velocity({'font-size': '32px'});
-		var stopSnazzify = setInterval(function() {
+		//$(document.getElementById('disable-grooviness')).velocity({'font-size': '32px'});
+		/*var stopSnazzify = setInterval(function() {
 			snazzify(document.getElementById('disable-grooviness'));
 		}, 500);
 		setTimeout(function() {
 			clearInterval(stopSnazzify);
 			$(document.getElementById('disable-grooviness')).velocity({'font-size': '20px'});
-		}, 500*20);
+		}, 500*20);*/
 	} else {
 		console.log('activating swag mode');
 		setTimeout(loadTimetable, 0);
@@ -788,7 +790,7 @@ function updatePeriodLabel() {
 function updateCountdownLabel() {
 	/* Update the countdown */
 	'use strict';
-	if (reloading) {
+	if (reloading || !window.belltimes) {
 		return;
 	}
 	if (nextStart === null) {
