@@ -779,7 +779,7 @@ function updatePeriodLabel() {
 		if (miniMode) {
 			roomChangedInfo = belltimes.bellsAlteredReason + '! ' + roomChangedInfo;
 		} else {
-			roomChangedInfo = 'Bells changed: ' + belltimes.bellsAlteredReason + roomChangedInfo;
+			roomChangedInfo = 'Bells changed: ' + belltimes.bellsAlteredReason + ' ' + roomChangedInfo;
 		}
 	}
 	$('#top-line-notice').text(roomChangedInfo);

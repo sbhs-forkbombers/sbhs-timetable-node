@@ -142,8 +142,6 @@ html(lang="en")
 		div.arrow#right-pane-arrow
 		div.target#right-pane-target
 		div.target#bottom-pane-target
-		div.nomobile#top-update
-			a(href="https://play.google.com/store/apps/details?id=com.sbhstimetable.sbhs_timetable_android",title="app app app") IT'S AN APP! (beta)
 		div.nomobile#update
 			if colour == 'purple'
 				//- purple
@@ -155,6 +153,8 @@ html(lang="en")
 				//- green
 				|I think you just got Shrek'd
 			yield
+			|&nbsp;&nbsp;
+			a(href="https://play.google.com/store/apps/details?id=com.sbhstimetable.sbhs_timetable_android",title="app app app") IT'S AN APP! (beta)
 		div.nomobile#expand-toggle
 			div#expand.mega-octicon.octicon-screen-full
 			div#collapse.mega-octicon.octicon-screen-normal
@@ -162,9 +162,6 @@ html(lang="en")
 			|Control the <em>groove</em>
 		if (holEnd - Date.now() < (1000 * 60 * 60 * 24 * 3) && reallyInHolidays) || grooveOverride
 			audio#groovy(autoplay, loop)
-				source(src="https://ia700209.us.archive.org/9/items/TheFinalCountdown-Europe/Europe-TheFinalCountdown.mp3",type="audio/mpeg")
-		else
-			audio#groovy(loop)
 				source(src="https://ia700209.us.archive.org/9/items/TheFinalCountdown-Europe/Europe-TheFinalCountdown.mp3",type="audio/mpeg")
 		div#background-image
 			//- this is necessary because velocity.js is shifty.
