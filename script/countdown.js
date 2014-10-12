@@ -273,6 +273,7 @@ function fadeOutUpdate() {
 }
 
 function loadBackgroundImage() {
+	/* jshint -W041 */
 	'use strict';
 	if ('cached-bg' in window.localStorage) {
 		var c = colourscheme.bg.slice(1);
@@ -281,10 +282,17 @@ function loadBackgroundImage() {
 		var b = Number('0x'+c.substr(4,2));
 		var rgb = 'rgba(' + r + ',' + g + ',' + b + ', 0.3)';
 		$('#background-image').addClass('customBg');
-		$('#background-image').css({'background': 'linear-gradient(' + rgb + ',' + rgb + '), #' + c + ' url(' + window.localStorage['cached-bg'] + ')'});
+		var style = document.createElement('style');
+		style.innerText = '#background-image { background: linear-gradient(' + rgb + ',' + rgb + '), #' + c + ' url(' + window.localStorage['cached-bg'] + ') }';
+		style.id = 'i-dont-even';
+		document.head.appendChild(style);
 	}
 	else {
-		$('#background-image').removeClass('customBg').css({'background': ''});
+		$('#background-image').removeClass('customBg');
+		var el = document.getElementById('i-dont-even');
+		if (el != null) {
+			document.head.removeElement(el);
+		}
 	}
 }
 
@@ -328,7 +336,7 @@ function handleUpload() {
 		$('#custom-background').html('Choose...');
 	}
 	else {
-		var input = $('<input type="file" accept="image/*">').click();
+		var input = $('<input type="file" accept="image/*">');
 		input.on('change', function(e) {
 			console.log('loading a file!');
 			if (input[0].files && input[0].files[0]) {
@@ -343,6 +351,8 @@ function handleUpload() {
 				$('#custom-background').html('Clear');
 			}
 		});
+		console.log('requesting upload...');
+		input.click();
 	}
 }
 
