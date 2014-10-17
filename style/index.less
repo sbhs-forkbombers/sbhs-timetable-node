@@ -54,7 +54,7 @@ td {
 .arrow {
 	height: 0;
 	width: 0;
-	border: 25px solid white;
+	border: 25px solid @fg;
 	opacity: 0.25;
 	position: fixed;
 	z-index: 4;
@@ -71,7 +71,7 @@ td {
 }
 
 .customBg {
-	background: linear-gradient(fade(@bg, 30%), fade(@bg, 30%)), @bg url(about:blank);
+	background: linear-gradient(fade(@bg, 50%), fade(@bg, 50%)), @bg url(about:blank);
 	background-size: cover;
 	background-attachment: fixed;
 	background-repeat: no-repeat;
@@ -221,7 +221,7 @@ td {
 
 #cached {
 	cursor: pointer;
-	background-color: fade(@bg, 25%);
+/*	background-color: fade(@bg, 25%);*/
 }
 
 #close-settings-modal {
@@ -257,7 +257,7 @@ td {
 }
 
 #dropdown-arrow {
-	border: 7px solid white;
+	border: 7px solid @fg;
 	border-left-color: transparent;
 	border-bottom-color: transparent;
 	border-top-color: transparent;
@@ -269,7 +269,7 @@ td {
 	width: 0;
 	margin-left: 5px;
 
-	.expanded {
+	&.expanded {
 		border-right-color: transparent;
 		border-top-color: inherit;
 	}
@@ -329,13 +329,13 @@ td {
 		cursor: default;
 	}
 
-	.changeable-status {
+	&.changeable-status {
 		padding-bottom: 20px;
 	}
 
-	.expanded {
+	&.expanded {
 		left: 0%;
-		border-right: 0.5px solid white;
+		border-right: 0.5px solid @fg;
 	}
 }
 
@@ -346,9 +346,9 @@ td {
 	left: 0;
 	top: 75%;
 
-	.expanded {
+	&.expanded {
 		border-left-color: transparent;
-		border-right-color: inherit;
+		border-right-color: @fg;
 		left: -25px;
 	}
 }
@@ -395,7 +395,7 @@ td {
 		font-style: italic;
 	}
 
-	.expanded {
+	&.expanded {
 		right: 0;
 	}
 
@@ -415,7 +415,7 @@ td {
 	right: 0;
 	top: 75%;
 
-	.expanded {
+	&.expanded {
 		border-right-color: transparent;
 		border-left-color: white;
 		right: -25px;
@@ -489,7 +489,7 @@ td {
 	width: 100%;
 	left: 0;
 
-	.expanded {
+	&.expanded {
 		top: 0;
 	}
 
@@ -507,12 +507,12 @@ td {
 	border-right-color: transparent;
 	border-left-color: transparent;
 	border-bottom-color: transparent;
-}
 
-#top-pane-arrow.expanded {
-	border-top-color: transparent;
-	border-bottom-color: white;
-	top: -25px;
+	&.expanded {
+		border-top-color: transparent;
+		border-bottom-color: @fg;
+		top: -25px;
+	}
 }
 
 #top-pane-target {

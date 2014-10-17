@@ -280,7 +280,7 @@ function loadBackgroundImage() {
 		var r = Number('0x'+c.substr(0,2));
 		var g = Number('0x'+c.substr(2,2));
 		var b = Number('0x'+c.substr(4,2));
-		var rgb = 'rgba(' + r + ',' + g + ',' + b + ', 0.3)';
+		var rgb = 'rgba(' + r + ',' + g + ',' + b + ', 0.5)';
 		$('#background-image').addClass('customBg');
 		var style = document.createElement('style');
 		style.innerText = '#background-image { background: linear-gradient(' + rgb + ',' + rgb + '), #' + c + ' url(' + window.localStorage['cached-bg'] + ') }';
