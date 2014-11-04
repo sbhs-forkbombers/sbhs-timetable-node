@@ -121,7 +121,7 @@ html(lang="en")
 		div.ss.pane#left-pane
 			div.umad
 				if !loggedIn
-					a(href="/try_do_oauth") Log in
+					a(onclick="location.href='/try_do_oauth'") Log in
 					|&nbsp;to show your timetable
 				else
 					|¯\_(ツ)_/¯ Loading ¯\_(ツ)_/¯
@@ -130,7 +130,7 @@ html(lang="en")
 		div.ss.pane#top-pane
 			div.umad
 				if !loggedIn
-					a(href="/try_do_oauth") Log in
+					a(onclick="location.href='/try_do_oauth'") Log in
 					|&nbsp;to show the daily notices
 				else
 					|¯\_(ツ)_/¯ Loading ¯\_(ツ)_/¯
