@@ -203,7 +203,7 @@ function loadTimetable() {
 		window.todayNames = {timetable: {failure: true}};
 	}
 	if (!getLoggedIn()) {
-		$('#rtd-status').html('<a href="/try_do_oauth">Log in</a> for real-time data');
+		$('#rtd-status').html('<a onclick="location.href=\'/try_do_oauth\'">Log in</a> for real-time data');
 		return;
 	}
 	var xhr = new XMLHttpRequest();
