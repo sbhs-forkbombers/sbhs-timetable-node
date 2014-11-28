@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-/* globals getLoggedIn, loadNotices, loadTimetable, todayNames */ /* jshint -W098 */
+/* globals getLoggedIn, loadNotices, loadTimetable, todayNames */ /* jshint -W098, -W117 */
 
 /* Variables */
 var timetable,
@@ -286,8 +286,7 @@ function loadBackgroundImage() {
 		style.innerText = '#background-image { background: linear-gradient(' + rgb + ',' + rgb + '), #' + c + ' url(' + window.localStorage['cached-bg'] + ') }';
 		style.id = 'i-dont-even';
 		document.head.appendChild(style);
-	}
-	else {
+	} else {
 		$('#background-image').removeClass('customBg');
 		var el = document.getElementById('i-dont-even');
 		if (el != null) {
@@ -526,6 +525,8 @@ function domReady() {
 		} else if (e.which == 83) { // s
 			if ($('#settings-modal').css('display') !== 'block') {
 				$('#settings-modal,#fadeout').velocity('stop').velocity('fadeIn');
+			} else {
+				$('#settings-modal,#fadeout').velocity('stop').velocity('fadeOut');
 			}
 		/*} else if (e.which == 69 || e.which == 81) { // e/q FIXME: make toggleExpansion not use this and things.
 			toggleExpansion();*/
@@ -549,13 +550,12 @@ function domReady() {
 			if (topExpanded) {
 				collapsePane('top');
 			}
-			if ((window.innerWidth <= 450) && (rightExpanded)) {
+			if ((window.innerWidth <= 450) && (leftExpanded)) {
 				collapsePane('left');
 			}
 			togglePane('right');
 		}
 	});
-			
 
 	var event = 'mousemove';
 	if (miniMode) {
