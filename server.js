@@ -397,6 +397,7 @@ function onRequest(req, res) {
 	if (uri.pathname === '/') { // TODO cache two different versions of index for logged-in and not logged in.
 		/* Main page */
 		var scheme = {};
+		delete uri.query.colour;
 		if ('colour' in uri.query || 'invert' in uri.query) {
 			if (!('colour' in uri.query)) {
 				uri.query.colour = 'default';
@@ -405,8 +406,9 @@ function onRequest(req, res) {
 		} else {
 			scheme = colours.getFromUriQuery(uri.query);
 		}
+		delete uri.query.invert;
 		var isHoliday = (global.HOLIDAYS || 'holiday' in uri.query) && !(config.disableHoliday || 'noholiday' in uri.query);
-		if ('invert' in uri.query || isHoliday) {
+		if ('invert' in uri.query) {
 			var tmp = scheme.highBg;
 			scheme.highBg = scheme.highFg;
 			scheme.highFg = tmp;

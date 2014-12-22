@@ -19,7 +19,11 @@
 doctype html
 html(lang="en")
 	include header.jade
-		title SBHS Timetable #{page}
+		if holidays
+			title Wow I can't wait until school comes back!
+		else
+			title SBHS Timetable #{page}
+		yield
 		meta(name="application-name", content="SBHS Timetable")
 		meta(name="mobile-web-app-capable", content="yes")
 		meta(name="apple-mobile-web-app-capable", content="yes")
@@ -30,7 +34,6 @@ html(lang="en")
 		link(rel="icon", href="/icon.png", sizes="192x192")
 		link(rel="apple-touch-icon", href="/icon.png", sizes="192x192")
 
-		
 		link(href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.1.2/octicons.min.css", rel="stylesheet", type="text/css")
 		| <!--[if IE]><script defer="defer" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><![endif]-->
 		script(async, defer, src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
@@ -49,8 +52,8 @@ html(lang="en")
 		if testing
 			script(defer, src="http://sinonjs.org/releases/sinon-1.10.3.js")
 		if holidays
-			style
-				include ../style/holidays.css
+			//-			style
+			//-				include ../style/holidays.css
 			script
 				|window.HOLIDAYS = true;
 				="window.holEnd = " + holEnd + ";"
@@ -165,9 +168,12 @@ html(lang="en")
 			div#collapse.mega-octicon.octicon-screen-normal
 		a#disable-grooviness(href="javascript:void(0)", onclick="document.getElementById('groovy').controls = true;document.getElementById('groovy').style.display = 'block';",style="display:none")
 			|Control the <em>groove</em>
-		if (holEnd - Date.now() < (1000 * 60 * 60 * 24 * 3) && reallyInHolidays) || grooveOverride
-			audio#groovy(autoplay, loop)
-				source(src="https://ia700209.us.archive.org/9/items/TheFinalCountdown-Europe/Europe-TheFinalCountdown.mp3",type="audio/mpeg")
+		//if (holEnd - Date.now() < (1000 * 60 * 60 * 24 * 3) && reallyInHolidays) || grooveOverride
+		//audio#groovy(autoplay, loop)
+		//source(src="https://ia700209.us.archive.org/9/items/TheFinalCountdown-Europe/Europe-TheFinalCountdown.mp3",type="audio/mpeg")
+		if holidays
+			iframe(style="height:75%;width:100%;position:absolute;top:8em;left:0;" src="//www.youtube.com/embed/y6120QOlsfU?autoplay=1&loop=1&autohide=1" frameborder="0" allowfullscreen)
+		yield
 		div#background-image
 			//- this is necessary because velocity.js is shifty.
 		div#settings-modal

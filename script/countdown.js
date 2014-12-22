@@ -364,6 +364,8 @@ function domReady() {
 	loadBackgroundImage();
 	if (!window.HOLIDAYS) {
 		setInterval(updateCountdownLabel, 1000);
+	} else {
+		setInterval(updateCountdownLabel, 12);
 	}
 	if ((belltimes !== null && belltimes !== undefined) || window.HOLIDAYS) {
 		setTimeout(loadComplete, 0);
@@ -630,7 +632,7 @@ function loadComplete() {
 	setTimeout(function() {
 		$('#top-update').velocity('fadeOut');
 	}, 10000);
-	if (!window.HOLIDAYS) {
+	//if (!window.HOLIDAYS) {
 		calculateUpcomingLesson();
 		updateCountdownLabel();
 		handleRightPane();
@@ -642,7 +644,7 @@ function loadComplete() {
 			clearInterval(stopSnazzify);
 			$(document.getElementById('disable-grooviness')).velocity({'font-size': '20px'});
 		}, 500*20);*/
-	} else {
+	/*} else {
 		console.log('activating swag mode');
 		setTimeout(loadTimetable, 0);
 		$('#period-label,#countdown-label').css({'display': 'none'});
@@ -652,6 +654,9 @@ function loadComplete() {
 		}, 500);
 		$('#sidebar,#expand,#collapse,.arrow').addClass('animated').css({'opacity': 0});
 		$('#left-pane-arrow').css({'opacity': ''});
+	}*/
+	if (window.HOLIDAYS) {
+		$('#period-label,#in-label,.arrow,#expand-toggle,#sidebar').css({'display': 'none'});
 	}
 	updateSidebarStatus();
 
@@ -660,16 +665,24 @@ function loadComplete() {
 function prettifySecondsLeft(sec) {
 	/* Make the time look like time */
 	'use strict';
-	var secs, mins, hrs;
+	var secs, mins, hrs, ms;
+	ms = sec % 1000;
+	sec -= ms;
+	sec /= 1000;
 	secs = sec % 60;
-	sec -= sec % 60;
+	sec -= secs;
 	sec /= 60;
 	mins = sec % 60;
-	sec -= sec % 60;
+	sec -= mins;
 	sec /= 60;
 	hrs = sec;
 	if (secs < 10) {
 		secs = '0' + secs;
+	}
+	if (ms < 10) {
+		ms = '00' + ms;
+	} else if (ms < 100) {
+		ms = '0' + ms;
 	}
 	if (mins < 10) {
 		mins = '0' + mins;
@@ -679,7 +692,7 @@ function prettifySecondsLeft(sec) {
 	} else if (hrs < 10) {
 		hrs = '0' + hrs;
 	}
-	return (hrs !== '' ? hrs + 'h ' : '') + mins + 'm ' + secs + 's';
+	return (hrs !== '' ? hrs + 'h ' : '') + mins + 'm ' + secs + 's ' + ms + 'ms';
 }
 
 function calculateUpcomingLesson() {
@@ -690,6 +703,25 @@ function calculateUpcomingLesson() {
 	if (belltimes === null) {
 		reloadBelltimes();
 		return;
+	}
+	if (HOLIDAYS) {
+		var date = new Date('2015-01-28').set({hour:9,minutes:0});
+		belltimes = {
+			'bells': [
+				{'bell': 'Holidays End','time': '09:00'}
+			]
+		};
+		dateOffset = Math.floor((date - Date.now()) / (1000*60*60*24));
+		currentBellIndex = 0;
+		now = new Date();
+		if (new Date().isAfter(Date.today().set({hour:9,minute:0}))) {
+			now = now.set({hours: 0, minutes: 0}).addDays(1);
+			needMidnightCountdown = true;
+		}
+		nextStart = date;
+		reloading = false;
+		return;
+
 	}
 	if ((new Date()).isAfter(Date.today().set({hour: 15, minute: 15})) || getNextSchoolDay().isAfter(Date.today())) {
 		now = getNextSchoolDay();
@@ -813,8 +845,8 @@ function updateCountdownLabel() {
 		calculateUpcomingLesson();
 		return;
 	}
-	left = nextStart - now;
-	$('#countdown-label').text(prettifySecondsLeft(Math.floor(left/1000)));
+	left = nextStart - now; // XXX REMOVE THIS WHEN WE GO BACK
+	$('#countdown-label').text(prettifySecondsLeft(left));
 }
 
 function handleRightPane() {
