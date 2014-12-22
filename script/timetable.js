@@ -86,10 +86,10 @@ function handleLeftPane() {
 				fullTemp = fullTemp.split(' ').slice(1).join(' ');
 			}
 			if (fullTemp[0].toLowerCase() !== teacher[0].toLowerCase()) {
-				// we'll make up a prefix - probably a split class
-				teacher = temp = fullTemp[0] + fullTemp.substr(-1);
-				temp = temp.toLowerCase();
+				// probably a split class, no expandability because otherwise it's broken
+				fullTemp = teacher;
 			}
+			fullTemp = fullTemp.replace(' ', '&nbsp;');
 			for (var k = 0; k < teacher.length; k++) {
 				var y = fullTemp.toLowerCase().indexOf(temp[k+1]);
 				y = y < 0 ? undefined : y;
@@ -159,7 +159,15 @@ function handleTimetable() {
 	if (window.belltimes == null || belltimes.status === 'Error') {
 		reloadBelltimes(); // use today.json's date.
 	}
-	var res = JSON.parse(this.responseText);
+	var res;
+	try {
+		res = JSON.parse(this.responseText);
+	}
+	catch (e) {
+		res = {'status': 'damn'};
+		$('#left-pane .umad').text('SBHS is broken :(');
+		return;
+	}
 	if (window.belltimes != null) {
 		var lsKey = belltimes.day + belltimes.weekType;
 		if (res.timetable && !res.hasVariations) {

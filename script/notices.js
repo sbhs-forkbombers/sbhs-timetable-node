@@ -112,7 +112,14 @@ function handleNotices(err) {
 	'use strict';
 	window.noticesCached = false;
 	var lsKey = new Date().toDateString();
-	var res = JSON.parse(this.responseText);
+	var res;
+	try {
+		res = JSON.parse(this.responseText);
+	}
+	catch (e) {
+		$('#top-pane .umad').text('SBHS is broken :(');
+		return;
+	}
 	if (res.notices) {
 		window.localStorage[lsKey] = this.responseText;
 		window.notices = res;
