@@ -846,7 +846,7 @@ function updateCountdownLabel() {
 		return;
 	}
 	left = nextStart - now; // XXX REMOVE THIS WHEN WE GO BACK
-	$('#countdown-label').text(prettifySecondsLeft(left));
+	$('#countdown-label').text(/*prettifySecondsLeft(left)*/left + 'ms');
 }
 
 function handleRightPane() {
