@@ -35,10 +35,10 @@ html(lang="en")
 		link(rel="apple-touch-icon", href="/icon.png", sizes="192x192")
 
 		link(href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.1.2/octicons.min.css", rel="stylesheet", type="text/css")
-		| <!--[if IE]><script defer="defer" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><![endif]-->
+		| <!--[if IE]><script defer="defer" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script><![endif]-->
 		script(async, defer, src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
-		script(defer, src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.1.0/velocity.min.js")
-		script(defer, src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.1.0/velocity.ui.min.js")
+		script(defer, src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.1/velocity.min.js")
+		script(defer, src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.1/velocity.ui.min.js")
 		script
 			include ../srv/zepto.min.js
 		script(async, src="/script/belltimes.concat.js?cachingsucks")
@@ -102,7 +102,7 @@ html(lang="en")
 				div#in
 					span#in-label happens
 					div#countdown
-						span#countdown-label any second now…
+						span#countdown-label.animated any second now…
 		yield
 		div.ss.changed#top-line-notice
 		div.ss#sidebar
@@ -172,7 +172,7 @@ html(lang="en")
 		//audio#groovy(autoplay, loop)
 		//source(src="https://ia700209.us.archive.org/9/items/TheFinalCountdown-Europe/Europe-TheFinalCountdown.mp3",type="audio/mpeg")
 		if holidays
-			iframe(style="height:75%;width:100%;position:absolute;top:8em;left:0;" src="//www.youtube.com/embed/y6120QOlsfU?autoplay=1&loop=1&autohide=1" frameborder="0" allowfullscreen)
+			iframe(style="height:75%;width:100%;position:absolute;top:8em;left:0;" src="//www.youtube.com/embed/bBVaJG8x4uk?autoplay=1&loop=1&autohide=1" frameborder="0" allowfullscreen)
 		yield
 		div#background-image
 			//- this is necessary because velocity.js is shifty.

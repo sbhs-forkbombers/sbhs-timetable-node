@@ -106,7 +106,7 @@ function collapsePane(p) {
 	var el = $('#'+p+'-pane');
 	var cfg = {};
 	cfg[p] = '-110%';
-	el.velocity('stop').velocity(cfg, 750, 'ease');
+	el.velocity('finish').velocity(cfg, 750, 'ease');
 	$('#'+p+'-pane-arrow').removeClass('expanded');
 	window[p+'Expanded'] = false;
 }
@@ -117,7 +117,7 @@ function expandPane(p) {
 	var el = $('#'+p+'-pane');
 	var cfg = {};
 	cfg[p] = 0;
-	el.velocity('stop').velocity(cfg, 750, 'ease');
+	el.velocity('finish').velocity(cfg, 750, 'ease');
 	$('#'+p+'-pane-arrow').addClass('expanded');
 	window[p+'Expanded'] = true;
 }
@@ -239,7 +239,7 @@ function handleBells(bells) {
 		return;
 	}
 	console.log('fantastic!');
-	 // now that the belltimes are done, we can load the subject info
+	// now that the belltimes are done, we can load the subject info
 	setTimeout(loadNotices, 0);
 	endOfDay = false;
 	if (document.readyState == 'complete') {
@@ -250,20 +250,18 @@ function handleBells(bells) {
 function toggleExpansion() {
 	/* jshint validthis: true */
 	'use strict';
-	if (!$('#period-label').hasClass('velocity-animating')) {
-		if (this.id == 'expand') {
-			$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('stop').velocity('fadeOut', { duration: 400 });
-			$('#countdown-label').css({fontSize: '10em', top: '50%', left: 0, width: '100%'}).css({position: 'fixed', marginTop: '-1em'});
-			this.style.display = 'none';
-			$('#collapse').css({'display': 'block'});
-			window.localStorage.expanded = true;
-		} else {
-			$('#countdown-label').velocity({fontSize: miniMode ? '5em' : '7em', width: 'inherit'}).css({position: 'relative', marginTop: 0})[0].setAttribute('style', '');
-			$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('stop').velocity('fadeIn');
-			this.style.display = 'none';
-			$('#expand').css({'display': 'block'});
-			window.localStorage.expanded = false;
-		}
+	if (this.id == 'expand') {
+		$('#countdown-label').css({fontSize: '10em', top: '50%', left: 0, width: '100%', marginTop: '-1em', position: 'fixed'});
+		$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('finish').velocity('fadeOut');
+		this.style.display = 'none';
+		$('#collapse').css({'display': 'block'});
+		window.localStorage.expanded = true;
+	} else {
+		$('#countdown-label').css({fontSize: miniMode ? '5em' : '7em', width: 'inherit', marginTop: 0, position: 'relative'})[0].setAttribute('style', '');
+		$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('finish').velocity('fadeIn');
+		this.style.display = 'none';
+		$('#expand').css({'display': 'block'});
+		window.localStorage.expanded = false;
 	}
 }
 
@@ -406,23 +404,21 @@ function domReady() {
 	});
 
 	$('#cached').click(function() {
-		if (!$('#verbose-hidden').hasClass('velocity-animating')) {
-			if ($('#dropdown-arrow').hasClass('expanded')) {
-				$('#verbose-hidden').velocity('stop').velocity('slideUp', { duration: 300 });
-				$('#dropdown-arrow').removeClass('expanded');
-			} else {
-				$('#verbose-hidden').velocity('stop').velocity('slideDown', { duration: 300 });
-				$('#dropdown-arrow').addClass('expanded');
-			}
+		if ($('#dropdown-arrow').hasClass('expanded')) {
+			$('#verbose-hidden').velocity('finish').velocity('slideUp', { duration: 300 });
+			$('#dropdown-arrow').removeClass('expanded');
+		} else {
+			$('#verbose-hidden').velocity('finish').velocity('slideDown', { duration: 300 });
+			$('#dropdown-arrow').addClass('expanded');
 		}
 	});
 
 	$('#launch-settings').click(function() {
-		$('#settings-modal,#fadeout').velocity('stop').velocity('fadeIn');
+		$('#settings-modal,#fadeout').velocity('finish').velocity('fadeIn');
 	});
 
 	$('#close-settings-modal').click(function() {
-		$('#settings-modal,#fadeout').velocity('stop').velocity('fadeOut');
+		$('#settings-modal,#fadeout').velocity('finish').velocity('fadeOut');
 	});
 
 	$('#custom-background').click(handleUpload);
@@ -512,23 +508,23 @@ function domReady() {
 	});
 
 	$('#cached').swipeDown(function() {
-		$('#verbose-hidden').velocity('stop').velocity('slideDown', { duration: 300 });
+		$('#verbose-hidden').velocity('finish').velocity('slideDown', { duration: 300 });
 		$('#dropdown-arrow').addClass('expanded');
 	});
 
 	$('#cached').swipeUp(function() {
-		$('#verbose-hidden').velocity('stop').velocity('slideUp', { duration: 300 });
+		$('#verbose-hidden').velocity('finish').velocity('slideUp', { duration: 300 });
 		$('#dropdown-arrow').removeClass('expanded');
 	});
-	
+
 	$(document).keydown(function(e) {
 		if (e.which == 27) { // esc
-			$('#settings-modal,#fadeout').velocity('stop').velocity('fadeOut');
+			$('#settings-modal,#fadeout').velocity('finish').velocity('fadeOut');
 		} else if (e.which == 83) { // s
 			if ($('#settings-modal').css('display') !== 'block') {
-				$('#settings-modal,#fadeout').velocity('stop').velocity('fadeIn');
+				$('#settings-modal,#fadeout').velocity('finish').velocity('fadeIn');
 			} else {
-				$('#settings-modal,#fadeout').velocity('stop').velocity('fadeOut');
+				$('#settings-modal,#fadeout').velocity('finish').velocity('fadeOut');
 			}
 		/*} else if (e.which == 69 || e.which == 81) { // e/q FIXME: make toggleExpansion not use this and things.
 			toggleExpansion();*/
@@ -571,7 +567,7 @@ function domReady() {
 		if ((Date.now() - last_screen_tap) > 3000) {
 			$('.arrow').css({ opacity: 0 }).css({ visibility: 'hidden' });
 			$('body').css({cursor: 'none'});
-			$('#update,.really-annoying,#sidebar').velocity('stop').velocity({ 'opacity': 0 }, { duration: 300 });
+			$('#update,.really-annoying,#sidebar').velocity('finish').velocity({ 'opacity': 0 }, { duration: 300 });
 		} else {
 			scrntap_id = setTimeout(scrntap, 3000 - (Date.now() - last_screen_tap));
 		}
@@ -580,7 +576,7 @@ function domReady() {
 	var showThings = function() {
 		$('.arrow').css({ 'visibility': 'visible', 'opacity': 'inherit' });
 		$('body').css({ 'cursor': 'default' });
-		$('#update,.really-annoying,#sidebar').velocity('stop').velocity({ 'opacity': 1 }, { duration: 300 });
+		$('#update,.really-annoying,#sidebar').velocity('finish').velocity({ 'opacity': 1 }, { duration: 300 });
 		last_screen_tap = Date.now();
 		if (scrntap_id !== 0) {
 			clearTimeout(scrntap_id);
