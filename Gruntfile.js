@@ -85,6 +85,7 @@ module.exports = function(grunt) {
 				ext: '.css'
 			}
 		},
+		clean: ["build/", "script/belltimes.concat.js", "/tmp/sbhstimetable.socket"],
 		copy: {
 			main: {
 				expand: true,
@@ -156,6 +157,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-jshint');
 	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-contrib-concat');
+	grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-closure-tools');
 
 	grunt.registerMultiTask('delete', 'delete stuff', function() {
