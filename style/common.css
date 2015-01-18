@@ -21,9 +21,6 @@
 a {
 	color: white;
 	-webkit-transition: all 300ms ease;
-	-moz-transition: all 300ms ease;
-	-ms-transition: all 300ms ease;
-	-o-transition: all 300ms ease;
 	transition: all 300ms ease
 }
 
