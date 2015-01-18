@@ -44,7 +44,7 @@ function handleTopPane() {
 	} else {
 		res += '<h1 class="notices-header">Notices for ' + belltimes.date + ' (Week ' + belltimes.week + belltimes.weekType + ')</h1><table><tbody>';
 	}
-	if (window.barcodenews) {
+	if (window.barcodenews && window.barcodenews.content.current.length > 0) {
 		res += '<tr id="barcodenews" class="notice-row barcodenews" style="line-height: 1.5">';
 		res += '<td class="notice-target animated">All Students and Staff</td>';
 		res += '<td class="notice-data"><h2 class="notice-title">Today\'s Barcode News</h2><div class="notices-hidden" id="nbarcodenews-hidden">';
