@@ -688,7 +688,7 @@ function prettifySecondsLeft(sec) {
 	} else if (hrs < 10) {
 		hrs = '0' + hrs;
 	}
-	return (hrs !== '' ? hrs + 'h ' : '') + mins + 'm ' + secs + 's ' + ms + 'ms';
+	return (hrs !== '' ? hrs + 'h ' : '') + mins + 'm ' + secs + 's'/* ' + ms + 'ms'*/;
 }
 
 function calculateUpcomingLesson() {
@@ -841,8 +841,8 @@ function updateCountdownLabel() {
 		calculateUpcomingLesson();
 		return;
 	}
-	left = nextStart - now; // XXX REMOVE THIS WHEN WE GO BACK
-	$('#countdown-label').text(/*prettifySecondsLeft(left)*/left + 'ms');
+	//left = nextStart - now; // XXX REMOVE THIS WHEN WE GO BACK
+	$('#countdown-label').text(prettifySecondsLeft(left));
 }
 
 function handleRightPane() {
