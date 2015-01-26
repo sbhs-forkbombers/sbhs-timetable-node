@@ -19,7 +19,7 @@
 
 /* These styles are only used on the full timetable display */
 body {
-	font-family: "Roboto Condensed", "Segoe UI", "Helvetica Neue", sans-serif;
+	font-family: "Roboto Condensed", "Oxygen-Sans", "Helvetica Neue", "Segoe UI", sans-serif;
 	overflow: hidden;
 }
 
