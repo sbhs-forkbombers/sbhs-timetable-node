@@ -21,7 +21,7 @@
 function handleTopPane() {
 	'use strict';
 	var entry, list, today = new Date(), res = '', j, i;
-	if (!window.notices) {
+	if (!window.notices || !window.notices.notices) {
 		return;
 	}
 	if (window.noticesCached) {
