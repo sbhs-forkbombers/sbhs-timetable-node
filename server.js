@@ -490,7 +490,7 @@ function onRequest(req, res) {
 	} else if (uri.pathname == '/api/belltimes') {
 		/* Belltimes wrapper */
 		apis.get('belltimes', uri.query, res.SESSID, function(obj) {
-			httpHeaders(res, req, 200, 'text/html', true, obj.etag);
+			httpHeaders(res, req, 200, 'application/json', true, obj.etag);
 			res.end(obj.json);
 		});
 	} else if (uri.pathname.match('/static/.*[.]jpg|jpeg$') && fs.existsSync(uri.pathname.slice(1))) {
