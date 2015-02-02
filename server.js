@@ -487,13 +487,13 @@ function onRequest(req, res) {
 		contentType = 'application/javascript';
 		filePath = uri.pathname.slice(1);
 		checkFile(filePath, req, unchanged, changed);
-	} else if (uri.pathname == '/api/belltimes') {
-		/* Belltimes wrapper */
+	} /*else if (uri.pathname == '/api/belltimes') {
+		/* Belltimes wrapper
 		apis.get('belltimes', uri.query, res.SESSID, function(obj) {
 			httpHeaders(res, req, 200, 'application/json', true, obj.etag);
 			res.end(obj.json);
 		});
-	} else if (uri.pathname.match('/static/.*[.]jpg|jpeg$') && fs.existsSync(uri.pathname.slice(1))) {
+	}*/ else if (uri.pathname.match('/static/.*[.]jpg|jpeg$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* jpegs */
 		contentType = 'image/jpeg';
 		filePath = uri.pathname.slice(1);
