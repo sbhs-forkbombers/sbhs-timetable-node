@@ -731,6 +731,9 @@ function calculateUpcomingLesson() {
 	} else {
 		now = new Date();
 	}
+	if (belltimes.bells == null) {
+		setTimeout(calculateUpcomingLesson, 100);
+	}
 	for (i in belltimes.bells) {
 		bell = belltimes.bells[i].time.split(':');
 		bdate = now.clone().set({hour: Number(bell[0]), minute: Number(bell[1]), second: 0});
