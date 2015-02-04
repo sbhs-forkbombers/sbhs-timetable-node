@@ -20,7 +20,9 @@
 
 function handleTopPane() {
 	'use strict';
-	var entry, list, today = new Date(), res = '', j, i;
+	var entry, list, today = new Date(), res = '', j, i, date, dom, wday, month,
+		weekdays = 'Sunday Monday Tuesday Wednesday Thursday Friday Saturday'.split(' '),
+		months = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ');
 	if (!window.notices || !window.notices.notices) {
 		return;
 	}
@@ -39,10 +41,18 @@ function handleTopPane() {
 		res += '<option value="notice'+i+'">Year ' + i + '</option>';
 	}
 	res += '<option value="noticeStaff">Staff</option></select>';
+	date = (window.notices.date ? window.notices.date : belltimes.date);
+	date = Date.parse(date);
+	wday = weekdays[date.getDay()];
+	dom = ''+date.getDate();
+	if (dom.length == 1) {
+		dom = '0' + dom;
+	}
+	month = months[date.getMonth()];
 	if (window.notices.date !== null) {
-		res += '<h1 class="notices-header">Notices for ' + window.notices.date + ' (Week ' + window.notices.week + ')</h1><table><tbody>';
+		res += '<h1 class="notices-header">Notices for ' + wday + ' ' + dom + ' ' + month + ' &mdash; Week ' + window.notices.week + '</h1><table><tbody>';
 	} else {
-		res += '<h1 class="notices-header">Notices for ' + belltimes.date + ' (Week ' + belltimes.week + belltimes.weekType + ')</h1><table><tbody>';
+		res += '<h1 class="notices-header">Notices for ' + wday + ' ' + dom + ' ' + month + ' &mdash; Week ' + belltimes.week + belltimes.weekType + '</h1><table><tbody>';
 	}
 	if (window.barcodenews && window.barcodenews.content.current.length > 0) {
 		res += '<tr id="barcodenews" class="notice-row barcodenews" style="line-height: 1.5">';
@@ -74,7 +84,14 @@ function handleTopPane() {
 			res += '<td class="notice-target animated">'+entry.dTarget+'</td>';
 			res += '<td class="notice-data"><h2 class="notice-title">'+entry.title+'</h2><div class="notice-hidden" id="n'+entry.id+'-hidden">';
 			if (entry.isMeeting) {
-				res += '<div class="notice-meeting"><strong>Meeting Date:</strong> ' + entry.meetingDate + '<br />';
+				date = Date.parse(entry.meetingDate);
+				wday = 'Sunday Monday Tuesday Wednesday Thursday Friday Saturday'.split(' ')[date.getDay()];
+				month = 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ')[date.getMonth()];
+				dom = '' + date.getDate();
+				if (dom.length == '1') {
+				   dom = '0' + dom;
+				}
+				res += '<div class="notice-meeting"><strong>Meeting Date:</strong> ' + wday + ', ' + month + ' ' + dom + ' ' + date.getFullYear() + '<br />';
 				res += '<strong>Meeting Time:</strong> ' + entry.meetingTime + ' in ' + entry.meetingPlace + '<br /></div>';
 			}
 			res += '<div id="n'+entry.id+'-txt" class="notice-content">';
