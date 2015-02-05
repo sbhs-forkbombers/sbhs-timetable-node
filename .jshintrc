@@ -8,5 +8,6 @@
 	"curly": true,
 	"bitwise": true,
 	"quotmark": "single",
-	"trailing": true
+	"trailing": true,
+	"esnext": true
 }
