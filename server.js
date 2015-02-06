@@ -25,7 +25,6 @@ console.log('[core] Loading...');
 var fs = require('fs'),
 	http = require('http'),
 	jade = require('jade'),
-	uuid = require('node-uuid'),
 	url = require('url'),
 	zlib = require('zlib'),
 	less = require('less'),
@@ -46,7 +45,6 @@ var	IPV6 = config.ipv6,
 	IPV4_IP = config.ipv4_ip,
 	IPV6_IP = config.ipv6_ip,
 	PORT = config.port,
-	SESSIONS_PATH = config.sessions,
 	lessParser = new less.Parser(),
 	hmopts = { removeComments: true, removeCommentsFromCDATA: true, collapseWhitespace: true },
 	index_cache, timetable_cache, ipv4, ipv6, socket;
@@ -60,8 +58,6 @@ global.DEBUG = variables.DEBUG;
 if (process.platform == 'win32') {
 	SOCKET = false; // Here's a nickel, kid. Get yourself a better OS.
 }
-
-global.sessions = {};
 
 if (!RELEASE) {
 	/* Set GIT_RV to current Git revision */
@@ -131,34 +127,6 @@ function cache_index() {
 	console.log('[core] Index and Timetable pages cached in ' + (Date.now() - jade_comp) + 'ms');
 }
 
-function cleanSessions() {
-	/* Remove old (or otherwise) sessions from the store and save everything else to the filesystem */
-	'use strict';
-	var cleaned = 0;
-	for (var i in global.sessions) {
-		if (DEBUG) {
-			console.log('[sessions_debug] Considering session for expiry. Length:',Object.keys(global.sessions[i]).length,' Expiry:',global.sessions[i].expires,'time left:',Math.floor((global.sessions[i].expires - Date.now())/1000), 'seconds');
-		}
-		if (global.sessions[i].expires < Date.now()) {
-			delete global.sessions[i];
-			cleaned++;
-			if (DEBUG) {
-				console.log('[sessions_debug] 10/10 would clean again');
-			}
-		} else if (Object.keys(global.sessions[i]).length < 2) { // empty session
-			delete global.sessions[i];
-			cleaned++;
-			if (DEBUG) {
-				console.log('[sessions_debug] 11/10 would clean again');
-			}
-		} else if (DEBUG) {
-			console.log('[sessions_debug] 0/10 would not recommend');
-		}
-	}
-	console.log('[core] Cleaned ' + cleaned + ' sessions');
-	fs.writeFileSync(SESSIONS_PATH, JSON.stringify(global.sessions));
-	console.log('[core] Wrote ' + Object.keys(global.sessions).length + ' sessions to disk');
-}
 
 
 function exit() {
@@ -168,7 +136,7 @@ process.on('SIGHUP', function() {
 	/* Clean and re-cache if we receive SIGHUP */
 	'use strict';
 	cache_index();
-	cleanSessions();
+	session.clearSessions();
 });
 
 process.on('SIGINT', function() {
@@ -187,7 +155,7 @@ process.on('SIGINT', function() {
 			ipv6.close(function() { global.ipv6Done = true; });
 		}
 	}
-	fs.writeFileSync(SESSIONS_PATH, JSON.stringify(global.sessions));
+	sessions.saveSessionsSync();
 	console.log('[core] Saved sessions');
 	console.log('[core] Exiting');
 	process.exit(0);
@@ -209,27 +177,11 @@ process.on('SIGTERM', function() {
 			ipv6.close(function() { global.ipv6Done = true; });
 		}
 	}
-	fs.writeFileSync(SESSIONS_PATH, JSON.stringify(global.sessions));
+	session.saveSessionsSync();
 	console.log('[core] Saved sessions');
 	console.log('[core] Exiting');
 	process.exit(0);
 });
-
-function genSessionID() {
-	/* Generate a random session ID */
-	'use strict';
-	return uuid.v4();
-}
-
-function getCookies(s) {
-	'use strict';
-	var res = {};
-	s.split(';').forEach(function (ck) {
-		var parts = ck.split('=');
-		res[parts.shift().trim()] = parts.join('=').trim();
-	});
-	return res;
-}
 
 function onRequest(req, res) {
 	/* Respond to requests */
@@ -243,21 +195,14 @@ function onRequest(req, res) {
 		console.log('[' + that.name + ']', req.method, req.url, '-', res.statusCode, 'in', Date.now()-start + 'ms - ' + req.headers['user-agent']);
 	});
 
-	if ('cookie' in req.headers) {
-		var cookies = getCookies(req.headers.cookie);
-		if ('SESSID' in cookies) {
-			res.SESSID = cookies.SESSID;
-			if (sessions[res.SESSID] === undefined || sessions[res.SESSID] === null) {
-				sessions[res.SESSID] = { expires: Date.now() + (1000 * 60 * 60 * 24 * 90) };
-			}
-		} else {
-			res.SESSID = genSessionID();
-			sessions[res.SESSID] = { expires: Date.now() + (1000 * 60 * 60 * 24 * 90) };
-		}
-	} else {
-		res.SESSID = genSessionID();
-		sessions[res.SESSID] = { expires: Date.now() + (1000 * 60 * 60 * 24 * 90) };
+	var sessID = session.getSession(req.headers.cookies);
+	if (sessID === null) {
+		sessID = session.createSession();
+		// set the cookie when we generate a new session.
+		res.setHeader('Set-Cookie', 'SESSID='+sessID+'; Path=/; Expires=' + new Date(Date.now() + 60*60*24*90*1000));
 	}
+	var data = sessions.getSessionData(sessID);
+	res.SESSID = sessID; // TODO kill res.SESSID dead
 
 	var target, uri = url.parse(req.url, true);
 	/* Response block */
@@ -273,7 +218,7 @@ function onRequest(req, res) {
 		} else {
 			scheme = colours.getFromUriQuery(uri.query);
 		}
-		delete uri.query.invert;
+
 		var isHoliday = (global.HOLIDAYS || 'holiday' in uri.query) && !(config.disableHoliday || 'noholiday' in uri.query);
 		if ('invert' in uri.query) {
 			var tmp = scheme.highBg;
@@ -283,7 +228,7 @@ function onRequest(req, res) {
 			scheme.bg = scheme.fg;
 			scheme.fg = tmp;
 		}
-		if (index_cache === null) {
+		if (typeof index_cache !== 'function') {
 			files.err500();
 		} else {
 			compile_less('style/index.less', scheme, function(code, type, less) {
@@ -291,7 +236,7 @@ function onRequest(req, res) {
 					title: '',
 					holidays: isHoliday,
 					holEnd: schoolday.getHolidaysFinished(),
-					loggedIn: global.sessions[res.SESSID].refreshToken !== undefined,
+					loggedIn: data.refreshToken !== undefined,
 					reallyInHolidays: schoolday.actualHolidaysFinished(),
 					grooveOverride: 'groove' in uri.query,
 					testing: 'testing' in uri.query,
@@ -301,7 +246,6 @@ function onRequest(req, res) {
 					css: less,
 					cscheme: scheme
 				});
-				contentType = 'text/html';
 				if (MINIFY) {
 					target = minify(target, hmopts);
 				}
@@ -331,7 +275,8 @@ function onRequest(req, res) {
 			files.respondText(target, req, res);
 		}
 	} else if (uri.pathname.match('.*config[.]js.*') && fs.existsSync('config_sample.js')) {
-		httpHeaders(res, req, 403, 'text/plain');
+		files.setContentType('text/plain', res);
+		files.fileHeaders(res);
 		fs.createReadStream('config_sample.js').pipe(res);
 	} else if (uri.pathname.match('/style/.*[.]css$') /*&& fs.existsSync(uri.pathname.slice(1))*/) {
 		/* Style sheets */
@@ -341,7 +286,7 @@ function onRequest(req, res) {
 		/* Less style sheets */
 		compile_less(uri.pathname.slice(1), colours.get(uri.query.colour, 'invert' in uri.query), function(rescode, type, css) {
 			if (type === 'text/html') {
-				files.fileHeaders(null, res);
+				files.fileHeaders(res);
 				files.contentType('text/html', res);
 				res.end(css);
 			}
@@ -389,7 +334,7 @@ function onRequest(req, res) {
 				console.log('[core_debug] Sending to /mobile_loading!');
 			}
 			auth.getAuthToken(res, uri, function() {
-				files.textHeaders(res.SESSID, res);
+				files.textHeaders(res);
 				res.writeHead(302, {'Location': '/mobile_loading?sessionID='+encodeURIComponent(res.SESSID)});
 				res.end();
 				//httpHeaders(res, req, 200, 'application/json', true);
@@ -397,7 +342,7 @@ function onRequest(req, res) {
 			}, false);
 		} else {
 			auth.getAuthToken(res, uri, function() {
-				files.textHeaders(res.SESSID, res);
+				files.textHeaders(res);
 				res.writeHead(302, {'Location': '/'});
 				res.end();
 			}, false);
@@ -406,16 +351,17 @@ function onRequest(req, res) {
 		files.respondFile('static/appLoading.html', req, res);
 	} else if (uri.pathname == '/session_info' && DEBUG) {
 		/* Session info */
-		httpHeaders(res, req, 200, 'application/json', true);
+		//httpHeaders(res, req, 200, 'application/json', true);
+		files.setContentType('application/json', res);
+		files.textHeaders(res);
 		var obj = {};
 		obj[res.SESSID] = global.sessions[res.SESSID];
 		res.end(JSON.stringify(obj));
 	} else if (uri.pathname.match('/api/.*') && apis.isAPI(uri.pathname.slice(5))) {
 		/* API calls */
 		apis.get(uri.pathname.slice(5), uri.query, res.SESSID, function(obj) {
-			contentType = 'application/json';
 			target = JSON.stringify(obj);
-			files.contentType(contentType, res);
+			files.contentType('application/json', res);
 			files.respondText(target, req, res);
 		});
 	} else if (uri.pathname == '/logout') {
@@ -438,13 +384,16 @@ function onRequest(req, res) {
 		files.respondFile(filePath, req, res);
 	} else if (uri.pathname == '/reset_access_token') {
 		/* Reset access token */
-		httpHeaders(res, req, 200, 'application/json', true);
+		files.setContentType('application/json');
+		files.textHeaders(res);
+		//httpHeaders(res, req, 200, 'application/json', true);
 		delete global.sessions[res.SESSID].accessToken;
 		global.sessions[res.SESSID].accessTokenExpires = 0;
 		res.end(JSON.stringify(global.sessions[res.SESSID]));
 	} else if (uri.pathname == '/refresh_token') {
 		/* Refresh access token */
-		httpHeaders(res, req, 200, 'application/json', true);
+		files.setContentType('application/json');
+		files.textHeaders(res);
 		if (global.sessions[res.SESSID].refreshToken) {
 			auth.refreshAuthToken(global.sessions[res.SESSID].refreshToken, res.SESSID, function() {
 				res.end(JSON.stringify(global.sessions[res.SESSID]));
@@ -452,14 +401,6 @@ function onRequest(req, res) {
 		} else {
 			res.end('{"error": "not logged in"}');
 		}
-	} else if (uri.pathname == '/win8' && DEBUG) {
-		/* STOP error :( */
-		httpHeaders(res, req, 500, 'text/html');
-		fs.createReadStream('static/500.8.html').pipe(res);
-	} else if (uri.pathname == '/EFLAT' && DEBUG) {
-		/* Force a 500 error (out of tune) */
-		httpHeaders(res, req, 500, 'text/html');
-		serverError().pipe(res);
 	} else {
 		/* 404 everything else */
 		files.err404(res);
@@ -541,14 +482,4 @@ if (SOCKET) {
 	console.warn('[core_warn] NOHTTP is true, but socket not activated! Disable NOHTTP or make \'socket\' true in config.js');
 }
 
-setInterval(cleanSessions, 900000); // clean expired sessions every 15 minutes
-
-if (fs.existsSync(SESSIONS_PATH)) {
-	console.log('[core] Loading sessions...');
-	try {
-		global.sessions = JSON.parse(fs.readFileSync(SESSIONS_PATH));
-		console.log('[core] Success!');
-	} catch (e) {
-		console.warn('[sessions_warn] Failed to load sessions.json:', e);
-	}
-}
+setInterval(session.clearSessions, 900000); // clean expired sessions every 15 minutes
