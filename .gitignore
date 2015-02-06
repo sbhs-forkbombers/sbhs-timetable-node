@@ -5,6 +5,7 @@ users.json
 belltimes.concat.js
 config.js
 *sessions.json
+*_test.json
 *report.txt
 .reload
 .DS_Store
