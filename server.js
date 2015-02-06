@@ -32,12 +32,13 @@ var fs = require('fs'),
 	apis = require('./lib/api.js'),
 	auth = require('./lib/auth.js'),
 	etag = require('./lib/etag.js'),
-	config = require('./config.js'),
-	variables = require('./variables.js'),
-	schoolday = require('./lib/schoolday.js'),
+	colours = require('./lib/colours.js'),
 	files = require('./lib/files.js');
-	colours = require('./lib/colours.js');
-
+	Response = require('./lib/httpwrap.js').Response,
+	schoolday = require('./lib/schoolday.js'),
+	config = require('./config.js'),
+	variables = require('./variables.js');
+global.session = require('./lib/session.js');
 /* Variables */
 var	IPV6 = config.ipv6,
 	NOHTTP = config.nohttp,
@@ -54,6 +55,7 @@ global.RELEASE = variables.RELEASE;
 global.MINIFY = variables.MINIFY;
 global.REL_RV = variables.REL_RV;
 global.DEBUG = variables.DEBUG;
+DEBUG = true;
 
 if (process.platform == 'win32') {
 	SOCKET = false; // Here's a nickel, kid. Get yourself a better OS.
@@ -155,7 +157,7 @@ process.on('SIGINT', function() {
 			ipv6.close(function() { global.ipv6Done = true; });
 		}
 	}
-	sessions.saveSessionsSync();
+	session.saveSessionsSync();
 	console.log('[core] Saved sessions');
 	console.log('[core] Exiting');
 	process.exit(0);
@@ -191,20 +193,29 @@ function onRequest(req, res) {
 	contentType = 'text/html',
 	filePath = 'static/404.html',
 	that = this;
+	var target, uri = url.parse(req.url, true);
+	uri.pathname = uri.pathname.replace('/../', '/');
 	res.on('finish', function() {
-		console.log('[' + that.name + ']', req.method, req.url, '-', res.statusCode, 'in', Date.now()-start + 'ms - ' + req.headers['user-agent']);
+		console.log('[' + that.name + ']', req.method, req.url, '-', res.status, 'in', Date.now()-start + 'ms - ' + req.headers['user-agent']);
 	});
 
-	var sessID = session.getSession(req.headers.cookies);
+	res = new Response(req,res);
+	var sessID = session.getSession(req.headers.cookie);
 	if (sessID === null) {
 		sessID = session.createSession();
 		// set the cookie when we generate a new session.
-		res.setHeader('Set-Cookie', 'SESSID='+sessID+'; Path=/; Expires=' + new Date(Date.now() + 60*60*24*90*1000));
+		res.cookie('SESSID='+sessID+'; Path=/; Expires=' + new Date(Date.now() + 60*60*24*90*1000));
 	}
-	var data = sessions.getSessionData(sessID);
+	var data = session.getSessionData(sessID);
+	if (data === null) { // what a terrible failure. how does this even happen?
+		sessID = session.createSession();
+		// set the cookie when we generate a new session.
+		res.cookie('SESSID='+sessID+'; Path=/; Expires=' + new Date(Date.now() + 60*60*24*90*1000));
+		data = session.getSessionData(sessID);
+	}
 	res.SESSID = sessID; // TODO kill res.SESSID dead
 
-	var target, uri = url.parse(req.url, true);
+
 	/* Response block */
 	if (uri.pathname === '/') { // TODO cache two different versions of index for logged-in and not logged in.
 		/* Main page */
@@ -249,8 +260,8 @@ function onRequest(req, res) {
 				if (MINIFY) {
 					target = minify(target, hmopts);
 				}
-				files.contentType('text/html', res);
-				files.respondText(target, req, res);
+				res.type('text/html');
+				files.respondText(target, res);
 			});
 		}
 		//httpHeaders(res, req, (target == serverError ? 500 : 200), 'text/html', true);
@@ -264,7 +275,7 @@ function onRequest(req, res) {
 					target = minify(target, hmopts);
 				}
 				res.setHeader('Content-Type', 'text/html');
-				files.respondText(target, req, res);
+				files.respondText(target, res);
 			});
 		} else {
 			target = timetable_cache({'loggedIn': loggedIn});
@@ -272,7 +283,7 @@ function onRequest(req, res) {
 				target = minify(target, hmopts);
 			}
 			res.setHeader('Content-Type', 'text/html');
-			files.respondText(target, req, res);
+			files.respondText(target, res);
 		}
 	} else if (uri.pathname.match('.*config[.]js.*') && fs.existsSync('config_sample.js')) {
 		files.setContentType('text/plain', res);
@@ -281,44 +292,44 @@ function onRequest(req, res) {
 	} else if (uri.pathname.match('/style/.*[.]css$') /*&& fs.existsSync(uri.pathname.slice(1))*/) {
 		/* Style sheets */
 		filePath = uri.pathname.slice(1);
-		files.respondFile(filePath, req, res);
+		files.respondFile(filePath, res);
 	} else if (uri.pathname.match('/style/.*[.]less$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* Less style sheets */
 		compile_less(uri.pathname.slice(1), colours.get(uri.query.colour, 'invert' in uri.query), function(rescode, type, css) {
 			if (type === 'text/html') {
 				files.fileHeaders(res);
-				files.contentType('text/html', res);
+				res.type('text/html');
 				res.end(css);
 			}
 			else {
 				files.contentType(type, res);
-				files.respondText(target, req, res);
+				files.respondText(target, res);
 			}
 		});
 	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* JavaScript */
-		files.respondFile(uri.pathname.slice(1), req, res);
+		files.respondFile(uri.pathname.slice(1), res);
 	} else if (uri.pathname.match('/static/.*[.]jpg|jpeg$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* jpegs */
 		filePath = uri.pathname.slice(1);
-		files.respondFile(filePath, req, res);
+		files.respondFile(filePath, res);
 	} else if (uri.pathname == '/favicon.ico') {
 		/* favicon */
 		filePath = 'static/favicon.ico';
-		files.respondFile(filePath, req, res);
+		files.respondFile(filePath, res);
 	} else if (uri.pathname == '/static/icon-hires.png' || uri.pathname == '/static/icon-hires.ico' || uri.pathname == '/icon.png') {
 		/* hires icon */
 		filePath = 'static/icon-hires.png';
-		files.respondFile(filePath, req, res);
+		files.respondFile(filePath, res);
 	} else if (uri.pathname == '/COPYING') {
 		/* license */
 		filePath = 'COPYING';
-		files.contentType('text/plain', res);
-		files.respondFile(filePath, req, res);
+		res.type('text/plain');
+		files.respondFile(filePath, res);
 	} else if (uri.pathname == '/try_do_oauth') {
 		/* OAuth2 attempt */
 		if ('app' in uri.query) {
-			sessions[res.SESSID].nord = true;
+			data.nord = true;
 			if (DEBUG) {
 				console.log('[core_debug] Won\'t redirect...');
 			}
@@ -327,9 +338,9 @@ function onRequest(req, res) {
 	} else if (uri.pathname == '/login') {
 		/* OAuth2 handler */
 		if (DEBUG) {
-			console.log('[core_debug] ' + require('util').inspect(sessions[res.SESSID]));
+			console.log('[core_debug] ' + require('util').inspect(data));
 		}
-		if (sessions[res.SESSID].nord) {
+		if (data.nord) {
 			if (DEBUG) {
 				console.log('[core_debug] Sending to /mobile_loading!');
 			}
@@ -348,55 +359,55 @@ function onRequest(req, res) {
 			}, false);
 		}
 	} else if (uri.pathname == '/mobile_loading') {
-		files.respondFile('static/appLoading.html', req, res);
+		files.respondFile('static/appLoading.html', res);
 	} else if (uri.pathname == '/session_info' && DEBUG) {
 		/* Session info */
 		//httpHeaders(res, req, 200, 'application/json', true);
-		files.setContentType('application/json', res);
+		res.type('application/json');
 		files.textHeaders(res);
 		var obj = {};
-		obj[res.SESSID] = global.sessions[res.SESSID];
+		obj[res.SESSID] = data;
 		res.end(JSON.stringify(obj));
 	} else if (uri.pathname.match('/api/.*') && apis.isAPI(uri.pathname.slice(5))) {
 		/* API calls */
 		apis.get(uri.pathname.slice(5), uri.query, res.SESSID, function(obj) {
 			target = JSON.stringify(obj);
-			files.contentType('application/json', res);
-			files.respondText(target, req, res);
+			res.type('application/json');
+			files.respondText(target, res);
 		});
 	} else if (uri.pathname == '/logout') {
 		/* Log out */
 		res.writeHead(302, { 'Location': '/' });
 		res.end();
-		delete global.sessions[res.SESSID].accessToken;
-		delete global.sessions[res.SESSID].refreshToken;
-		delete global.sessions[res.SESSID].accessTokenExpires;
-		delete global.sessions[res.SESSID].refreshTokenExpires;
+		delete data.accessToken;
+		delete data.refreshToken;
+		delete data.accessTokenExpires;
+		delete data.refreshTokenExpires;
 	} else if (uri.pathname == '/wat.html') {
 		/* Landing page */
 		filePath = 'static/wat.html';
-		files.respondFile(filePath, req, res);
+		files.respondFile(filePath, res);
 	} else if (uri.pathname == '/faq.html') {
 		/* FAQs */
 		files.respondFile('static/faq.html');
 	} else if (uri.pathname == '/robots.txt') {
 		filePath = 'static/robots.txt';
-		files.respondFile(filePath, req, res);
+		files.respondFile(filePath, res);
 	} else if (uri.pathname == '/reset_access_token') {
 		/* Reset access token */
 		files.setContentType('application/json');
 		files.textHeaders(res);
 		//httpHeaders(res, req, 200, 'application/json', true);
-		delete global.sessions[res.SESSID].accessToken;
-		global.sessions[res.SESSID].accessTokenExpires = 0;
-		res.end(JSON.stringify(global.sessions[res.SESSID]));
+		delete data.accessToken;
+		data.accessTokenExpires = 0;
+		res.end(JSON.stringify(data));
 	} else if (uri.pathname == '/refresh_token') {
 		/* Refresh access token */
 		files.setContentType('application/json');
 		files.textHeaders(res);
-		if (global.sessions[res.SESSID].refreshToken) {
-			auth.refreshAuthToken(global.sessions[res.SESSID].refreshToken, res.SESSID, function() {
-				res.end(JSON.stringify(global.sessions[res.SESSID]));
+		if (data.refreshToken) {
+			auth.refreshAuthToken(data.refreshToken, res.SESSID, function() {
+				res.end(JSON.stringify(data));
 			});
 		} else {
 			res.end('{"error": "not logged in"}');
@@ -405,6 +416,8 @@ function onRequest(req, res) {
 		/* 404 everything else */
 		files.err404(res);
 	}
+
+	session.setSessionData(sessID, data);
 }
 
 function requestSafeWrapper(req, res) {
