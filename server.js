@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 /* globals sessions */
+/* jshint -W030 */
 require('./lib/es6.js');
 process.env.TZ = 'Australia/Sydney';
 var all_start = Date.now();
@@ -38,7 +39,7 @@ var fs = require('fs'),
 	schoolday = require('./lib/schoolday.js'),
 	config = require('./config.js'),
 	variables = require('./variables.js');
-global.session = require('./lib/session.js');
+
 /* Variables */
 var	IPV6 = config.ipv6,
 	NOHTTP = config.nohttp,
@@ -50,6 +51,7 @@ var	IPV6 = config.ipv6,
 	hmopts = { removeComments: true, removeCommentsFromCDATA: true, collapseWhitespace: true },
 	index_cache, timetable_cache, ipv4, ipv6, socket;
 
+global.session = require('./lib/session.js');
 /* Globals */
 global.RELEASE = variables.RELEASE;
 global.MINIFY = variables.MINIFY;

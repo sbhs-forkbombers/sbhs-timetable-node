@@ -731,7 +731,7 @@ function calculateUpcomingLesson() {
 	} else {
 		now = new Date();
 	}
-	if (belltimes.bells == null) {
+	if (belltimes.bells === null) {
 		setTimeout(calculateUpcomingLesson, 100);
 	}
 	for (i in belltimes.bells) {
