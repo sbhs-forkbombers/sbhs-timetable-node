@@ -497,4 +497,4 @@ if (SOCKET) {
 	console.warn('[core_warn] NOHTTP is true, but socket not activated! Disable NOHTTP or make \'socket\' true in config.js');
 }
 
-setInterval(session.clearSessions, 900000); // clean expired sessions every 15 minutes
+setInterval(session.cleanSessions, 900000); // clean expired sessions every 15 minutes
