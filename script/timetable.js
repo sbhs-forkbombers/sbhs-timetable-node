@@ -53,8 +53,8 @@ function handleLeftPane() {
 				subj = subj.substr(1);
 			}
 			if (timetable[i].changed && todayNames.variationsFinalised) {
-				if (timetable[i].hasOwnProperty('hasCover') && timetable[i].varies) { // don't show anything because I really don't get what the point of setting a casual but then not actually using aforementioned casual is.
-					if (!timetable[i].hasCover) {
+				if (timetable[i].varies) { 
+					if (timetable[i].cancelled) {
 						cancelled = true;
 					}
 					else if (timetable[i].hasCasual) {

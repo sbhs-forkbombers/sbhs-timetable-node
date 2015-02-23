@@ -760,7 +760,7 @@ function updatePeriodLabel() {
 		return; // no override lol strong gaming
 	}
 	var name = belltimes.bells[currentBellIndex].bell,
-		inLabel = 'starts in', pNum, roomChangedInfo, hasCover, hasCasual;
+		inLabel = 'starts in', pNum, roomChangedInfo, cancelled, hasCasual;
 	name = name.replace('Roll Call', 'School Starts').replace('End of Day', 'School Ends');
 	if (/^\d$/.test(name)) { // 'Period x' instead of 'x'
 		pNum = name;
@@ -800,14 +800,14 @@ function updatePeriodLabel() {
 				roomChangedInfo = 'Room: ' + pNum.roomTo + ' ';
 			}
 		}
-		if ('hasCover' in pNum) {
-			if (pNum.hasCover && pNum.hasCasual) { // casual teacher
+		if (pnum.varies) {
+			if (pNum.hasCasual) { // casual teacher
 				if (!miniMode) {
-					roomChangedInfo += 'You\'ll be having ' + pNum.casualDisplay + ' instead of your usual teacher.';
+					roomChangedInfo += 'You\'ll be having ' + pNum.casualDisplay + ' instead of ' + pNum.fullTeacher;
 				} else {
-					roomChangedInfo += 'Casual: ' + pNum.casualDisplay;
+					roomChangedInfo += 'Sub: ' + pNum.casualDisplay;
 				}
-			} else if (!pNum.hasCover) { // no teacher
+			} else if (pNum.cancelled) { // no teacher
 				if (!miniMode) {
 					roomChangedInfo += 'There\'s no teacher covering this class today (we think).';
 				} else {
