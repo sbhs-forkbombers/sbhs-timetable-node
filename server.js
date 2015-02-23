@@ -372,6 +372,10 @@ function onRequest(req, res) {
 		res.end(JSON.stringify(obj));
 	} else if (uri.pathname.match('/api/.*') && apis.isAPI(uri.pathname.slice(5))) {
 		/* API calls */
+		if ('SESSID' in uri.query) {
+			res.SESSID = uri.query.SESSID;
+			delete uri.query.SESSID;
+		}
 		apis.get(uri.pathname.slice(5), uri.query, res.SESSID, function(obj) {
 			target = JSON.stringify(obj);
 			res.type('application/json');
