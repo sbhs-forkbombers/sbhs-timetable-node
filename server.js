@@ -376,6 +376,11 @@ function onRequest(req, res) {
 			res.SESSID = uri.query.SESSID;
 			delete uri.query.SESSID;
 		}
+		if ((!session.getSessionData(res.SESSID) || !session.getSessionData(res.SESSID).refreshToken || session.getSessionData(res.SESSID).expires < Date.now()) && uri.pathname.slice(5) != 'belltimes') {
+			res.writeHead(401);
+			res.end('{ "statusCode": 401, "error": "Access denied."}');
+			return;
+		}
 		apis.get(uri.pathname.slice(5), uri.query, res.SESSID, function(obj) {
 			target = JSON.stringify(obj);
 			res.type('application/json');
