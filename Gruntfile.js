@@ -27,10 +27,12 @@ module.exports = function(grunt) {
 		closureCompiler: {
 			options: {
 				compilerFile: CLOSURE,
-				checkModified: true,
+//				checkModified: true,
 				compilerOpts: {
 					compilation_level: 'SIMPLE_OPTIMIZATIONS',
-					language_in: 'ECMASCRIPT5_STRICT'
+					language_in: 'ECMASCRIPT5_STRICT',
+					create_source_map: 'build/script/belltimes.concat.js.map',
+					output_wrapper: '"%output%//# sourceMappingURL=/script/belltimes.concat.js.map"'
 				}
 			},
 			compile: {
@@ -48,7 +50,8 @@ module.exports = function(grunt) {
 					},
 					dead_code: true
 				},
-				mangle: true
+				mangle: true,
+				sourceMap: true
 			},
 			dynamic_mappings: {
 				expand: true,
@@ -85,7 +88,7 @@ module.exports = function(grunt) {
 				ext: '.css'
 			}
 		},
-		clean: ["build/", "script/belltimes.concat.js", "/tmp/sbhstimetable.socket"],
+		clean: ['build/', 'script/belltimes.concat.js', '/tmp/sbhstimetable.socket'],
 		copy: {
 			main: {
 				expand: true,
@@ -95,6 +98,10 @@ module.exports = function(grunt) {
 			vars: {
 				src: 'variables_rel.js',
 				dest: 'build/variables.js'
+			},
+			scripts: {
+				src: ['script/*.js', '!script/belltimes.concat.js'],
+				dest: 'build/script/'
 			}
 		},
 		concat: {
@@ -176,7 +183,7 @@ module.exports = function(grunt) {
 		grunt.log.writeln('reloaded process.');
 	});
 
-	grunt.registerTask('cd', function() { grunt.file.setBase('build') });
+	grunt.registerTask('cd', function() { grunt.file.setBase('build'); });
 	grunt.registerTask('release', ['delete', 'closureCompiler', 'cssmin', 'copy']);
 	grunt.registerTask('test', ['jshint']);
 	grunt.registerTask('default', ['delete', 'concat', 'concurrent:develop', 'delete']);

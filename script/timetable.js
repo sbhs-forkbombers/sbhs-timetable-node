@@ -24,7 +24,7 @@ function handleLeftPane() {
 	var pane = document.getElementById('left-pane'),
 		html = '<table><tbody><tr><td>Subject</td><td>Teacher</td><td>Room</td></tr>',
 		timetable = todayNames.timetable,
-		prefix, subj, suffix, room, teacher, fullTeacher, subjName, final,
+		prefix, subj, suffix, room, teacher, fullTeacher, subjName, finalised,
 		roomChanged, teacherChanged, cancelled = false;
 	if (window.timetableCached) {
 		html = '<div class="cached-notice">This data may be outdated</div>' + html;
@@ -43,7 +43,7 @@ function handleLeftPane() {
 			teacher = timetable[i].teacher;
 			fullTeacher = timetable[i].fullTeacher;
 			subjName = timetable[i].fullName;
-			final = timetable.variationsFinalised;
+			finalised = timetable.variationsFinalised;
 			if (/\d$/.test(timetable[i].title) || /[a-z][A-Z]$/.test(timetable[i].title)) {
 				suffix = timetable[i].title.substr(-1);
 				subj = subj.slice(0,-1);
@@ -106,7 +106,7 @@ function handleLeftPane() {
 			if (cancelled) {
 				room = 'N/A';
 			}
-			html += '<tr'+(cancelled?' class="cancelled changed"':'')+'><td class="subject" title="'+subjName+'" onclick="expandSubject(event,'+i+')">'+timetable[i].year+prefix+'<strong>'+nSubj+'</strong>'+suffix+'</td><td class="teacher'+(teacherChanged?' changed'+(!final?' changeable':''):'')+'" title="'+fullTeacher+'" onclick="teacherExpand(event,'+i+')">'+nTeach+'</td><td'+(roomChanged?' class="changed' + (!final?' changeable"':'"'):'')+'>'+room+'</td></tr>';
+			html += '<tr'+(cancelled?' class="cancelled changed"':'')+'><td class="subject" title="'+subjName+'" onclick="expandSubject(event,'+i+')">'+timetable[i].year+prefix+'<strong>'+nSubj+'</strong>'+suffix+'</td><td class="teacher'+(teacherChanged?' changed'+(!finalised?' changeable':''):'')+'" title="'+fullTeacher+'" onclick="teacherExpand(event,'+i+')">'+nTeach+'</td><td'+(roomChanged?' class="changed' + (!finalised?' changeable"':'"'):'')+'>'+room+'</td></tr>';
 			cancelled = false;
 			roomChanged = false;
 			teacherChanged = false;

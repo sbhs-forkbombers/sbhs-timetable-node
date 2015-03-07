@@ -308,8 +308,11 @@ function onRequest(req, res) {
 				files.respondText(target, res);
 			}
 		});
-	} else if (uri.pathname.match('/script/.*[.]js$') && fs.existsSync(uri.pathname.slice(1))) {
+	} else if ((uri.pathname.match('/script/.*[.]js$') || uri.pathname.match('/script/.*[.]map')) && fs.existsSync(uri.pathname.slice(1))) {
 		/* JavaScript */
+		if (uri.pathname.slice(-4) === '.map') {
+			res.type('application/json');
+		}
 		files.respondFile(uri.pathname.slice(1), res);
 	} else if (uri.pathname.match('/static/.*[.]jpg|jpeg$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* jpegs */
