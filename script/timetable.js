@@ -82,7 +82,7 @@ function handleLeftPane() {
 			idx = 0;
 			var temp = teacher.toLowerCase();
 			var fullTemp = fullTeacher;
-			if (/^M(r|s) /.test(fullTemp)) {
+			if (/^(Mr|Ms|Dr) /.test(fullTemp)) {
 				fullTemp = fullTemp.split(' ').slice(1).join(' ');
 			}
 			if (fullTemp[0].toLowerCase() !== teacher[0].toLowerCase()) {
