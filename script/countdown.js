@@ -1,5 +1,5 @@
 /* SBHS-Timetable-Node: Countdown and timetable all at once (NodeJS app).
- * Copyright (C) 2014 James Ye, Simon Shields
+ * Copyright (C) 2014-2015 James Ye, Simon Shields
  *
  * This file is part of SBHS-Timetable-Node.
  *
@@ -31,7 +31,6 @@ var timetable,
 	topExpanded = false,
 	leftExpanded = false,
 	rightExpanded = false,
-	bottomExpanded = false,
 	miniMode = window.innerWidth < 800,
 	bellsCached = false,
 	timetableCached = false,
@@ -98,38 +97,6 @@ function updateSidebarStatus() {
 	notices.innerHTML = noticesText;
 
 	document.getElementById('shortdata-desc').innerHTML = shortText.join(' ');
-}
-
-function collapsePane(p) {
-	/* Collapses a pane */
-	'use strict';
-	var el = $('#'+p+'-pane');
-	var cfg = {};
-	cfg[p] = '-110%';
-	el.velocity('finish').velocity(cfg, 750, 'ease');
-	$('#'+p+'-pane-arrow').removeClass('expanded');
-	window[p+'Expanded'] = false;
-}
-
-function expandPane(p) {
-	/* Expands a pane */
-	'use strict';
-	var el = $('#'+p+'-pane');
-	var cfg = {};
-	cfg[p] = 0;
-	el.velocity('finish').velocity(cfg, 750, 'ease');
-	$('#'+p+'-pane-arrow').addClass('expanded');
-	window[p+'Expanded'] = true;
-}
-
-function togglePane(which) {
-	/* Toggles expand state of a pane */
-	'use strict';
-	if (window[which+'Expanded']) {
-		collapsePane(which);
-	} else {
-		expandPane(which);
-	}
 }
 
 function calculateDay() {
@@ -211,6 +178,7 @@ function reloadBelltimes() {
 	myXHR.send();
 	//$.getJSON('/api/belltimes?date=' + getNextSchoolDay().toString('yyyy-MM-d'), handleBells);
 }
+
 loadTimetable();
 reloadBelltimes();
 
@@ -244,24 +212,6 @@ function handleBells(bells) {
 	endOfDay = false;
 	if (document.readyState == 'complete') {
 		loadComplete();
-	}
-}
-
-function toggleExpansion() {
-	/* jshint validthis: true */
-	'use strict';
-	if (this.id == 'expand') {
-		$('#countdown-label').css({fontSize: '10em', top: '50%', left: 0, width: '100%', marginTop: '-1em', position: 'fixed'});
-		$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('finish').velocity('fadeOut');
-		this.style.display = 'none';
-		$('#collapse').css({'display': 'block'});
-		window.localStorage.expanded = true;
-	} else {
-		$('#countdown-label').css({fontSize: miniMode ? '5em' : '7em', width: 'inherit', marginTop: 0, position: 'relative'})[0].setAttribute('style', '');
-		$('#period-label,#in-label,#feedback,#sidebar,.really-annoying').velocity('finish').velocity('fadeIn');
-		this.style.display = 'none';
-		$('#expand').css({'display': 'block'});
-		window.localStorage.expanded = false;
 	}
 }
 
@@ -373,243 +323,11 @@ function domReady() {
 	} else {
 		$('#login-status').html('<a href="/try_do_oauth" title="Log in" style="text-decoration: none">Log in <span class="octicon octicon-sign-in"/></a>');
 	}
-	$('#left-pane-arrow').click(function() {
-		if (topExpanded) {
-			collapsePane('top');
-		}
-		if ((window.innerWidth <= 450) && (rightExpanded)) {
-			collapsePane('right');
-		}
-		togglePane('left');
-	});
-
-	$('#top-pane-arrow').click(function() {
-		if (leftExpanded) {
-			collapsePane('left');
-		}
-		if (rightExpanded) {
-			collapsePane('right');
-		}
-		togglePane('top');
-	});
-
-	$('#right-pane-arrow').click(function() {
-		if (topExpanded) {
-			collapsePane('top');
-		}
-		if ((window.innerWidth <= 450) && (leftExpanded)) {
-			collapsePane('left');
-		}
-		togglePane('right');
-	});
-
-	$('#cached').click(function() {
-		if ($('#dropdown-arrow').hasClass('expanded')) {
-			$('#verbose-hidden').velocity('finish').velocity('slideUp', { duration: 300 });
-			$('#dropdown-arrow').removeClass('expanded');
-		} else {
-			$('#verbose-hidden').velocity('finish').velocity('slideDown', { duration: 300 });
-			$('#dropdown-arrow').addClass('expanded');
-		}
-	});
-
-	$('#launch-settings').click(function() {
-		$('#settings-modal,#fadeout').velocity('finish').velocity('fadeIn');
-	});
-
-	$('#close-settings-modal').click(function() {
-		$('#settings-modal,#fadeout').velocity('finish').velocity('fadeOut');
-	});
-
-	$('#custom-background').click(handleUpload);
-	if ('cached-bg' in window.localStorage) {
-		$('#custom-background').html('Clear');
-	}
-	var options = ['default', 'red', 'green', 'purple'];
-	$('#colourscheme-combobox')[0].selectedIndex = ((options.indexOf(colour) > -1) ? options.indexOf(colour) : 0);
-
-	$('#colourscheme-combobox').change(function() {
-		/*jshint validthis: true */
-		var el = this.options[this.selectedIndex].value;
-		if (/colour/.test(window.location.search)) {
-			window.location.search = window.location.search.replace(/colour=.+?(\&|$)/, 'colour='+el+'&');
-		}
-		else {
-			if (window.location.search.substr(0,1) === '?') {
-				window.location.search += '&colour='+el;
-			}
-			else {
-				window.location.search = '?colour='+el;
-			}
-		}
-	});
-
-
-	if (inverted) {
-		$('#invert-enable')[0].checked = true;
-	}
-	$('#invert-enable').change(function() {
-		/*jshint validthis: true */
-		if (this.checked) {
-			if (window.location.search.substr(0,1) === '?') {
-				window.location.search = window.location.search + '&invert=1';
-			}
-			else {
-				window.location.search = '?invert=1';
-			}
-		}
-		else {
-			window.location.search = window.location.search.replace(/.invert=.+?\&?/, '');
-		}
-	});
-
-	$('#left-pane-target').swipeRight(function() {
-		if (topExpanded) {
-			collapsePane('top');
-		}
-		if ((window.innerWidth <= 450) && (rightExpanded)) {
-			collapsePane('right');
-		} else {
-			expandPane('left');
-		}
-	});
-
-	$('#right-pane-target').swipeLeft(function() {
-		if (topExpanded) {
-			collapsePane('top');
-		}
-		if ((window.innerWidth <= 450) && (leftExpanded)) {
-			collapsePane('left');
-		} else {
-			expandPane('right');
-		}
-	});
-
-	$('#top-pane-target').swipeDown(function() {
-		if (rightExpanded) {
-			collapsePane('right');
-		}
-		if (leftExpanded) {
-			collapsePane('left');
-		}
-		expandPane('top');
-	});
-
-	$('#left-pane').swipeLeft(function() {
-		collapsePane('left');
-	});
-
-	$('#right-pane').swipeRight(function() {
-		collapsePane('right');
-	});
-
-	$('#bottom-pane-target').swipeUp(function() {
-		collapsePane('top');
-	});
-
-	$('#cached').swipeDown(function() {
-		$('#verbose-hidden').velocity('finish').velocity('slideDown', { duration: 300 });
-		$('#dropdown-arrow').addClass('expanded');
-	});
-
-	$('#cached').swipeUp(function() {
-		$('#verbose-hidden').velocity('finish').velocity('slideUp', { duration: 300 });
-		$('#dropdown-arrow').removeClass('expanded');
-	});
-
-	$(document).keydown(function(e) {
-		if (e.which == 27) { // esc
-			$('#settings-modal,#fadeout').velocity('finish').velocity('fadeOut');
-		} else if (e.which == 83) { // s
-			if ($('#settings-modal').css('display') !== 'block') {
-				$('#settings-modal,#fadeout').velocity('finish').velocity('fadeIn');
-			} else {
-				$('#settings-modal,#fadeout').velocity('finish').velocity('fadeOut');
-			}
-		/*} else if (e.which == 69 || e.which == 81) { // e/q FIXME: make toggleExpansion not use this and things.
-			toggleExpansion();*/
-		} else if (e.which == 65 || e.which == 37) { // a/left arrow
-			if (topExpanded) {
-				collapsePane('top');
-			}
-			if ((window.innerWidth <= 450) && (rightExpanded)) {
-				collapsePane('right');
-			}
-			togglePane('left');
-		} else if (e.which == 87 || e.which == 38) { // w/up arrow
-			if (rightExpanded) {
-				collapsePane('right');
-			}
-			if (leftExpanded) {
-				collapsePane('left');
-			}
-			togglePane('top');
-		} else if (e.which == 68 || e.which == 39) { // d/right arrow
-			if (topExpanded) {
-				collapsePane('top');
-			}
-			if ((window.innerWidth <= 450) && (leftExpanded)) {
-				collapsePane('left');
-			}
-			togglePane('right');
-		}
-	});
-
-	var event = 'mousemove';
-	if (miniMode) {
-		event = 'touchstart';
-	}
-	/*setTimeout(function() {
-		$('#cached').detach().appendTo('#top-pane').css({position: 'absolute', right: 20, top: 0});
-	}, 10000);*/
-	var scrntap_id = 0;
-	var scrntap = function() {
-		if ((Date.now() - last_screen_tap) > 3000) {
-			$('.arrow').css({ opacity: 0 }).css({ visibility: 'hidden' });
-			$('body').css({cursor: 'none'});
-			$('#update,.really-annoying,#sidebar').velocity('finish').velocity({ 'opacity': 0 }, { duration: 300 });
-		} else {
-			scrntap_id = setTimeout(scrntap, 3000 - (Date.now() - last_screen_tap));
-		}
-	};
-
-	var showThings = function() {
-		$('.arrow').css({ 'visibility': 'visible', 'opacity': 'inherit' });
-		$('body').css({ 'cursor': 'default' });
-		$('#update,.really-annoying,#sidebar').velocity('finish').velocity({ 'opacity': 1 }, { duration: 300 });
-		last_screen_tap = Date.now();
-		if (scrntap_id !== 0) {
-			clearTimeout(scrntap_id);
-		}
-		setTimeout(scrntap, 5000);
-	};
-	if (window.PointerEvent) {
-		document.addEventListener('pointerdown', showThings);
-	} else if (window.MSPointerEvent) {
-		document.addEventListener('MSPointerDown', showThings);
-	}
-	document.addEventListener('mousemove', showThings);
-	document.addEventListener('onclick', showThings);
-	document.addEventListener('touchstart', showThings);
-	scrntap_id = setTimeout(scrntap, 5000);
-
-	//setTimeout(fadeOutUpdate, 10000);
-
-	$('#expand,#collapse').on('click', toggleExpansion);
-
-	if (window.localStorage.expanded === 'true') {
-		$('#expand').click();
-	}
+	
+	attachAllTheThings();
 
 }
 
-function snazzify(el) {
-	'use strict';
-	var r = Math.floor(Math.random()*255);
-	var g = Math.floor(Math.random()*255);
-	var b = Math.floor(Math.random()*255);
-	$(el).velocity({colorRed: r, colorGreen: g, colorBlue: b});
-}
 
 function loadComplete() {
 	/* Do when DOM loaded */
@@ -760,7 +478,7 @@ function updatePeriodLabel() {
 		return; // no override lol strong gaming
 	}
 	var name = belltimes.bells[currentBellIndex].bell,
-		inLabel = 'starts in', pNum, roomChangedInfo, cancelled, hasCasual;
+		inLabel = 'starts in', pNum = false, roomChangedInfo, cancelled, hasCasual;
 	name = name.replace('Roll Call', 'School Starts').replace('End of Day', 'School Ends');
 	if (/^\d$/.test(name)) { // 'Period x' instead of 'x'
 		pNum = name;
@@ -800,7 +518,7 @@ function updatePeriodLabel() {
 				roomChangedInfo = 'Room: ' + pNum.roomTo + ' ';
 			}
 		}
-		if (pnum.varies) {
+		if (pNum.varies) {
 			if (pNum.hasCasual) { // casual teacher
 				if (!miniMode) {
 					roomChangedInfo += 'You\'ll be having ' + pNum.casualDisplay + ' instead of ' + pNum.fullTeacher;
@@ -809,9 +527,9 @@ function updatePeriodLabel() {
 				}
 			} else if (pNum.cancelled) { // no teacher
 				if (!miniMode) {
-					roomChangedInfo += 'There\'s no teacher covering this class today (we think).';
+					roomChangedInfo += 'There\'s no teacher covering this class today.';
 				} else {
-					roomChangedInfo += 'No teacher (maybe)';
+					roomChangedInfo += 'No teacher!';
 				}
 			}
 		}
@@ -820,7 +538,7 @@ function updatePeriodLabel() {
 	$('#in-label').text(inLabel);
 	if (belltimes.bellsAltered) {
 		if (miniMode) {
-			roomChangedInfo = belltimes.bellsAlteredReason + '! ' + roomChangedInfo;
+			roomChangedInfo = 'Bells: ' + belltimes.bellsAlteredReason + ' ' + roomChangedInfo;
 		} else {
 			roomChangedInfo = 'Bells changed: ' + belltimes.bellsAlteredReason + ' ' + roomChangedInfo;
 		}
