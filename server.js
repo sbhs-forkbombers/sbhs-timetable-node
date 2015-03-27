@@ -38,6 +38,7 @@ var fs = require('fs'),
 	Response = require('./lib/httpwrap.js').Response,
 	schoolday = require('./lib/schoolday.js'),
 	config = require('./config.js'),
+	util = require('util'),
 	variables = require('./variables.js');
 
 /* Variables */
@@ -222,25 +223,17 @@ function onRequest(req, res) {
 	if (uri.pathname === '/') { // TODO cache two different versions of index for logged-in and not logged in.
 		/* Main page */
 		var scheme = {};
-		delete uri.query.colour;
+		//delete uri.query.colour;
 		if ('colour' in uri.query || 'invert' in uri.query) {
-			if (!('colour' in uri.query)) {
+			if (!uri.query.colour) {
 				uri.query.colour = 'default';
 			}
-			scheme = colours.get(uri.query.colour, false);
+			scheme = colours.get(uri.query.colour, 'invert' in uri.query);
 		} else {
 			scheme = colours.getFromUriQuery(uri.query);
 		}
 
 		var isHoliday = (global.HOLIDAYS || 'holiday' in uri.query) && !(config.disableHoliday || 'noholiday' in uri.query);
-		if ('invert' in uri.query) {
-			var tmp = scheme.highBg;
-			scheme.highBg = scheme.highFg;
-			scheme.highFg = tmp;
-			tmp = scheme.bg;
-			scheme.bg = scheme.fg;
-			scheme.fg = tmp;
-		}
 		if (typeof index_cache !== 'function') {
 			files.err500();
 		} else {
@@ -308,12 +301,12 @@ function onRequest(req, res) {
 				files.respondText(target, res);
 			}
 		});
-	} else if ((uri.pathname.match('/script/.*[.]js$') || uri.pathname.match('/script/.*[.]map')) && fs.existsSync(uri.pathname.slice(1))) {
+	} else if ((uri.pathname.match('/script/.*[.]js$') || uri.pathname.match('/script/.*[.]map')) && fs.existsSync(uri.pathname.slice(1).replace('.min.js', '.js'))) {
 		/* JavaScript */
 		if (uri.pathname.slice(-4) === '.map') {
 			res.type('application/json');
 		}
-		files.respondFile(uri.pathname.slice(1), res);
+		files.respondFile(uri.pathname.slice(1).replace('.min.js', '.js'), res);
 	} else if (uri.pathname.match('/static/.*[.]jpg|jpeg$') && fs.existsSync(uri.pathname.slice(1))) {
 		/* jpegs */
 		filePath = uri.pathname.slice(1);
@@ -359,7 +352,7 @@ function onRequest(req, res) {
 		} else {
 			auth.getAuthToken(res, uri, function() {
 				files.textHeaders(res);
-				res.writeHead(302, {'Location': '/'});
+				res.writeHead(302, {'Location': '/?loggedOut'});
 				res.end();
 			}, false);
 		}

@@ -48,9 +48,15 @@ function handleLeftPane() {
 				suffix = timetable[i].title.substr(-1);
 				subj = subj.slice(0,-1);
 			}
-			if (subj !== 'SDs' /* Software design special case */ && subj.length == 3 /*|| (subj.length == 2 && suffix === '')*/ || /^[WXYZ]/.test(subj)) { // very tentative guess that this is an elective - char 1 should be prefix
+			if (/*subj !== 'SDs' /* Software design special case  && subj.length == 3 /*|| (subj.length == 2 && suffix === '') ||*/ /^[WXYZ]/.test(subj)) { // very tentative guess that this is an elective - char 1 should be prefix
 				prefix = subj[0];
 				subj = subj.substr(1);
+			}		
+			if (subj.length == 3) {
+				if (/[A-Z0-9]/.test(subj.substr(-1))) {
+					suffix = subj.substr(-1);
+					subj = subj.slice(0, -1);
+				}
 			}
 			if (timetable[i].changed && todayNames.variationsFinalised) {
 				if (timetable[i].varies) { 

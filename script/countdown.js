@@ -482,14 +482,14 @@ function updatePeriodLabel() {
 	name = name.replace('Roll Call', 'School Starts').replace('End of Day', 'School Ends');
 	if (/^\d$/.test(name)) { // 'Period x' instead of 'x'
 		pNum = name;
-		if (name in window.todayNames.timetable) {
+		if (window.todayNames && name in window.todayNames.timetable) {
 			name = window.todayNames.timetable[name].fullName;
 		} else {
 			name = 'Period ' + name;
 		}
 	} else if (name == 'Transition') {
 		pNum = belltimes.bells[currentBellIndex-1].bell;
-		if (pNum in window.todayNames.timetable) {
+		if (window.todayNames && pNum in window.todayNames.timetable) {
 			name = window.todayNames.timetable[pNum].fullName;
 		} else {
 			name = 'Period ' + belltimes.bells[currentBellIndex - 1].bell;
@@ -502,7 +502,7 @@ function updatePeriodLabel() {
 			pNum = belltimes.bells[currentBellIndex-1].bell;
 			inLabel = 'ends in';
 			name = 'Period ' + pNum;
-			if (pNum in window.todayNames.timetable) {
+			if (window.todayNames && pNum in window.todayNames.timetable) {
 				name = window.todayNames.timetable[pNum].fullName;
 			}
 		}
