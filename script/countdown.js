@@ -102,7 +102,6 @@ function getNextCountdownEvent() {
 
 EventBus.on('bells', function(ev, bells) {
 	window.belltimes = bells;
-	console.log('nice bells');
 });
 
 function updateCountdown() {
@@ -126,10 +125,11 @@ document.addEventListener('readystatechange', function() {
 	// holidays
 	if (config.HOLIDAYS) {
 		$('#period-label,#countdown-label,.arrow,.sidebar').css({display: 'none'});
-		$('#yt').css({display: 'block'}).html('<iframe  src="https://www.youtube.com/embed/' + config.holidayCfg.video + '?autoplay=1&loop=1" frameborder="0" allowfullscreen></iframe>');
+		$('#yt').css({display: 'block'}).html('<iframe src="https://www.youtube.com/embed/' + config.holidayCfg.video + '?autoplay=1&loop=1" frameborder="0" allowfullscreen></iframe>');
 		$('#in-label').html(config.holidayCfg.text);
 		$('body').css({'background': config.holidayCfg.background});
 	} else {
+		loadBackgroundImage();
 		setInterval(updateCountdown, 1000);
 	}
 	attachAllTheThings();

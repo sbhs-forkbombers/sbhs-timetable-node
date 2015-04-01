@@ -68,6 +68,7 @@ app.get('/', function(req, res) {
 		colour: req.query.colour || 'white',
 		inverted: 'invert' in req.query,
 		HOLIDAYS: schoolday.isHolidays() /*|| true*/,
+		cscheme: colours.get(req.query.colour || 'default' , 'invert' in req.query),
 	};
 	if (vars.HOLIDAYS) {
 		vars.holidayCfg = {
@@ -77,7 +78,7 @@ app.get('/', function(req, res) {
 		};
 	}
 	var args = {
-		scheme:  colours.get(req.query.colour || 'default' , vars.inverted),
+		scheme:  vars.cscheme,
 		args: JSON.stringify(vars),
 		config: vars 
 	}

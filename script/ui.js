@@ -326,3 +326,121 @@ function handleUpload() {
 		input.click();
 	}
 }
+
+function base64Image(url, width, height, callback) {
+	'use strict';
+	var img = new Image();
+
+	img.onload = function (evt) {
+		var canvas = document.createElement('canvas');
+
+		canvas.width  = width;
+		canvas.height = height;
+
+		var imgRatio    = img.width / img.height,
+		canvasRatio = width / height,
+		resultImageH, resultImageW;
+
+		if (imgRatio < canvasRatio) {
+			resultImageH = canvas.height;
+			resultImageW = resultImageH * imgRatio;
+		}
+		else {
+			resultImageW = canvas.width;
+			resultImageH = resultImageW / imgRatio;
+		}
+
+		canvas.width  = resultImageW;
+		canvas.height = resultImageH;
+		canvas.getContext('2d').drawImage(img, 0, 0, resultImageW, resultImageH);
+		callback(canvas.toDataURL());
+	};
+
+	img.src = url;
+}
+
+function loadBackgroundImage() {
+	/* jshint -W041 */
+	'use strict';
+	if ('cached-bg' in window.localStorage) {
+		var c = config.cscheme.bg.slice(1);
+		var r = Number('0x'+c.substr(0,2));
+		var g = Number('0x'+c.substr(2,2));
+		var b = Number('0x'+c.substr(4,2));
+		var rgb = 'rgba(' + r + ',' + g + ',' + b + ', 0.5)';
+		$('#background-image').addClass('customBg');
+		var style = document.createElement('style');
+		// TODO why is this innerHTML not innerText wtf firefox
+		style.innerHTML = '#background-image { background: linear-gradient(' + rgb + ',' + rgb + '), #' + c + ' url(' + window.localStorage['cached-bg'] + ') }';
+		style.id = 'i-dont-even';
+		document.head.appendChild(style);
+
+	} else {
+		$('#background-image').removeClass('customBg');
+		var el = document.getElementById('i-dont-even');
+		if (el != null) {
+			document.head.removeElement(el);
+		}
+	}
+}
+
+function updateSidebarStatus() {
+	/* Show load state info for various API data */
+	'use strict';
+	/* Loading state symbols */
+	var tick = '<span class="octicon octicon-check ok"></span>',
+		cross = '<span class="octicon octicon-x failed"></span>',
+		cached = '<span class="octicon octicon-alert stale"></span>',
+		loading = '<span class="idk">…</span>';
+	/* Local variables */
+	var belltimesOK = window.belltimes && belltimes.status == 'OK' && belltimes.httpStatus == 200,
+		noticesOK = window.notices && window.notices.notices && !window.notices.notices.failure && window.notices.httpStatus == 200,
+		timetableOK = window.today && today.httpStatus == 200 && today.timetable,
+		belltimesClass = 'ok',
+		belltimesText = 'OK',
+		timetableClass = 'failed',
+		timetableText = 'Failed',
+		noticesClass = 'failed',
+		noticesText = 'Failed',
+		shortText = ['B: '+cross,'T: '+cross,'N: '+cross];
+
+	if (belltimesOK) {
+		belltimesText = 'OK';
+		belltimesClass = 'ok';
+		shortText[0] = 'B: ' + tick;
+	}
+
+	if (window.today && window.today.stale) {
+		timetableText = 'Cached';
+		timetableClass = 'stale';
+		shortText[1] = 'T: ' + cached;
+	} else if (timetableOK) {
+		timetableText = 'OK';
+		timetableClass = 'ok';
+		shortText[1] = 'T: ' + tick;
+	}
+
+	if (noticesOK) {
+		noticesText = 'OK';
+		noticesClass = 'ok';
+		shortText[2] = 'N: ' + tick;
+	}
+
+	var bells = document.getElementById('belltimes');
+	bells.className = belltimesClass;
+	bells.innerHTML = belltimesText;
+
+	var timetable = document.getElementById('timetable');
+	timetable.className = timetableClass;
+	timetable.innerHTML = timetableText;
+
+	var notices = document.getElementById('notices');
+	notices.className = noticesClass;
+	notices.innerHTML = noticesText;
+
+	document.getElementById('shortdata-desc').innerHTML = shortText.join(' ');
+}
+
+EventBus.on('notices', updateSidebarStatus);
+EventBus.on('bells', updateSidebarStatus);
+EventBus.on('today', updateSidebarStatus);
