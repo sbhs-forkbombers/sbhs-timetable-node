@@ -67,7 +67,7 @@ app.get('/', function(req, res) {
 		loggedIn: loggedIn,
 		colour: req.query.colour || 'white',
 		inverted: 'invert' in req.query,
-		HOLIDAYS: schoolday.isHolidays() /*|| true*/,
+		HOLIDAYS: schoolday.isHolidays(),
 		cscheme: colours.get(req.query.colour || 'default' , 'invert' in req.query),
 	};
 	if (vars.HOLIDAYS) {
@@ -131,6 +131,6 @@ app.use(function(err, req, res, next) {
 	
 });
 
-var server = app.listen(8080, function() {
+var server = app.listen(config.port || 8080, config.ipv4_ip || '0.0.0.0', function() {
 	console.log('listening on %s:%s', server.address().address, server.address().port);
 });

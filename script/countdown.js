@@ -118,7 +118,7 @@ function reloadBells() {
 	});
 }
 
-document.addEventListener('readystatechange', function() {
+document.addEventListener('readystatechange', function domReady() {
 	if (document.readyState !== 'complete') return;
 
 	reloadBells();
@@ -130,6 +130,11 @@ document.addEventListener('readystatechange', function() {
 		$('body').css({'background': config.holidayCfg.background});
 	} else {
 		loadBackgroundImage();
+		if (window.config.loggedIn) {
+			$('#login-status').html('<a href="/logout" title="Log out" style="text-decoration: none">Log out <span class="octicon octicon-sign-out"/></a>');
+		} else {
+			$('#login-status').html('<a href="/try_do_oauth" title="Log in" style="text-decoration: none">Log in <span class="octicon octicon-sign-in"/></a>');
+		}
 		setInterval(updateCountdown, 1000);
 	}
 	attachAllTheThings();
