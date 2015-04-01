@@ -17,13 +17,13 @@
 	You should have received a copy of the GNU Affero General Public License
 	along with this program.  If not, see <http://www.gnu.org/licenses/>.
 doctype html
-html(lang="en")
-	include header.jade
-		if holidays
-			title Wow I can't wait until school comes back!
-		else
-			title SBHS Timetable #{page}
-		yield
+html(lang=en)
+	head
+		meta(charset="UTF-8")
+		meta(http-equiv="x-ua-compatible", content="IE=edge")
+		meta(name="viewport",content="device-width,initial-scale=1")
+		link(href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,400italic', rel='stylesheet', type='text/css')
+		title SBHS Timetable
 		meta(name="application-name", content="SBHS Timetable")
 		meta(name="mobile-web-app-capable", content="yes")
 		meta(name="apple-mobile-web-app-capable", content="yes")
@@ -35,88 +35,48 @@ html(lang="en")
 		link(rel="apple-touch-icon", href="/icon.png", sizes="192x192")
 
 		link(href="//cdnjs.cloudflare.com/ajax/libs/octicons/2.1.2/octicons.min.css", rel="stylesheet", type="text/css")
-		| <!--[if IE]><script defer="defer" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script><![endif]-->
-		script(async, defer, src="//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js")
+		link(href="/less/index.css"+(scheme.query||''), rel="stylesheet", type="text/css")
+
+		|<!--[if IE]><script defer="defer" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script><![endif]-->
+		script(async, src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js")
 		script(defer, src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.1/velocity.min.js")
 		script(defer, src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.1/velocity.ui.min.js")
+		//-script(src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.1.4/zepto.min.js")
 		script
 			include ../srv/zepto.min.js
-		script(async, src="/script/belltimes.concat.js?cachingsucks")
 		script
-			!="window.colour = '" + colour + "';"
-			!="window.inverted = " + inverted + ";"
-			!="window.colourscheme = " + JSON.stringify(cscheme) + ";"
+			!="window.config = JSON.parse('" + args + "');"
+		//-script!="window.config = " + JSON.stringify(args);
+		script(async, src="/script/belltimes.concat.js?v=1")
 
-		style
-			=css
-		if testing
-			script(defer, src="http://sinonjs.org/releases/sinon-1.10.3.js")
-		if holidays
-			//-			style
-			//-				include ../style/holidays.css
-			script
-				|window.HOLIDAYS = true;
-				="window.holEnd = " + holEnd + ";"
-				|setTimeout(function() {
-				|	$('audio').each(function() { this.pause() });
-				|}, Date.now()-window.holEnd);
-		else
-			script
-				|window.HOLIDAYS = false;
-				="window.holEnd = " + holEnd + ";"
-				|var now = Date.now();
-				if holEnd - Date.now() < (1000 * 60 * 60 * 24 * 3) && reallyInHolidays
-					|setTimeout(function() {
-					|	$('#groovy')[0].pause();
-					|	$('#groovy')[0].removeAttribute('controls');
-					|	$('#disable-grooviness').velocity('slideUp');
-					|}, holEnd - Date.now());
-					|console.log('Will stop music in ' + (holEnd - Date.now()) + 'ms')
-				else if holEnd - Date.now() < (1000 * 60 * 60 * 24 * 3)
-					|function holidaysOver() {
-					|	$('audio').each(function() { this.pause() });
-					|	$('#disable-grooviness').css({'display': 'block'});
-					|	$('body,.pane').css({'background-image': 'url(/static/HOLIDAYS.jpg)', 'color':'black'});
-					|	window.HOLIDAYS = true;
-					|	loadComplete();
-					|}
-					|function playTheGroove() {
-					|	$('audio').each(function() { this.play() });
-					|	$('#disable-grooviness').css({'display': 'block'});
-					|	$('body,.pane').css({'background-image': 'url(/static/ALMOSTHOLIDAYS.jpg)','color':'black'});
-					|	var b = function snazzyCountdown() {
-					|		snazzify('#countdown-label');
-					|		snazzify('#in-label');
-					|		snazzify('#period-label');
-					|		setTimeout(b, 500);
-					|	}
-					|	setTimeout(b, 250);
-					|}
-					|setTimeout(holidaysOver, window.holEnd - now);
-					|setTimeout(playTheGroove, (window.holEnd - now) - (1000 * 60 * 55));
 		include ../dynamic/analyse.jade
 	body
-		div#content
-			div#period-name
+		#content
+			#period-name
 				span#period-label Something
-				div#in
+				#in
 					span#in-label happens
-					div#countdown
-						span#countdown-label.animated any second now…
-		yield
-		div.ss.changed#top-line-notice
-		div.ss#sidebar
-			div.sidebar-item#next
+					#countdown
+						span#countdown-label.animated pretty soon…
+		.ss.changed#top-line-notice
+		.ss#sidebar
+			.sidebar-item#next
 			span.sidebar-item#login-status
 			|&nbsp;&nbsp;&nbsp;&nbsp;
 			a.sidebar-item.octicon.octicon-gear#launch-settings(href="javascript:void(0)")
 			|&nbsp;&nbsp;&nbsp;&nbsp;
 			span.sidebar-item#cached
 				span#shortdata
-					span#shortdata-desc B: ? T: ? N: ?
+					span#shortdata-desc 
+						span#sdata-bells B: 
+							span#sdata-bells-val ? 
+						span#sdata-timetable T: 
+							span#sdata-timetable-val ? 
+						span#sdata-notices N: 
+							span#sdata-notices-val ?
 					span.arrow#dropdown-arrow
-					br
-					span#verbose-hidden
+
+					#verbose-hidden
 						|Bells:&nbsp;
 						span#belltimes.idk …
 						br
@@ -126,57 +86,34 @@ html(lang="en")
 						|Notices:&nbsp;
 						span#notices.idk …
 						br
-		div.ss.pane#left-pane
-			div.umad
-				if !loggedIn
+		.ss.pane#left-pane
+			.umad
+				if !config.loggedIn
 					a(href="/try_do_oauth") Log in
 					|&nbsp;to show your timetable
 				else
 					|¯\_(ツ)_/¯ Loading ¯\_(ツ)_/¯
-		div.arrow#left-pane-arrow
-		div.target#left-pane-target
-		div.ss.pane#top-pane
-			div.umad
-				if !loggedIn
+		.arrow#left-pane-arrow
+		.target#left-pane-target
+		.ss.pane#top-pane
+			.umad
+				if !config.loggedIn
 					a(href="/try_do_oauth") Log in
 					|&nbsp;to show the daily notices
 				else
 					|¯\_(ツ)_/¯ Loading ¯\_(ツ)_/¯
-		div.arrow#top-pane-arrow
-		div.target#top-pane-target
-		div.ss.pane#right-pane
-			div.umad
-				|Oops. :(
-		div.arrow#right-pane-arrow
-		div.target#right-pane-target
-		div.target#bottom-pane-target
-		div.nomobile#update
-			if colour == 'purple'
-				//- purple
-				|Shout-out to Nelson. Hi.
-			else if colour == 'red'
-				//- red
-				|Hi Jayden.
-			else if colour == 'green'
-				//- green
-				|I think you just got Shrek'd
-			yield
-			|&nbsp;&nbsp;
+		.arrow#top-pane-arrow
+		.target#top-pane-target
+		.ss.pane#right-pane
+			.umad
+				|¯\_(ツ)_/¯ Loading ¯\_(ツ)_/¯
+		.arrow#right-pane-arrow
+		.target#right-pane-target
+		.nomobile#update
 			a(href="https://play.google.com/store/apps/details?id=com.sbhstimetable.sbhs_timetable_android",title="app app app") IT'S AN APP! (beta)
-		div.nomobile#expand-toggle
-			div#expand.mega-octicon.octicon-screen-full
-			div#collapse.mega-octicon.octicon-screen-normal
-		a#disable-grooviness(href="javascript:void(0)", onclick="document.getElementById('groovy').controls = true;document.getElementById('groovy').style.display = 'block';",style="display:none")
-			|Control the <em>groove</em>
-		//if (holEnd - Date.now() < (1000 * 60 * 60 * 24 * 3) && reallyInHolidays) || grooveOverride
-		//audio#groovy(autoplay, loop)
-		//source(src="https://ia700209.us.archive.org/9/items/TheFinalCountdown-Europe/Europe-TheFinalCountdown.mp3",type="audio/mpeg")
-		if holidays
-			iframe(style="height:75%;width:100%;position:absolute;top:8em;left:0;" src="//www.youtube.com/embed/9jK-NcRmVcw?autoplay=1&loop=1&autohide=1" frameborder="0" allowfullscreen)
-		yield
-		div#background-image
-			//- this is necessary because velocity.js is shifty.
-		div#settings-modal
+		#background-image 
+			//- ty velocity
+		#settings-modal
 			a(href="javascript:void(0)")
 				div#close-settings-modal.mega-octicon.octicon-x
 			table#settings-table
@@ -197,11 +134,33 @@ html(lang="en")
 						label(for="invert-enable") Invert?
 					td#invert-val
 						input#invert-enable(type="checkbox")
-			div#links
-				a(href="https://docs.google.com/forms/d/18VjH5GM80Xl0C1KBRpCrwTXUCiK8G2sg9Z6lDuNA7vk/viewform?usp=send_form", title="Feedback") Feedback
-				|&nbsp;|&nbsp;
-				a(href="https://github.com/sbhs-forkbombers/sbhs-timetable-node", title="Source") Source
-				|&nbsp;|&nbsp;
-				a(href="/faq.html", title="FAQ") FAQ
+		#yt
+		#links
+			a(href="https://docs.google.com/forms/d/18VjH5GM80Xl0C1KBRpCrwTXUCiK8G2sg9Z6lDuNA7vk/viewform?usp=send_form", title="Feedback") Feedback
+			|&nbsp;|&nbsp;
+			a(href="https://github.com/sbhs-forkbombers/sbhs-timetable-node", title="Source") Source
+			|&nbsp;|&nbsp;
+			a(href="/faq.html", title="FAQ") FAQ
+		#fadeout
 
-		div#fadeout
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

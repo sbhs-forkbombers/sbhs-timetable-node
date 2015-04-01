@@ -22,14 +22,42 @@
 @highFg: #ffc107;
 @highBg: #e51c23;
 
+/* Font smoothing weirdness for OS X */
+.ss {
+	-webkit-font-smoothing: subpixel-antialiased;
+	-moz-osx-font-smoothing: auto;
+}
+
 /* These styles are only used on the front page */
 body {
+	font-family: "Roboto", "Oxygen-Sans", "Helvetica Neue", "Segoe UI", sans-serif;
 	background-color: @bg;
 	color: @fg;
 }
 
 a {
 	color: @fg;
+	-webkit-transition: all 300ms ease;
+	transition: all 300ms ease;
+
+}
+
+#yt {
+	display: none;
+	position: fixed;
+	width: 100%;
+	top: 25%;
+	height: 50%;
+
+	iframe {
+		margin-left: 25%;
+		width: 50%;
+		height: 100%;
+	}
+}
+
+a:hover {
+	color: #03a9f4;
 }
 
 td {
@@ -354,9 +382,9 @@ td {
 #links {
 	position: absolute;
 	bottom: 0;
-	left: 0;
-	width: 100%;
-	text-align: center;
+	right: 0;
+	text-align: right;
+	z-index: 3;
 }
 
 #period-label {

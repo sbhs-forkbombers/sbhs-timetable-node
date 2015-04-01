@@ -136,7 +136,7 @@ function onScreenTapTimeout() {
 		}
 		$('.arrow').css({ opacity: 0 }).css({ visibility: 'hidden' });
 		$('body').css({cursor: 'none'});
-		$('#update,.really-annoying,#sidebar').velocity('finish').velocity({ 'opacity': 0 }, { duration: 300 });
+		$('#update,.really-annoying,#sidebar,#links').velocity('finish').velocity({ 'opacity': 0 }, { duration: 300 });
 	} else {
 		screenTapId = setTimeout(onScreenTapTimeout, 3000 - (Date.now() - lastScreenTap));
 	}
@@ -145,7 +145,7 @@ function onScreenTapTimeout() {
 function onInteract() {
 	$('.arrow').css({ 'visibility': 'visible', 'opacity': 'inherit' });
 	$('body').css({ 'cursor': 'default' });
-	$('#update,.really-annoying,#sidebar').velocity('finish').velocity({ 'opacity': 1 }, { duration: 300 });
+	$('#update,.really-annoying,#sidebar,#links').velocity('finish').velocity({ 'opacity': 1 }, { duration: 300 });
 	lastScreenTap = Date.now();
 	if (screenTapId !== 0) {
 		clearTimeout(screenTapId);
@@ -189,7 +189,7 @@ function attachAllTheThings() {
 		$('#custom-background').html('Clear');
 	}
 	var options = ['default', 'red', 'green', 'purple'];
-	$('#colourscheme-combobox')[0].selectedIndex = ((options.indexOf(colour) > -1) ? options.indexOf(colour) : 0);
+	//$('#colourscheme-combobox')[0].selectedIndex = ((options.indexOf(config.colour) > -1) ? options.indexOf(config.colour) : 0);
 
 	$('#colourscheme-combobox').change(function() {
 		/*jshint validthis: true */
@@ -208,7 +208,7 @@ function attachAllTheThings() {
 	});
 
 
-	if (inverted) {
+	if (config.inverted) {
 		$('#invert-enable')[0].checked = true;
 	}
 
@@ -296,5 +296,33 @@ function attachAllTheThings() {
 
 	if (window.localStorage.expanded === 'true') {
 		$('#expand').click();
+	}
+}
+
+function handleUpload() {
+	'use strict';
+	if ('cached-bg' in window.localStorage) {
+		delete window.localStorage['cached-bg'];
+		loadBackgroundImage();
+		$('#custom-background').html('Choose...');
+	}
+	else {
+		var input = $('<input type="file" accept="image/*">');
+		input.on('change', function(e) {
+			console.log('loading a file!');
+			if (input[0].files && input[0].files[0]) {
+				var reader = new FileReader();
+				reader.onload = function(e) {
+					base64Image(e.target.result, 1280, 720, function (b64) {
+						localStorage.setItem('cached-bg', b64);
+						loadBackgroundImage();
+					});
+				};
+				reader.readAsDataURL(input[0].files[0]);
+				$('#custom-background').html('Clear');
+			}
+		});
+		console.log('requesting upload...');
+		input.click();
 	}
 }
