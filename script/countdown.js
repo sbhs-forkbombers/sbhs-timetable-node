@@ -61,7 +61,7 @@ function getNextCountdownEvent() {
 			var bell = belltimes.bells[i];
 			var hm = bell.time.split(':');
 			if (cmpMoment.hours(Number(hm[0])).minutes(Number(hm[1])).isAfter(now)) {
-				inLabel = 'ends in';
+				inLabel = 'starts in';
 				countdownLabel = bell.bell.replace('Roll Call', 'School Starts').replace('End of Day', 'School Ends');
 				if (countdownLabel.indexOf('School') != -1) {
 					inLabel = 'in';
@@ -76,7 +76,22 @@ function getNextCountdownEvent() {
 				} else if (/^\d/.test(bell.bell)) {
 					countdownLabel = 'Period ' + bell.bell;
 				}
-				if (countdownLabel.startsWith('Transition') || countdownLabel === 'Lunch 2' || countdownLabel.startsWith('Recess')) {
+				if (countdownLabel == 'Transition' || countdownLabel == 'Recess') {
+					inLabel = 'ends in';
+					var next = belltimes.bells[i-1];
+					if (window.today && /^\d/.test(next.bell)) {
+						if (next.bell in today.timetable) {
+							countdownLabel = today.timetable[next.bell].fullName;
+						} else {
+							countdownLabel = 'Free';
+						}
+					} else if (/^\d/.test(next.bell)) {
+						countdownLabel = 'Period ' + next.bell;
+					} else {
+						countdownLabel = next.bell;
+					}
+				}
+				/*if (countdownLabel.startsWith('Transition') || countdownLabel === 'Lunch 2' || countdownLabel.startsWith('Recess')) {
 					inLabel = 'starts in';
 					var next = belltimes.bells[i+1];
 					if (window.today && /^\d/.test(next.bell)) {
@@ -90,7 +105,7 @@ function getNextCountdownEvent() {
 					} else {
 						countdownLabel = next.bell;
 					}
-				}
+				}*/
 				cachedCountdownEvent = cmpMoment;
 				return cmpMoment;
 			}
