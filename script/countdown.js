@@ -197,7 +197,7 @@ function handleBells(bells) {
 		manualOverride++;
 		if (manualOverride > 5) {
 			document.getElementById('period-label').innerHTML = 'Couldn\'t get belltimes';
-			document.getElementById('in-label').innerHTML = 'oops :( maybe if you <a href="/try_do_oauth">login</a> it will work?';
+			document.getElementById('in-label').innerHTML = 'oops :( maybe if you <a onclick="location.href=\'/try_do_oauth\'">login</a> it will work?';
 			document.getElementById('countdown-label').style.display = 'none';
 			console.error('No bells for more than five days in a row, SBHS might be down!');
 			return;
@@ -321,7 +321,7 @@ function domReady() {
 	if (getLoggedIn()) {
 		$('#login-status').html('<a href="/logout" title="Log out" style="text-decoration: none">Log out <span class="octicon octicon-sign-out"/></a>');
 	} else {
-		$('#login-status').html('<a href="/try_do_oauth" title="Log in" style="text-decoration: none">Log in <span class="octicon octicon-sign-in"/></a>');
+		$('#login-status').html('<a onclick="location.href=\'/try_do_oauth\'" title="Log in" style="text-decoration: none">Log in <span class="octicon octicon-sign-in"/></a>');
 	}
 	
 	attachAllTheThings();
