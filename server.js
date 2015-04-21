@@ -45,11 +45,13 @@ app.use(function (req, res, next) {
 	var now = new Date();
 	var date = _zfill(now.getFullYear(), 4) + '-' + _zfill(now.getMonth(), 2) + '-' + _zfill(now.getDate(), 2) + ' ' + _zfill(now.getHours(), 2) + ':' + _zfill(now.getMinutes(), 2) + ':' + _zfill(now.getSeconds(), 2);
 	console.log(date + ' ' + res.statusCode + ' ' + req.url);
+	if (!req.cookies.SESSID) {
+		console.log(res.cookie);
+		var expiry = new Date();
+		expiry.setDate(expiry.getDate() + 90);
+		res.cookie('SESSID', sessions.createSession(), {'expires': expiry, httpOnly: false});
+	}
 	next();
-});
-
-app.get('/break', function(req, re) { // should probably remove this before we go into production :3
-	throw new Error("lol");
 });
 
 app.use('/less', lessMiddleware(__dirname + '/style', function (req, res) {
