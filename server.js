@@ -46,10 +46,17 @@ app.use(function (req, res, next) {
 	var date = _zfill(now.getFullYear(), 4) + '-' + _zfill(now.getMonth(), 2) + '-' + _zfill(now.getDate(), 2) + ' ' + _zfill(now.getHours(), 2) + ':' + _zfill(now.getMinutes(), 2) + ':' + _zfill(now.getSeconds(), 2);
 	console.log(date + ' ' + res.statusCode + ' ' + req.url);
 	if (!req.cookies.SESSID) {
-		console.log(res.cookie);
-		var expiry = new Date();
-		expiry.setDate(expiry.getDate() + 90);
-		res.cookie('SESSID', sessions.createSession(), {'expires': expiry, httpOnly: false});
+		if (req.query.SESSID) {
+			req.cookies.SESSID = req.query.SESSID;
+		} else {
+			console.log(res.cookie);
+			var expiry = new Date();
+			expiry.setDate(expiry.getDate() + 90);
+			var newCookie = sessions.createSession();
+			res.cookie('SESSID', newCookie, {'expires': expiry, httpOnly: false});
+			req.cookies.SESSID = newCookie;
+		}
+
 	}
 	next();
 });
