@@ -1,3 +1,4 @@
+/* global moment */
 /* SBHS-Timetable-Node: Countdown and timetable all at once (NodeJS app).
  * Copyright (C) 2015 James Ye, Simon Shields
  *
@@ -21,8 +22,9 @@ var miniMode = window.innerWidth < 800;
 var belltimes = undefined;
 var timeSpentWaiting = moment();
 var cachedCountdownEvent;
-var countdownLabel;
-var inLabel = 'happens';
+var countdownLabel = 'Something';
+var inLabel = 'happens in';
+var sbhsFailed = false;
 
 function getNextSchoolDay() {
 	if (window.today) {
@@ -47,8 +49,19 @@ function getNextSchoolDay() {
 	return today.add(offset, 'days').startOf('day');
 }
 
+function sbhsDown() {
+	console.log('looks like SBHS is down.');
+	$('#countdown-label').html('<img src="/api/picture.jpeg" id="real-cute"></img>');
+	$('#period-label').text('SBHS is taking too long!');
+	$('#in-label').html('here, have a cute picture instead. <a href="javascript:void(0)" onclick="window.location = window.location">reload</a> at any time to try again. <a href="/static/sbhs-failure.html">why does this happen?</a>')
+}
+
 function getNextCountdownEvent() {
 	if (!window.belltimes || !window.belltimes.status == 200) {
+		if (timeSpentWaiting.diff(moment(), 'seconds') < -10 && !sbhsFailed) {
+			sbhsFailed = true;
+			setTimeout(sbhsDown,1000);
+		}
 		return timeSpentWaiting; // count up from page load time
 	} else {
 		if (cachedCountdownEvent && cachedCountdownEvent.isAfter(moment())) {
@@ -56,11 +69,11 @@ function getNextCountdownEvent() {
 		}
 		var i = 0;
 		var now = moment();
-		var cmpMoment = getNextSchoolDay();
+		var nextSchoolDay = getNextSchoolDay();
 		for (i = window.startIndex || 0; i < belltimes.bells.length; i++) { // loop over bells to find the next one
 			var bell = belltimes.bells[i];
 			var hm = bell.time.split(':');
-			if (cmpMoment.hours(Number(hm[0])).minutes(Number(hm[1])).isAfter(now)) {
+			if (nextSchoolDay.hours(Number(hm[0])).minutes(Number(hm[1])).isAfter(now)) {
 				inLabel = 'starts in';
 				countdownLabel = bell.bell.replace('Roll Call', 'School Starts').replace('End of Day', 'School Ends');
 				if (countdownLabel.indexOf('School') != -1) {
@@ -106,8 +119,8 @@ function getNextCountdownEvent() {
 						countdownLabel = next.bell;
 					}
 				}*/
-				cachedCountdownEvent = cmpMoment;
-				return cmpMoment;
+				cachedCountdownEvent = nextSchoolDay;
+				return nextSchoolDay;
 			}
 		}
 		return now;
@@ -120,7 +133,7 @@ EventBus.on('bells', function(ev, bells) {
 });
 
 function updateCountdown() {
-	if (config.HOLIDAYS) return;
+	if (config.HOLIDAYS || sbhsFailed) return;
 	$('#countdown-label').text(getNextCountdownEvent().fromNowCountdown());///*Math.abs(getNextCountdownEvent().diff(moment(), 'seconds')) + 's'*/);
 	$('#in-label').text(inLabel);
 	$('#period-label').text(countdownLabel);

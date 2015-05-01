@@ -23,7 +23,6 @@ window.EventBus = {};
 	EventBus.listeners = {};
 
 	EventBus.on = function _on(event, callback, priority) {
-		console.log(this);
 		if (!(event in this.listeners)) {
 			this.listeners[event] = [callback];
 		} else {
