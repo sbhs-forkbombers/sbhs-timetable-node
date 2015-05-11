@@ -46,7 +46,7 @@ function handleLeftPane() {
 			teacher = timetable[i].teacher;
 			fullTeacher = timetable[i].fullTeacher;
 			subjName = timetable[i].fullName;
-			finalised = timetable.displayVariations;
+			finalised = today.displayVariations || today.variationsFinalised;
 			if (/\d$/.test(timetable[i].title) || /[a-z][A-Z]$/.test(timetable[i].title)) {
 				suffix = timetable[i].title.substr(-1);
 				subj = subj.slice(0,-1);
@@ -61,7 +61,7 @@ function handleLeftPane() {
 					subj = subj.slice(0, -1);
 				}
 			}
-			if (timetable[i].changed && today.displayVariations) {
+			if (timetable[i].changed && finalised) {
 				if (timetable[i].varies) { 
 					if (timetable[i].cancelled) {
 						cancelled = true;

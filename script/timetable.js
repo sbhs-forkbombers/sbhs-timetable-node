@@ -36,7 +36,7 @@
  		console.log('not logged in, don\'t bother');
  		return;
  	}
- 	$.getJSON('/api/today.json?v=2', function(data) {
+ 	$.getJSON('/api/today.json', function(data) {
  		if (data.httpStatus == 200) {
  			window.localStorage[data.today.replace(' ','')] = JSON.stringify(data);
  			if (!belltimes || belltimes.status != 'OK') {
