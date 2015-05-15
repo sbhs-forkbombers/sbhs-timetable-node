@@ -164,6 +164,14 @@ function snazzify(el) {
 
 function attachAllTheThings() {
 	// show/hide the cached list
+	if (!$.fn.velocity) {
+		$.fn.velocity = function () {
+			if (arguments[0] == 'finish') {
+				return this;
+			}
+			$.fn.css.apply(this, arguments); // good enough
+		}
+	}
 	$('#cached').click(function() {
 		if ($('#dropdown-arrow').hasClass('expanded')) {
 			$('#verbose-hidden').velocity('finish').velocity('slideUp', { duration: 300 });
@@ -232,34 +240,35 @@ function attachAllTheThings() {
 	$('#top-pane-arrow').click(toggleTop);
 
 	$('#right-pane-arrow').click(toggleRight);
+	if ($('#left-pane-target').swipeRight) { // IE 9 doesn't support swipe functions
+		$('#left-pane-target').swipeRight(toggleLeft);
 
-	$('#left-pane-target').swipeRight(toggleLeft);
+		$('#right-pane-target').swipeLeft(toggleRight);
 
-	$('#right-pane-target').swipeLeft(toggleRight);
+		$('#top-pane-target').swipeDown(toggleTop);
 
-	$('#top-pane-target').swipeDown(toggleTop);
+		$('#left-pane').swipeLeft(function() {
+			collapsePane('left');
+		});
 
-	$('#left-pane').swipeLeft(function() {
-		collapsePane('left');
-	});
+		$('#right-pane').swipeRight(function() {
+			collapsePane('right');
+		});
 
-	$('#right-pane').swipeRight(function() {
-		collapsePane('right');
-	});
+		$('#bottom-pane-target').swipeUp(function() {
+			collapsePane('top');
+		});
 
-	$('#bottom-pane-target').swipeUp(function() {
-		collapsePane('top');
-	});
+		$('#cached').swipeDown(function() {
+			$('#verbose-hidden').velocity('finish').velocity('slideDown', { duration: 300 });
+			$('#dropdown-arrow').addClass('expanded');
+		});
 
-	$('#cached').swipeDown(function() {
-		$('#verbose-hidden').velocity('finish').velocity('slideDown', { duration: 300 });
-		$('#dropdown-arrow').addClass('expanded');
-	});
-
-	$('#cached').swipeUp(function() {
-		$('#verbose-hidden').velocity('finish').velocity('slideUp', { duration: 300 });
-		$('#dropdown-arrow').removeClass('expanded');
-	});
+		$('#cached').swipeUp(function() {
+			$('#verbose-hidden').velocity('finish').velocity('slideUp', { duration: 300 });
+			$('#dropdown-arrow').removeClass('expanded');
+		});
+	}
 
 	$(document).keydown(function(e) {
 		if (e.which == 27) { // esc
