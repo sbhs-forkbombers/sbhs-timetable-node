@@ -40,11 +40,11 @@ html(lang=en)
 		<!--[if IE]>
 		script(src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js")
 		<![endif]-->
-		script(async, src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js")
 		script(defer, src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.1/velocity.min.js")
 		script(defer, src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.2.1/velocity.ui.min.js")
 		//-script(src="//cdnjs.cloudflare.com/ajax/libs/zepto/1.1.4/zepto.min.js")
-		<!--[if !IE]>
+		script(src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment.min.js")
+		<!--[if !IE]> -->
 		script
 			include ../srv/zepto.min.js
 		<!--<![endif]-->
