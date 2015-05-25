@@ -26,6 +26,7 @@ var countdownLabel = 'Something';
 var inLabel = 'happens in';
 var sbhsFailed = false;
 
+
 function getNextSchoolDay() {
 	if (window.today) {
 		var m = moment(window.today.date, "YYYY-MM-DD");
@@ -130,6 +131,7 @@ function getNextCountdownEvent() {
 
 EventBus.on('bells', function(ev, bells) {
 	window.belltimes = bells;
+	if (belltimes.bellsAltered) $('#top-line-notice').text(belltimes.bellsAlteredReason);
 });
 
 function updateCountdown() {
@@ -148,7 +150,9 @@ function reloadBells() {
 
 document.addEventListener('readystatechange', function domReady() {
 	if (document.readyState !== 'complete') return;
-
+	window.belltimes = window.config.bells;
+	$('#top-line-notice').text(belltimes.bellsAlteredReason);
+	updateCountdown();
 	reloadBells();
 	// holidays
 	if (config.HOLIDAYS) {

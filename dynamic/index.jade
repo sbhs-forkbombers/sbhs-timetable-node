@@ -49,6 +49,7 @@ html(lang=en)
 			include ../srv/zepto.min.js
 		<!--<![endif]-->
 		script
+			!="\n"
 			!="window.config = JSON.parse('" + args + "');"
 		//-script!="window.config = " + JSON.stringify(args);
 		script(async, src="/script/belltimes.concat.js?v=1")
