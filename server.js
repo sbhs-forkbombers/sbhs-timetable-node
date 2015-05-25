@@ -77,7 +77,7 @@ app.get('/', function(req, res) {
 		colour: req.query.colour || 'white',
 		inverted: 'invert' in req.query,
 		HOLIDAYS: schoolday.isHolidays(),
-		cscheme: colours.get(req.query.colour || 'default' , 'invert' in req.query),
+		cscheme: colours.get(req.query.colour || 'default' , 'invert' in req.query)
 	};
 	if (vars.HOLIDAYS) {
 		vars.holidayCfg = {
@@ -90,7 +90,7 @@ app.get('/', function(req, res) {
 		scheme:  vars.cscheme,
 		args: JSON.stringify(vars),
 		config: vars 
-	}
+	};
 	
 	res.render('index', args);
 });
@@ -117,7 +117,7 @@ app.use(function(req, res, next) {
 		}
 		res.send(file);
 	});
-})
+});
 
 app.use(function(err, req, res, next) {
 	console.error(err.stack);

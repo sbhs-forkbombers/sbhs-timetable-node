@@ -51,7 +51,7 @@ function getNextSchoolDay() {
 
 function sbhsDown() {
 	console.log('looks like SBHS is down.');
-	$('#countdown-label').html('<img src="/api/picture.jpeg" id="real-cute"></img>');
+	$('#countdown-label').html('<img src="/api/picture.jpeg" id="real-cute"/>');
 	$('#period-label').text('SBHS is taking too long!');
 	$('#in-label').html('here, have a cute picture instead. <a href="javascript:void(0)" onclick="window.location = window.location">reload</a> at any time to try again. <a href="/static/sbhs-failure.html">why does this happen?</a>')
 }

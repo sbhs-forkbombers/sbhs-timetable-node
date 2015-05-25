@@ -210,8 +210,10 @@ function handleTopPane() {
 		res += '</div></div></td></tr>';
 	}
 	for (i in sorted) {
+		if (!sorted.hasOwnProperty(i)) continue;
 		list = window.notices.notices[sorted[i]];
 		for (j in list) {
+			if (!list.hasOwnProperty(j)) continue;
 			entry = list[j];
 			res += '<tr id="'+entry.id+'" class="notice notice' + entry.years.join(' notice') + ' notice-row ' + (entry.isMeeting ? 'meeting' : '') + '">';
 			res += '<td class="notice-target animated">'+entry.dTarget+'</td>';
@@ -265,6 +267,9 @@ function handleRightPane() {
 	var bells = belltimes.bells, rowClass, bell, timeClass;
 	var res = '<table><tbody>';
 	for (var i in bells) {
+		if (!bells.hasOwnProperty(i)) {
+			continue;
+		}
 		bell = bells[i].bell;
 		timeClass = 'bell';
 		rowClass = 'break';
