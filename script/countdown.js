@@ -132,6 +132,7 @@ function getNextCountdownEvent() {
 EventBus.on('bells', function(ev, bells) {
 	window.belltimes = bells;
 	if (belltimes.bellsAltered) $('#top-line-notice').text(belltimes.bellsAlteredReason);
+	else $('#top-line-notice').text('');
 });
 
 function updateCountdown() {
