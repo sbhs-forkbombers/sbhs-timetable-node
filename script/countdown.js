@@ -80,7 +80,7 @@ function getNextCountdownEvent() {
 				if (countdownLabel.indexOf('School') != -1) {
 					inLabel = 'in';
 				}
-				if (window.today && /^\d/.test(bell.bell)) {
+				if (window.today && /^\d/.test(bell.bell) && window.today.timetable) {
 					// period - populate data from timetable
 					if (bell.bell in today.timetable) {
 						countdownLabel = today.timetable[bell.bell].fullName;
@@ -93,7 +93,7 @@ function getNextCountdownEvent() {
 				if (countdownLabel == 'Transition' || countdownLabel == 'Recess') {
 					inLabel = 'ends in';
 					var next = belltimes.bells[i-1];
-					if (window.today && /^\d/.test(next.bell)) {
+					if (window.today && window.today.timetable && /^\d/.test(next.bell)) {
 						if (next.bell in today.timetable) {
 							countdownLabel = today.timetable[next.bell].fullName;
 						} else {
