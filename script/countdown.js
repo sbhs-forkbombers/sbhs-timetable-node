@@ -22,8 +22,8 @@ var miniMode = window.innerWidth < 800;
 var belltimes = undefined;
 var timeSpentWaiting = moment();
 var cachedCountdownEvent;
-var countdownLabel = 'Something';
-var inLabel = 'happens in';
+var countdownLabel = 'Loading...';
+var inLabel = '';
 var sbhsFailed = false;
 
 
@@ -59,7 +59,7 @@ function sbhsDown() {
 
 function getNextCountdownEvent() {
 	if (!window.belltimes || !window.belltimes.status == 200) {
-		if (timeSpentWaiting.diff(moment(), 'seconds') < -10 && !sbhsFailed) {
+		if (timeSpentWaiting.diff(moment(), 'seconds') < -20 && !sbhsFailed) {
 			sbhsFailed = true;
 			setTimeout(sbhsDown,1000);
 		}
@@ -90,7 +90,7 @@ function getNextCountdownEvent() {
 				} else if (/^\d/.test(bell.bell)) {
 					countdownLabel = 'Period ' + bell.bell;
 				}
-				if (countdownLabel == 'Transition' || countdownLabel == 'Recess') {
+				if (countdownLabel == 'Transition' || countdownLabel == 'Recess' || countdownLabel == 'Lunch 1') {
 					inLabel = 'ends in';
 					var next = belltimes.bells[i-1];
 					if (window.today && window.today.timetable && /^\d/.test(next.bell)) {
@@ -131,7 +131,7 @@ function getNextCountdownEvent() {
 
 EventBus.on('bells', function(ev, bells) {
 	window.belltimes = bells;
-	if (belltimes.bellsAltered) $('#top-line-notice').text(belltimes.bellsAlteredReason);
+	if (belltimes.bellsAltered) $('#top-line-notice').text('Bells changed: ' + belltimes.bellsAlteredReason);
 	else $('#top-line-notice').text('');
 });
 
@@ -151,6 +151,10 @@ function reloadBells() {
 
 document.addEventListener('readystatechange', function domReady() {
 	if (document.readyState !== 'complete') return;
+	if (!moment || !$.Velocity) {
+		console.warn('MISSING SOME THINGS!');
+		console.warn('this is going to go badly');
+	}
 	window.belltimes = window.config.bells;
 	$('#top-line-notice').text(belltimes.bellsAlteredReason);
 	updateCountdown();
