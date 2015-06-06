@@ -24,6 +24,7 @@ var timeSpentWaiting = moment();
 var cachedCountdownEvent;
 var countdownLabel = 'Loading...';
 var inLabel = '';
+var forcedDayOffset = 0; // brute-forcing public holidays and whatnot
 var sbhsFailed = false;
 
 
@@ -36,7 +37,7 @@ function getNextSchoolDay() {
 	}
 	var today = moment();
 	var dow = today.days();
-	var offset = 0;
+	var offset = forcedDayOffset;
 	if (dow == 0) { // SUNDAY
 		offset++;
 	} else if (dow == 6) { // SATURDAY
@@ -131,6 +132,23 @@ function getNextCountdownEvent() {
 
 EventBus.on('bells', function(ev, bells) {
 	window.belltimes = bells;
+	if (window.belltimes.status == "Error") {
+		if (window.today) {
+			reloadBells();
+			loadNotices();
+			loadBarcodeNews();
+		} else {
+			forcedDayOffset++;
+			if (forcedDayOffset > 10) {
+				// cry
+				sbhsDown();
+			} else {
+				reloadBells();
+				loadNotices();
+				loadBarcodeNews();
+			}
+		}
+	}
 	if (belltimes.bellsAltered) $('#top-line-notice').text('Bells changed: ' + belltimes.bellsAlteredReason);
 	else $('#top-line-notice').text('');
 });
