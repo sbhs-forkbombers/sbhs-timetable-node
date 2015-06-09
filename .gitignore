@@ -2,6 +2,7 @@
 node_modules
 build
 users.json
+terms_cache.json
 belltimes.concat.js
 config.js
 *sessions.json
