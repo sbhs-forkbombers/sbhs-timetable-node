@@ -18,6 +18,12 @@
  */
  var today = {};
  function loadToday() {
+ 	if (!window.today || !window.today.httpStatus) {
+ 		$('#left-pane .umad').html('¯\\_(ツ)_/¯ Loading ¯\\_(ツ)_/¯');
+ 		showTodayTimeout();
+ 	}
+ 	window.todayLoading = true;
+ 	updateSidebarStatus();
  	if (window.belltimes && belltimes.status == 'OK') {
  		if ((belltimes.day + belltimes.weekType) in localStorage) {
  			try {
@@ -36,12 +42,15 @@
  		console.log('not logged in, don\'t bother');
  		return;
  	}
- 	$.getJSON('/api/today.json', function(data) {
+ 	$.getJSON('/api/today.json', function(data, status, xhr) {
  		if (data.httpStatus == 200) {
  			window.localStorage[data.today.replace(' ','')] = JSON.stringify(data);
  			if (!belltimes || belltimes.status != 'OK') {
  				reloadBells();
  			}
+ 			clearTimeout(window.timetableReloadPromptTimeout);
+ 			window.todayLoading = false;
+ 			updateSidebarStatus();
  			EventBus.post('today', data);
  		}
  	});
@@ -54,4 +63,16 @@
  	getNextCountdownEvent();
  }, true);
 
- loadToday();
+ function showTodayTimeout() {
+ 		window.timetableReloadPromptTimeout = setTimeout(function() {
+			$('#left-pane .umad').html('Loading your timetable is taking a looong time... <a href="javascript:void(0)" onclick="loadToday()">Try again?</a>');
+		}, 10000);
+ }
+if (config.loggedIn) {
+	EventBus.on('pageload', function() {
+		console.log('page loaded!');
+		showTodayTimeout();
+	});
+}
+
+loadToday();

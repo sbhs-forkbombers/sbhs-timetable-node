@@ -392,6 +392,25 @@ td {
 	z-index: -1;
 }
 
+#reload-btn {
+	position: relative;
+	width: 100%;
+	text-align: center;
+	font-weight: 100;
+	font-style: italic;
+	font-size: 2em;
+}
+
+#reload-btn a {
+	/* I can't believe it's not underline (tm) */
+	border-bottom: 1px solid white;
+	text-decoration: none;
+}
+
+#reload-btn a:hover {
+	border-bottom-color: #03a9f4;
+}
+
 #right-pane {
 	right: -200%;
 
@@ -493,6 +512,13 @@ td {
 	text-align: right;
 	font-size: 0.9em;
 	z-index: 2;
+}
+
+#timetable-short, #notices-short, #belltimes-short {
+	position: relative;
+	display: inline-block;
+	min-width: 1em;
+	text-align: center;
 }
 
 #top-line-notice {

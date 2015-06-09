@@ -18,9 +18,16 @@
  */
 
 function loadNotices() {
+	$('#top-pane .umad').html('¯\\_(ツ)_/¯ Loading ¯\\_(ツ)_/¯');
+	showNoticesTimeout();
 	var ds = getNextSchoolDay().format('YYYY-MM-DD');
+	window.noticesLoading = true;
+	updateSidebarStatus();
 	$.getJSON('/api/notices.json?date='+ds, function(data) {
-		window.notices = data;
+		window.notices = data
+		window.noticesLoading = false;
+		clearTimeout(window.noticesReloadPromptTimeout);
+		updateSidebarStatus();
 		EventBus.post('notices', data);
 	});
 }
@@ -30,6 +37,18 @@ function loadBarcodeNews() {
 	$.getJSON('/api/barcodenews/list.json?date=' + ds, function(data) {
 		window.barcodenews = data;
 		EventBus.post('barcodenews', data);
+	});
+}
+
+function showNoticesTimeout() {
+	window.noticesReloadPromptTimeout = setTimeout(function() {
+			$('#top-pane .umad').html('Loading the notices is taking a looong time... <a href="javascript:void(0)" onclick="loadNotices(); loadBarcodeNews()">Try again?</a>');
+		}, 10000);
+}
+
+if (config.loggedIn) {
+	EventBus.on('pageload', function() {
+		showNoticesTimeout();
 	});
 }
 

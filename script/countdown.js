@@ -193,4 +193,5 @@ document.addEventListener('readystatechange', function domReady() {
 		setInterval(updateCountdown, 1000);
 	}
 	attachAllTheThings();
+	EventBus.post('pageload', {});
 })

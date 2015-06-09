@@ -30,7 +30,7 @@ function handleLeftPane() {
 		prefix, subj, suffix, room, teacher, fullTeacher, subjName, finalised,
 		roomChanged, teacherChanged, cancelled = false;
 	if (window.today.stale) {
-		html = '<div class="cached-notice">This data may be outdated</div>' + html;
+		html = '<div class="cached-notice">This data may be outdated! <a href="javascript:void(0)" onclick="loadToday()">Reload?</a></div>' + html;
 	}
 	for (var i = 1; i < 6; i++) {
 		if (!(i in timetable) || !timetable[i].room) {
@@ -121,7 +121,7 @@ function handleLeftPane() {
 			teacherChanged = false;
 		}
 	}
-	html += '</tbody></table>';
+	html += '</tbody></table><br/><div id="reload-btn"><a href="javascript:void(0)" onclick="loadToday()" title="Gee I hope they\'re away">Reload</a></div>';
 	pane.innerHTML = html;
 }
 

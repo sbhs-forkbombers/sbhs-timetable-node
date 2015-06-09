@@ -393,46 +393,81 @@ function loadBackgroundImage() {
 	}
 }
 
+	var opts = { //TODO move into updateSidebarStatus
+		lines: 7, // The number of lines to draw
+		length: 3, // The length of each line
+		width: 3, // The line thickness
+		radius: 2, // The radius of the inner circle
+		scale: 1, // Scales overall size of the spinner
+		corners: 1, // Corner roundness (0..1)
+		color: '#fff', // #rgb or #rrggbb or array of colors
+		opacity: 0.25, // Opacity of the lines
+		rotate: 0, // The rotation offset
+		direction: 1, // 1: clockwise, -1: counterclockwise
+		speed: 1, // Rounds per second
+		trail: 34, // Afterglow percentage
+		fps: 20, // Frames per second when using setTimeout() as a fallback for CSS
+		zIndex: 2e9, // The z-index (defaults to 2000000000)
+		className: 'spinner', // The CSS class to assign to the spinner
+		top: '-0.25em', // Top position relative to parent
+		left: '50%', // Left position relative to parent
+		shadow: true, // Whether to render a shadow
+		hwaccel: true, // Whether to use hardware acceleration
+		position: 'absolute' // Element positioning
+	};
+
 function updateSidebarStatus() {
 	/* Show load state info for various API data */
 	'use strict';
+
 	/* Loading state symbols */
 	var tick = '<span class="octicon octicon-check ok"></span>',
 		cross = '<span class="octicon octicon-x failed"></span>',
 		cached = '<span class="octicon octicon-alert stale"></span>',
-		loading = '<span class="idk">…</span>';
+		loading = '<span class="idk">…</span>',
+		waiting = '[spinner]';
 	/* Local variables */
 	var belltimesOK = window.belltimes && belltimes.status == 'OK' && belltimes.httpStatus == 200,
 		noticesOK = window.notices && window.notices.notices && !window.notices.notices.failure && window.notices.httpStatus == 200,
 		timetableOK = window.today && today.httpStatus == 200 && today.timetable,
 		belltimesClass = 'ok',
 		belltimesText = 'OK',
+		belltimesShortText = cross,
 		timetableClass = 'failed',
 		timetableText = 'Failed',
+		timetableShortText = cross,
 		noticesClass = 'failed',
 		noticesText = 'Failed',
-		shortText = ['B: '+cross,'T: '+cross,'N: '+cross];
+		noticesShortText = cross;
+		
 
 	if (belltimesOK) {
 		belltimesText = 'OK';
 		belltimesClass = 'ok';
-		shortText[0] = 'B: ' + tick;
+		belltimesShortText = tick;
 	}
 
-	if (window.today && window.today.stale) {
+	if (window.todayLoading) {
+		timetableText = 'Loading...';
+		timetableClass = 'stale';
+		timetableShortText = waiting;
+	} else if (window.today && window.today.stale) {
 		timetableText = 'Cached';
 		timetableClass = 'stale';
-		shortText[1] = 'T: ' + cached;
+		timetableShortText = cached;
 	} else if (timetableOK) {
 		timetableText = 'OK';
 		timetableClass = 'ok';
-		shortText[1] = 'T: ' + tick;
+		timetableShortText = tick;
 	}
-
-	if (noticesOK) {
+	if (window.noticesLoading) {
+		noticesText = 'Loading...';
+		noticesClass = 'stale';
+		noticesShortText = waiting;
+	} else if (noticesOK) {
 		noticesText = 'OK';
 		noticesClass = 'ok';
-		shortText[2] = 'N: ' + tick;
+		noticesShortText = tick;
 	}
 
 	var bells = document.getElementById('belltimes');
@@ -447,7 +482,23 @@ function updateSidebarStatus() {
 	notices.className = noticesClass;
 	notices.innerHTML = noticesText;
 
-	document.getElementById('shortdata-desc').innerHTML = shortText.join(' ');
+	document.getElementById('belltimes-short').innerHTML = belltimesShortText;
+	if (timetableShortText == waiting) {
+		document.getElementById('timetable-short').innerHTML = '';
+		new Spinner(opts).spin(document.getElementById('timetable-short'));
+	} else {
+		document.getElementById('timetable-short').innerHTML = timetableShortText;
+	}
+	if (noticesShortText == waiting) {
+		document.getElementById('notices-short').innerHTML = '';
+		new Spinner(opts).spin(document.getElementById('notices-short'));
+
+	} else {
+		document.getElementById('notices-short').innerHTML = noticesShortText
+	}
+	//document.getElementById('shortdata-desc').innerHTML = 'B: <span id="belltimes-short">' + belltimesShortText + '</span> ' +
+	//														'T: <span id="timetable-short">' + timetableShortText + '</span> ' +
+	//														'N: <span id="notices-short">' + noticesShortText + '</span>'
 }
 
 EventBus.on('notices', updateSidebarStatus);
