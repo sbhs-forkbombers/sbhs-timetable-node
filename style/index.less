@@ -89,6 +89,18 @@ td {
 	opacity: 1;
 }
 
+#bell-day {
+	position: relative;
+	width: 100%;
+	text-align: center;
+	font-size: 2em;
+	font-weight: 100;
+	a {
+		font-size: 0.5em;
+		font-weight: 400;
+	}
+}
+
 .customBg {
 	background: linear-gradient(fade(@bg, 50%), fade(@bg, 50%)), @bg url(about:blank);
 	background-size: cover;
@@ -130,6 +142,12 @@ td {
 	font-style: italic;
 }
 
+.last-updated {
+	position: relative;
+	width: 100%;
+	text-align: center;
+}
+
 .meeting .notice-data {
 	background-color: @highBg;
 	border: 0;
@@ -169,9 +187,15 @@ td {
 
 .notices-header {
 	position: static;
+	display: inline-block;
 	margin-top: 10px;
 	width: 100%;
 	text-align: center;
+}
+
+#notices-reload {
+	font-weight: 400;
+	font-size: 0.5em;
 }
 
 .ok {

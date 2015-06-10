@@ -167,11 +167,15 @@ function reloadBells() {
 	});
 }
 
-document.addEventListener('readystatechange', function domReady() {
+function domReady() {
 	if (document.readyState !== 'complete') return;
-	if (!moment || !$.Velocity) {
+	if (!window.moment || !window.$ || !$.Velocity) {
 		console.warn('MISSING SOME THINGS!');
-		console.warn('this is going to go badly');
+		console.warn('this would go badly. so we won\'t let it go at all (▀̿Ĺ̯▀̿ ̿)');
+		document.getElementById('period-label').innerHTML = 'Oops';
+		document.getElementById('in-label').innerHTML = 'We couldn\'t load some things we need to run. Maybe <a href="/">try again?</a><br />or look at this picture!';
+		document.getElementById('countdown-label').innerHTML = '<img src="/api/picture.jpeg"></img>';
+		return;
 	}
 	window.belltimes = window.config.bells;
 	$('#top-line-notice').text(belltimes.bellsAlteredReason);
@@ -194,4 +198,6 @@ document.addEventListener('readystatechange', function domReady() {
 	}
 	attachAllTheThings();
 	EventBus.post('pageload', {});
-})
+}
+
+document.addEventListener('readystatechange', domReady);

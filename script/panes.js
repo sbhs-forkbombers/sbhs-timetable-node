@@ -25,7 +25,7 @@ function handleLeftPane() {
 	'use strict';
 	if (!window.today || window.today.httpStatus != 200) return;
 	var pane = document.getElementById('left-pane'),
-		html = '<div id="day-name">' + window.today.today + ' <a href="javascript:void(0)" onclick="loadToday()" class="reload-prompt">reload?</span></div><table><tbody><tr><td>Subject</td><td>Teacher</td><td>Room</td></tr>',
+		html = '<div id="day-name">' + window.today.today + ' <a href="javascript:void(0)" onclick="loadToday()" class="reload-prompt">reload?</a></span></div><table><tbody><tr><td>Subject</td><td>Teacher</td><td>Room</td></tr>',
 		timetable = today.timetable,
 		prefix, subj, suffix, room, teacher, fullTeacher, subjName, finalised,
 		roomChanged, teacherChanged, cancelled = false;
@@ -121,7 +121,9 @@ function handleLeftPane() {
 			teacherChanged = false;
 		}
 	}
-	html += '</tbody></table><br/><div id="reload-btn"></div>';
+	html += '</tbody></table><br/>';
+	var fetch = window.today._fetchTime * 1000;
+	html += '<div class="last-updated"><span class="label">Last updated:</span> ' + moment(fetch).format('ddd Do MMM hh:mm:ss a') + '</div><table><tbody>';
 	pane.innerHTML = html;
 }
 
@@ -183,10 +185,13 @@ function handleTopPane() {
 	dom = date.format('DD');
 	month = date.format('MMM');
 	if (window.notices.date !== null) {
-		res += '<h1 class="notices-header">Notices for ' + wday + ' ' + dom + ' ' + month + ' &mdash; Week ' + window.notices.week + '</h1><table><tbody>';
+		res += '<h1 class="notices-header">Notices for ' + wday + ' ' + dom + ' ' + month + ' &mdash; Week ' + window.notices.week + '';
 	} else {
-		res += '<h1 class="notices-header">Notices for ' + wday + ' ' + dom + ' ' + month + ' &mdash; Week ' + belltimes.week + belltimes.weekType + '</h1><table><tbody>';
+		res += '<h1 class="notices-header">Notices for ' + wday + ' ' + dom + ' ' + month + ' &mdash; Week ' + belltimes.week + belltimes.weekType + '';
 	}
+	res += ' <span id="notices-reload"><a href="javascript:void(0)" onclick="loadNotices(); loadBarcodeNews()">Reload</a></span></h1>';
+	var fetch = window.notices._fetchTime * 1000;
+	res += '<div class="last-updated"><span class="label">Last updated:</span> ' + moment(fetch).format('ddd Do MMM hh:mm:ss a') + '</div><table><tbody>';
 	if (window.barcodenews && window.barcodenews.content.current.length > 0) {
 		res += '<tr id="barcodenews" class="notice-row barcodenews" style="line-height: 1.5">';
 		res += '<td class="notice-target animated">All Students and Staff</td>';
@@ -265,7 +270,14 @@ function handleRightPane() {
 	/* Fill out the right pane */
 	'use strict';
 	var bells = belltimes.bells, rowClass, bell, timeClass;
-	var res = '<table><tbody>';
+	var res = '<div id="bell-day">' + window.belltimes.day + ' ' + window.belltimes.weekType.replace('Z', '?') + ' <a href="javascript:void(0)" onclick="reloadBells()">reload?</a></div><br />';
+	var fetch = (window.belltimes._fetchTime || -1) * 1000;
+	if (fetch < 0) {
+		res += '<div class="last-updated"><span class="label">Last updated:</span> never</div>';
+	} else {
+		res += '<div class="last-updated"><span class="label">Last updated:</span> ' + moment(fetch).format('ddd Do MMM hh:mm:ss a') + '</div>';
+	}
+	res += '<br /><br /><table><tbody>';
 	for (var i in bells) {
 		if (!bells.hasOwnProperty(i)) {
 			continue;
