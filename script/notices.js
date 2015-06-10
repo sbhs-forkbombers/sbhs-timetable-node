@@ -18,6 +18,7 @@
  */
 
 function loadNotices() {
+	if (!config.loggedIn) return;
 	$('#top-pane .umad').html('¯\\_(ツ)_/¯ Loading ¯\\_(ツ)_/¯');
 	showNoticesTimeout();
 	var ds = getNextSchoolDay().format('YYYY-MM-DD');

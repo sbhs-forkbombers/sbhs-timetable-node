@@ -18,6 +18,7 @@
  */
  var today = {};
  function loadToday() {
+ 	if (!config.loggedIn) return;
  	if (!window.today || !window.today.httpStatus) {
  		$('#left-pane .umad').html('¯\\_(ツ)_/¯ Loading ¯\\_(ツ)_/¯');
  		showTodayTimeout();
@@ -68,11 +69,4 @@
 			$('#left-pane .umad').html('Loading your timetable is taking a looong time... <a href="javascript:void(0)" onclick="loadToday()">Try again?</a>');
 		}, 10000);
  }
-if (config.loggedIn) {
-	EventBus.on('pageload', function() {
-		console.log('page loaded!');
-		showTodayTimeout();
-	});
-}
-
 loadToday();

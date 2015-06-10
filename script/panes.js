@@ -25,12 +25,12 @@ function handleLeftPane() {
 	'use strict';
 	if (!window.today || window.today.httpStatus != 200) return;
 	var pane = document.getElementById('left-pane'),
-		html = '<table><tbody><tr><td>Subject</td><td>Teacher</td><td>Room</td></tr>',
+		html = '<div id="day-name">' + window.today.today + ' <a href="javascript:void(0)" onclick="loadToday()" class="reload-prompt">reload?</span></div><table><tbody><tr><td>Subject</td><td>Teacher</td><td>Room</td></tr>',
 		timetable = today.timetable,
 		prefix, subj, suffix, room, teacher, fullTeacher, subjName, finalised,
 		roomChanged, teacherChanged, cancelled = false;
 	if (window.today.stale) {
-		html = '<div class="cached-notice">This data may be outdated! <a href="javascript:void(0)" onclick="loadToday()">Reload?</a></div>' + html;
+		html = '<div class="cached-notice">This data may be outdated!</div>' + html;
 	}
 	for (var i = 1; i < 6; i++) {
 		if (!(i in timetable) || !timetable[i].room) {
@@ -121,7 +121,7 @@ function handleLeftPane() {
 			teacherChanged = false;
 		}
 	}
-	html += '</tbody></table><br/><div id="reload-btn"><a href="javascript:void(0)" onclick="loadToday()" title="Gee I hope they\'re away">Reload</a></div>';
+	html += '</tbody></table><br/><div id="reload-btn"></div>';
 	pane.innerHTML = html;
 }
 
@@ -171,7 +171,7 @@ function handleTopPane() {
 		}
 		return 1;
 	});
-	res += '<select id="notices-filter">';
+	res += '<select id="notices-filter" class="animated">';
 	res += '<option value="notice">All notices</option>';
 	for (i = 7; i <= 12; i++) {
 		res += '<option value="notice'+i+'">Year ' + i + '</option>';

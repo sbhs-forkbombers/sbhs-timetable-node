@@ -269,6 +269,19 @@ td {
 	z-index: -1;
 }
 
+#day-name {
+	position: relative;
+	width: 100%;
+	text-align: center;
+	font-size: 2em;
+	font-weight: 100;
+	margin-top: 5px;
+	.reload-prompt {
+		font-size: 0.5em;
+		font-weight: 400;
+	}
+}
+
 #disable-grooviness {
 	position: absolute;
 	bottom: 20px;
@@ -387,6 +400,15 @@ td {
 	z-index: 3;
 }
 
+#notices-filter {
+	position: fixed;
+	opacity: 0.5;
+}
+
+#notices-filter:hover {
+	opacity: 1;
+}
+
 #period-label {
 	font-size: 5em;
 	z-index: -1;
@@ -394,11 +416,13 @@ td {
 
 #reload-btn {
 	position: relative;
+	margin-top: 5px;
+	margin-bottom: 5px;
 	width: 100%;
 	text-align: center;
 	font-weight: 100;
 	font-style: italic;
-	font-size: 2em;
+	font-size: 0.5em;
 }
 
 #reload-btn a {
