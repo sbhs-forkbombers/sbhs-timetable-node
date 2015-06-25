@@ -160,9 +160,11 @@ EventBus.on('bells', function(ev, bells) {
 				reloadBells();
 				loadNotices();
 				loadBarcodeNews();
+				return;
 			}
 		}
 	}
+	cachedCountdownEvent = null;
 	if (belltimes.bellsAltered) $('#top-line-notice').text('Bells changed: ' + belltimes.bellsAlteredReason);
 	else $('#top-line-notice').text('');
 });
