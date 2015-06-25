@@ -272,11 +272,6 @@ function handleRightPane() {
 	var bells = belltimes.bells, rowClass, bell, timeClass;
 	var res = '<div id="bell-day">' + window.belltimes.day + ' ' + window.belltimes.weekType.replace('Z', '?') + ' <a href="javascript:void(0)" onclick="reloadBells()">reload?</a></div><br />';
 	var fetch = (window.belltimes._fetchTime || -1) * 1000;
-	if (fetch < 0) {
-		res += '<div class="last-updated"><span class="label">Last updated:</span> never</div>';
-	} else {
-		res += '<div class="last-updated"><span class="label">Last updated:</span> ' + moment(fetch).format('ddd Do MMM hh:mm:ss a') + '</div>';
-	}
 	res += '<br /><br /><table><tbody>';
 	for (var i in bells) {
 		if (!bells.hasOwnProperty(i)) {
@@ -295,6 +290,12 @@ function handleRightPane() {
 		res += '<tr class="'+rowClass+'"><td class="bell">'+bell+'</td><td class="'+timeClass+'">'+bells[i].time+'</td></tr>';
 	}
 	res += '</tbody></table>';
+	if (fetch < 0) {
+		res += '<div class="last-updated"><span class="label">Last updated:</span> never</div>';
+	} else {
+		res += '<div class="last-updated"><span class="label">Last updated:</span> ' + moment(fetch).format('ddd Do MMM hh:mm:ss a') + '</div>';
+	}
+	res += '<br><br>';
 	document.getElementById('right-pane').innerHTML = res;
 }
 
