@@ -54,6 +54,26 @@ function togglePane(which) {
 	}
 }
 
+function toast() {
+	if ($('#toast').hasClass('visible')) {
+		$('#toast').removeClass('visible').velocity('stop').velocity({'top': '110%'});
+	} else {
+		$('#toast').velocity('stop').velocity({'top': '80%'}).addClass('visible');
+	}
+}
+
+function toggleCountdownMode() {
+	countdownToTheEnd = !countdownToTheEnd;
+	$('#toast').text('Click now to switch to ' + (countdownToTheEnd ? 'normal' : 'hurry-up-i-want-to-go-home') + ' mode');
+	getNextCountdownEvent();
+	updateCountdown();
+}
+
+function hookToggleable() {
+	if ($('.toggleable').hasClass('hooked')) return;
+	$('.toggleable').addClass('hooked').on('mouseover', toast).on('mouseleave', toast).on('click', toggleCountdownMode);
+}
+
 function toggleTop() {
 	'use strict';
 	if (topExpanded) {

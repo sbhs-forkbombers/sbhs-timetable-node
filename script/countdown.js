@@ -26,7 +26,8 @@ var countdownLabel = 'Loading...';
 var inLabel = '';
 var forcedDayOffset = 0; // brute-forcing public holidays and whatnot
 var sbhsFailed = false;
-
+var countdownToTheEnd = true; // only in pre-holiday mode
+var _ctteCache = true; // internal use only
 
 function getNextSchoolDay() {
 	if (window.today) {
@@ -66,8 +67,21 @@ function getNextCountdownEvent() {
 		}
 		return timeSpentWaiting; // count up from page load time
 	} else {
-		if (cachedCountdownEvent && cachedCountdownEvent.isAfter(moment())) {
+		if (cachedCountdownEvent && cachedCountdownEvent.isAfter(moment()) && _ctteCache == countdownToTheEnd) {
 			return cachedCountdownEvent;
+		}
+		_ctteCache = countdownToTheEnd;
+		var termEnd = moment(config.nextHolidayEvent.moment);
+		if (countdownToTheEnd && moment().add(1, 'd').isAfter(termEnd) && moment().isBefore(termEnd)) {
+			countdownLabel = 'School ends';
+			inLabel = '<sup><em>finally</em></sup>in';
+			$('#in-label,#countdown-label,#period-label').addClass('toggleable');
+			hookToggleable();
+			cachedCountdownEvent = termEnd;
+			return termEnd;
+		}
+		if (moment().isAfter(termEnd)) {
+			window.location = window.location; // reload
 		}
 		var i = 0;
 		var now = moment();
@@ -156,7 +170,7 @@ EventBus.on('bells', function(ev, bells) {
 function updateCountdown() {
 	if (config.HOLIDAYS || sbhsFailed) return;
 	$('#countdown-label').text(getNextCountdownEvent().fromNowCountdown());///*Math.abs(getNextCountdownEvent().diff(moment(), 'seconds')) + 's'*/);
-	$('#in-label').text(inLabel);
+	$('#in-label').html(inLabel);
 	$('#period-label').text(countdownLabel);
 
 }

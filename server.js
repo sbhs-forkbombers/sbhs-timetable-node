@@ -72,11 +72,13 @@ app.use('/api', auth.AutoRefresher(config));
 
 app.get('/', function(req, res) {
 	var loggedIn = req.cookies.SESSID && sessions.getSessionData(req.cookies.SESSID).accessToken != undefined;
+	var hdate = schoolday.getNextEndEvent();
 	var vars = {
 		loggedIn: loggedIn,
 		colour: req.query.colour || 'white',
 		inverted: 'invert' in req.query,
 		HOLIDAYS: schoolday.isHolidays(),
+		nextHolidayEvent: hdate,
 		cscheme: colours.get(req.query.colour || 'default' , 'invert' in req.query),
 		bells: api.getStaticBelltimes()
 	};
