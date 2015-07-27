@@ -326,6 +326,36 @@ function attachAllTheThings() {
 	if (window.localStorage.expanded === 'true') {
 		$('#expand').click();
 	}
+	window.addEventListener('resize', function() {
+		$('#ideal-image-size').html('<strong>Best size (for current window):</strong> ' + window.innerWidth + 'x' + window.innerHeight);
+	});
+	$('#ideal-image-size').html('<strong>Best size (for current window):</strong> ' + window.innerWidth + 'x' + window.innerHeight);
+
+	var el = document.getElementById('bg-pos-vert-combobox');
+	el.addEventListener('change', function() {
+		console.log('whee change');
+		window.localStorage['bg-vert'] = document.getElementById('bg-pos-vert-combobox').value;
+		loadBackgroundImage();
+	});
+	if (localStorage['bg-vert']) {
+		el.selectedIndex = ['top', 'center', 'bottom'].indexOf(localStorage['bg-vert']);
+	}
+
+	el = document.getElementById('bg-pos-horiz-combobox');
+	el.addEventListener('change', function() {
+		window.localStorage['bg-horiz'] = document.getElementById('bg-pos-horiz-combobox').value;
+		loadBackgroundImage();
+	});
+	if (localStorage['bg-horiz']) {
+		el.selectedIndex = ['left', 'center', 'right'].indexOf(localStorage['bg-horiz']);
+	}
+
+	el = document.getElementById('tile-toggle')
+	el.addEventListener('change', function() {
+		window.localStorage['bg-repeat'] = document.getElementById('tile-toggle').checked;
+		loadBackgroundImage();
+	});
+	if (localStorage['bg-repeat'] === true) window.localStorage['bg-repeat'].checked = true;
 }
 
 function handleUpload() {
@@ -342,7 +372,7 @@ function handleUpload() {
 			if (input[0].files && input[0].files[0]) {
 				var reader = new FileReader();
 				reader.onload = function(e) {
-					base64Image(e.target.result, 1280, 720, function (b64) {
+					base64Image(e.target.result, window.innerWidth, window.innerHeight, function (b64) {
 						localStorage.setItem('cached-bg', b64);
 						loadBackgroundImage();
 					});
@@ -363,8 +393,8 @@ function base64Image(url, width, height, callback) {
 	img.onload = function (evt) {
 		var canvas = document.createElement('canvas');
 
-		canvas.width  = width;
-		canvas.height = height;
+		canvas.width  = img.width; // upload the image without changing its dimensions
+		canvas.height = img.height;
 
 		var imgRatio    = img.width / img.height,
 		canvasRatio = width / height,
@@ -391,7 +421,26 @@ function base64Image(url, width, height, callback) {
 function loadBackgroundImage() {
 	/* jshint -W041 */
 	'use strict';
+	var el = document.getElementById('i-dont-even');
+	if (el != null) {
+		document.head.removeChild(el);
+	}
 	if ('cached-bg' in window.localStorage) {
+		var backgroundRep = true;
+		console.log(window.localStorage['bg-repeat']);
+		if ('bg-repeat' in window.localStorage) {
+			console.log('found bg-rep');
+			backgroundRep = window.localStorage['bg-repeat'] == 'true';
+		}
+		var backgroundVertAlign = 'center';
+		if ('bg-vert' in window.localStorage) {
+			backgroundVertAlign = window.localStorage['bg-vert'];
+		}
+		var backgroundHorizAlign = 'center';
+		if ('bg-horiz' in window.localStorage) {
+			backgroundHorizAlign = window.localStorage['bg-horiz'];
+		}
+		console.log(backgroundRep);
 		var c = config.cscheme.bg.slice(1);
 		var r = Number('0x'+c.substr(0,2));
 		var g = Number('0x'+c.substr(2,2));
@@ -400,16 +449,16 @@ function loadBackgroundImage() {
 		$('#background-image').addClass('customBg');
 		var style = document.createElement('style');
 		// TODO why is this innerHTML not innerText wtf firefox
-		style.innerHTML = '#background-image { background: linear-gradient(' + rgb + ',' + rgb + '), #' + c + ' url(' + window.localStorage['cached-bg'] + ') }';
+		var css = '#background-image { background: linear-gradient(' + rgb + ',' + rgb + '), #' + c + ' url(' + window.localStorage['cached-bg'] + ');';
+		css += 'background-repeat: ' + (backgroundRep === true ? 'repeat' : 'no-repeat') + ';';
+		css += 'background-position: ' + backgroundVertAlign + ' ' + backgroundHorizAlign + ';';
+		css += '}'
+		style.innerHTML = css;
 		style.id = 'i-dont-even';
 		document.head.appendChild(style);
 
 	} else {
 		$('#background-image').removeClass('customBg');
-		var el = document.getElementById('i-dont-even');
-		if (el != null) {
-			document.head.removeElement(el);
-		}
 	}
 }
 

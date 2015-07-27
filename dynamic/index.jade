@@ -127,6 +127,27 @@ html(lang=en)
 					td#background-lbl.col1 Background Image
 					td#background-select
 						button#custom-background Choose...
+						br
+						span#ideal-image-size Best image size is not zero.
+				tr
+					td#background-tile.col1 Tile background?
+					td#background-tile-cb
+						input#tile-toggle(type="checkbox")
+				tr
+					td#background-pos-vert.col1 Background position (vertical)
+					td#background-pos-vert-opt
+						select#bg-pos-vert-combobox
+							option(value="top") Top
+							option(selected="true",value="center") Centre
+							option(value="bottom") Bottom
+				tr
+					td#background-pos-horiz.col1 Background position (horizontal)
+					td#background-pos-horiz-opt
+						select#bg-pos-horiz-combobox
+							option(value="left") Left
+							option(selected="true",value="center") Centre
+							option(value="right") Right
+
 				tr
 					td#colourscheme.col1 Colour scheme
 					td#colourscheme-select
