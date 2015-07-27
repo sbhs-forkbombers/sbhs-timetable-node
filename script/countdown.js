@@ -146,6 +146,7 @@ function getNextCountdownEvent() {
 
 EventBus.on('bells', function(ev, bells) {
 	window.belltimes = bells;
+	window.cachedCountdownEvent = null;
 	if (window.belltimes.status == "Error") {
 		if (window.today) {
 			reloadBells();
