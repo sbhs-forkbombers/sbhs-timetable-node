@@ -488,7 +488,9 @@ function loadBackgroundImage() {
 function updateSidebarStatus() {
 	/* Show load state info for various API data */
 	'use strict';
-
+	if (document.readyState !== 'complete') {
+		return;
+	}
 	/* Loading state symbols */
 	var tick = '<span class="octicon octicon-check ok"></span>',
 		cross = '<span class="octicon octicon-x failed"></span>',

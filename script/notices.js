@@ -35,6 +35,10 @@ function loadNotices() {
 
 function loadBarcodeNews() {
 	var ds = getNextSchoolDay().format('YYYY-MM-DD');
+	if (getNextSchoolDay().isAfter(moment().startOf('day'))) {
+		console.log('bailing out of barcodenews');
+		return;
+	}
 	$.getJSON('/api/barcodenews/list.json?date=' + ds, function(data) {
 		window.barcodenews = data;
 		EventBus.post('barcodenews', data);

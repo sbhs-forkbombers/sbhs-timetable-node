@@ -32,8 +32,8 @@ var _ctteCache = true; // internal use only
 function getNextSchoolDay() {
 	if (window.today) {
 		var m = moment(window.today.date, "YYYY-MM-DD");
-		if (m.hours(15).minutes(15).isAfter(moment())) {
-			return m.startOf('day');
+		if (m.hours(15).minutes(15).isAfter(moment())) { // 3:15 on the given day is after now
+			return m.startOf('day');					 // so it's legit. Otherwise, outdated today.json
 		} 
 	}
 	var today = moment();
